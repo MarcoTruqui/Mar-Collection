@@ -28,7 +28,7 @@ export default function HomePage() {
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/villa-girasol/main.jpg"
+            src="https://res.cloudinary.com/dwutnv1bb/image/upload/girasol_01.jpg"
             alt="Villa Girasol — TC Collection beachfront villa in Bucerías"
             fill
             className="object-cover"
