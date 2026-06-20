@@ -27,14 +27,16 @@ export default function HomePage() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="https://res.cloudinary.com/dwutnv1bb/image/upload/girasol_01.jpg"
-            alt="Villa Girasol — TC Collection beachfront villa in Bucerías"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-navy/70 via-navy/50 to-navy/80" />
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="https://res.cloudinary.com/dwutnv1bb/video/upload/4006-176282263_1_dim63c.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/40 to-navy/70" />
         </div>
 
         {/* Content */}
