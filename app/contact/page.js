@@ -4,8 +4,7 @@ import { useState } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
 import properties from '@/data/properties'
 
-const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '15551234567'
-const EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@menacollection.com'
+const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'
 
 function WhatsAppIcon() {
   return (
@@ -15,9 +14,20 @@ function WhatsAppIcon() {
   )
 }
 
+function buildWhatsAppMessage(form) {
+  const lines = ['🏡 *New MAR Collection Inquiry*', '']
+  if (form.name)     lines.push(`*Name:* ${form.name}`)
+  if (form.email)    lines.push(`*Email:* ${form.email}`)
+  if (form.phone)    lines.push(`*Phone:* ${form.phone}`)
+  if (form.property) lines.push(`*Property:* ${form.property}`)
+  if (form.dates)    lines.push(`*Dates:* ${form.dates}`)
+  if (form.message)  lines.push(``, `*Message:*`, form.message)
+  return encodeURIComponent(lines.join('\n'))
+}
+
 export default function ContactPage() {
   const { t } = useLanguage()
-  const [status, setStatus] = useState('idle') // idle | sending | sent
+  const [status, setStatus] = useState('idle')
   const [form, setForm] = useState({
     name: '', email: '', phone: '', message: '', property: '', dates: '',
   })
@@ -26,18 +36,11 @@ export default function ContactPage() {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  // Netlify Forms: no JS fetch needed — the form posts to Netlify automatically
-  // We handle the submit to show a success state instead of a page redirect
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault()
-    setStatus('sending')
-    try {
-      const body = new URLSearchParams({ 'form-name': 'contact', ...form })
-      await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body.toString() })
-      setStatus('sent')
-    } catch {
-      setStatus('sent') // show success anyway; Netlify may have caught it
-    }
+    const msg = buildWhatsAppMessage(form)
+    window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank')
+    setStatus('sent')
   }
 
   const inputClass = 'w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-navy focus:outline-none focus:border-gold transition-colors placeholder:text-gray-300'
@@ -68,117 +71,95 @@ export default function ContactPage() {
                 <p className="text-gray-500">{t.contact.sentText}</p>
               </div>
             ) : (
-              /* Hidden Netlify form detection element */
-              <>
-                <form name="contact" hidden>
-                  <input type="text" name="name" />
-                  <input type="email" name="email" />
-                  <input type="text" name="phone" />
-                  <textarea name="message" />
-                  <select name="property" />
-                  <input type="text" name="dates" />
-                </form>
-
-                <form
-                  name="contact"
-                  method="POST"
-                  data-netlify="true"
-                  netlify-honeypot="bot-field"
-                  onSubmit={handleSubmit}
-                  className="space-y-5"
-                >
-                  <input type="hidden" name="form-name" value="contact" />
-                  <p hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
-
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.name} *</label>
-                      <input
-                        type="text"
-                        name="name"
-                        required
-                        value={form.name}
-                        onChange={handleChange}
-                        className={inputClass}
-                        placeholder="Ana García"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.email} *</label>
-                      <input
-                        type="email"
-                        name="email"
-                        required
-                        value={form.email}
-                        onChange={handleChange}
-                        className={inputClass}
-                        placeholder="ana@email.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.phone}</label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleChange}
-                        className={inputClass}
-                        placeholder="+1 (555) 123-4567"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.preferredDates}</label>
-                      <input
-                        type="text"
-                        name="dates"
-                        value={form.dates}
-                        onChange={handleChange}
-                        className={inputClass}
-                        placeholder="e.g. Dec 20–27, 2025"
-                      />
-                    </div>
-                  </div>
-
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.propertyInterest}</label>
-                    <select
-                      name="property"
-                      value={form.property}
+                    <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.name} *</label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      value={form.name}
                       onChange={handleChange}
                       className={inputClass}
-                    >
-                      <option value="">{t.contact.selectProperty}</option>
-                      {properties.map(p => (
-                        <option key={p.slug} value={p.name}>{p.name} — {p.location}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.message} *</label>
-                    <textarea
-                      name="message"
-                      required
-                      rows={5}
-                      value={form.message}
-                      onChange={handleChange}
-                      className={inputClass + ' resize-none'}
-                      placeholder={t.contact.messagePlaceholder}
+                      placeholder="Ana García"
                     />
                   </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.email} *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={form.email}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="ana@email.com"
+                    />
+                  </div>
+                </div>
 
-                  <button
-                    type="submit"
-                    disabled={status === 'sending'}
-                    className="w-full bg-navy text-white font-semibold py-4 rounded-xl hover:bg-navy/90 transition-colors text-sm disabled:opacity-60"
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.phone}</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="+1 (555) 123-4567"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.preferredDates}</label>
+                    <input
+                      type="text"
+                      name="dates"
+                      value={form.dates}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="e.g. Dec 20–27, 2025"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.propertyInterest}</label>
+                  <select
+                    name="property"
+                    value={form.property}
+                    onChange={handleChange}
+                    className={inputClass}
                   >
-                    {status === 'sending' ? t.contact.sending : t.contact.send}
-                  </button>
-                </form>
-              </>
+                    <option value="">{t.contact.selectProperty}</option>
+                    {properties.map(p => (
+                      <option key={p.slug} value={p.name}>{p.name} — {p.location}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.message} *</label>
+                  <textarea
+                    name="message"
+                    required
+                    rows={5}
+                    value={form.message}
+                    onChange={handleChange}
+                    className={inputClass + ' resize-none'}
+                    placeholder={t.contact.messagePlaceholder}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-[#25D366] text-white font-semibold py-4 rounded-xl hover:bg-[#20bb5a] transition-colors text-sm flex items-center justify-center gap-3"
+                >
+                  <WhatsAppIcon />
+                  {t.contact.send}
+                </button>
+              </form>
             )}
           </div>
 
@@ -196,17 +177,6 @@ export default function ContactPage() {
               >
                 <WhatsAppIcon />
                 WhatsApp
-              </a>
-            </div>
-
-            {/* Email */}
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="font-serif text-lg text-navy mb-2">{t.contact.emailLabel}</h3>
-              <a
-                href={`mailto:${EMAIL}`}
-                className="text-gold text-sm hover:underline break-all"
-              >
-                {EMAIL}
               </a>
             </div>
 
