@@ -10,9 +10,8 @@ import properties from '@/data/properties'
 
 const LOCATIONS = ['Punta Mita', 'Bucerías', 'La Cruz de Huanacaxtle']
 
-const allRates = properties.map(p => p.nightlyRate)
-const MAX_PRICE = Math.max(...allRates)
-const MIN_PRICE = Math.min(...allRates)
+const MIN_PRICE = 90
+const MAX_PRICE = 1000
 const MAX_GUESTS = Math.max(...properties.map(p => p.maxGuests))
 const MAX_BEDS = Math.max(...properties.map(p => p.bedrooms || 0))
 
@@ -49,7 +48,7 @@ function PropertiesContent() {
 
   const filtered = properties
     .filter(p => activeLocation === 'All' || p.location === activeLocation)
-    .filter(p => p.nightlyRate <= filters.maxPrice)
+    .filter(p => filters.maxPrice >= MAX_PRICE || p.nightlyRate <= filters.maxPrice)
     .filter(p => (p.bedrooms || 0) >= filters.minBeds)
     .filter(p => p.maxGuests >= filters.minGuests)
     .sort((a, b) => b.nightlyRate - a.nightlyRate)
@@ -111,7 +110,7 @@ function PropertiesContent() {
                 <div>
                   <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
                     Price per Night
-                    <span className="ml-2 text-navy font-bold">${draft.maxPrice.toLocaleString()}</span>
+                    <span className="ml-2 text-navy font-bold">${draft.maxPrice >= MAX_PRICE ? '1,000+' : draft.maxPrice.toLocaleString()}</span>
                   </label>
                   <input
                     type="range"
@@ -123,8 +122,8 @@ function PropertiesContent() {
                     className="w-full accent-gold"
                   />
                   <div className="flex justify-between text-xs text-gray-400 mt-1">
-                    <span>${MIN_PRICE}</span>
-                    <span>${MAX_PRICE}</span>
+                    <span>$90</span>
+                    <span>$1,000+</span>
                   </div>
                 </div>
 
