@@ -43,31 +43,68 @@ export default function AboutPage() {
 
       {/* Story */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+        <div className="grid md:grid-cols-2 gap-16 items-center mb-20">
           <div>
             <h2 className="font-serif text-4xl text-navy mb-6">{t.about.storyTitle}</h2>
             <p className="text-gray-600 leading-relaxed mb-5">{t.about.storyText1}</p>
             <p className="text-gray-600 leading-relaxed">{t.about.storyText2}</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl overflow-hidden h-64 relative">
+            <div className="rounded-2xl overflow-hidden h-72 relative">
               <Image
-                src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80"
-                alt="Riviera Nayarit coastline"
+                src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=800&q=80"
+                alt="Banderas Bay Pacific coast"
                 fill
                 className="object-cover"
                 sizes="300px"
               />
             </div>
-            <div className="rounded-2xl overflow-hidden h-64 relative mt-8">
+            <div className="rounded-2xl overflow-hidden h-72 relative mt-10">
               <Image
-                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80"
-                alt="Mexican Pacific beach"
+                src="https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=800&q=80"
+                alt="Luxury pool villa Riviera Nayarit"
                 fill
                 className="object-cover"
                 sizes="300px"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Full-width image strip */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className="rounded-2xl overflow-hidden h-56 relative">
+            <Image
+              src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=800&q=80"
+              alt="Punta Mita golf course"
+              fill
+              className="object-cover"
+              sizes="400px"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
+            <span className="absolute bottom-4 left-4 text-white text-sm font-semibold tracking-wide">Punta Mita Golf</span>
+          </div>
+          <div className="rounded-2xl overflow-hidden h-56 relative">
+            <Image
+              src="https://images.unsplash.com/photo-1568430428786-9e3cdc31f9a1?w=800&q=80"
+              alt="Puerto Vallarta ocean views"
+              fill
+              className="object-cover"
+              sizes="400px"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
+            <span className="absolute bottom-4 left-4 text-white text-sm font-semibold tracking-wide">Puerto Vallarta</span>
+          </div>
+          <div className="rounded-2xl overflow-hidden h-56 relative">
+            <Image
+              src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
+              alt="Sierra Madre mountains meeting the Pacific"
+              fill
+              className="object-cover"
+              sizes="400px"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
+            <span className="absolute bottom-4 left-4 text-white text-sm font-semibold tracking-wide">Riviera Nayarit</span>
           </div>
         </div>
       </section>

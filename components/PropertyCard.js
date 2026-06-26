@@ -11,7 +11,7 @@ export default function PropertyCard({ property }) {
   const displayRate = getCurrentRate(property.slug, property.nightlyRate)
 
   return (
-    <div className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+    <Link href={`/properties/${property.slug}`} className="group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
       {/* Image */}
       <div className="relative h-60 overflow-hidden">
         <Image
@@ -55,14 +55,11 @@ export default function PropertyCard({ property }) {
             <span className="text-2xl font-bold text-navy">{formatPrice(displayRate)}</span>
             <span className="text-gray-400 text-xs ml-1">{t.properties.nightlyRate}</span>
           </div>
-          <Link
-            href={`/properties/${property.slug}`}
-            className="bg-navy text-white text-sm px-4 py-2 rounded-lg hover:bg-gold hover:text-navy transition-colors font-medium"
-          >
+          <span className="bg-navy text-white text-sm px-4 py-2 rounded-lg group-hover:bg-gold group-hover:text-navy transition-colors font-medium">
             {t.properties.viewDetails}
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

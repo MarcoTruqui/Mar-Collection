@@ -253,32 +253,38 @@ export default function BookingWidget({ property }) {
       )}
 
       {/* Stripe button */}
-      <button
-        onClick={handleStripe}
-        disabled={loading}
-        className="w-full bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy/90 transition-colors mb-3 text-sm disabled:opacity-50"
-      >
-        {loading ? t.booking.processing : t.booking.payStripe}
-      </button>
+      <div>
+        <button
+          onClick={handleStripe}
+          disabled={loading}
+          className="w-full bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy/90 transition-colors text-sm disabled:opacity-50"
+        >
+          {loading ? t.booking.processing : t.booking.payStripe}
+        </button>
+        <p className="text-center text-xs text-gold font-medium mt-1 tracking-wide">Coming Soon</p>
+      </div>
 
       {/* PayPal */}
-      {nights >= 2 && total > 0 ? (
-        <PayPalScriptProvider options={paypalOptions}>
-          <PayPalButtons
-            style={{ layout: 'horizontal', color: 'gold', shape: 'rect', label: 'pay', height: 44 }}
-            createOrder={createPayPalOrder}
-            onApprove={onPayPalApprove}
-            onError={() => setError('PayPal payment failed. Please try again.')}
-          />
-        </PayPalScriptProvider>
-      ) : (
-        <button
-          onClick={validate}
-          className="w-full border border-gray-200 text-gray-400 font-semibold py-3 rounded-xl text-sm cursor-not-allowed"
-        >
-          {t.booking.payPaypal}
-        </button>
-      )}
+      <div>
+        {nights >= 2 && total > 0 ? (
+          <PayPalScriptProvider options={paypalOptions}>
+            <PayPalButtons
+              style={{ layout: 'horizontal', color: 'gold', shape: 'rect', label: 'pay', height: 44 }}
+              createOrder={createPayPalOrder}
+              onApprove={onPayPalApprove}
+              onError={() => setError('PayPal payment failed. Please try again.')}
+            />
+          </PayPalScriptProvider>
+        ) : (
+          <button
+            onClick={validate}
+            className="w-full border border-gray-200 text-gray-400 font-semibold py-3 rounded-xl text-sm cursor-not-allowed"
+          >
+            {t.booking.payPaypal}
+          </button>
+        )}
+        <p className="text-center text-xs text-gold font-medium mt-1 tracking-wide">Coming Soon</p>
+      </div>
     </div>
   )
 }

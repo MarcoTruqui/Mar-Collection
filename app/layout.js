@@ -6,11 +6,15 @@ import IntroLoader from '@/components/IntroLoader'
 import { LanguageProvider } from '@/lib/LanguageContext'
 
 export const metadata = {
-  title: 'TC Collection — Luxury Vacation Rentals in Riviera Nayarit',
+  title: 'MAR Collection — Luxury Vacation Rentals in Riviera Nayarit',
   description: 'Handpicked luxury villas and estates in Punta Mita, Bucerías, and La Cruz de Huanacaxtle on the Mexican Pacific coast.',
   keywords: 'luxury villa rental, Riviera Nayarit, Punta Mita, Bucerías, La Cruz, Mexico vacation rental',
+  icons: {
+    icon: '/images/logo.svg',
+    shortcut: '/images/logo.svg',
+  },
   openGraph: {
-    title: 'TC Collection — Luxury Vacation Rentals',
+    title: 'MAR Collection — Luxury Vacation Rentals',
     description: 'Handpicked luxury villas in Riviera Nayarit, Mexico.',
     type: 'website',
   },
