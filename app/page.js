@@ -21,13 +21,6 @@ function StarRating({ count = 5 }) {
 function TestimonialCarousel({ testimonials }) {
   const [current, setCurrent] = useState(0)
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrent(i => (i + 1) % testimonials.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [testimonials.length])
-
   const prev = () => setCurrent(i => (i - 1 + testimonials.length) % testimonials.length)
   const next = () => setCurrent(i => (i + 1) % testimonials.length)
 

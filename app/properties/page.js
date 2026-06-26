@@ -3,27 +3,59 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import { Search, SlidersHorizontal } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
 import properties from '@/data/properties'
 
 const LOCATIONS = ['Punta Mita', 'Bucerías', 'La Cruz de Huanacaxtle']
-const COMING_SOON = []
+
+const allRates = properties.map(p => p.nightlyRate)
+const MAX_PRICE = Math.max(...allRates)
+const MIN_PRICE = Math.min(...allRates)
+const MAX_GUESTS = Math.max(...properties.map(p => p.maxGuests))
+const MAX_BEDS = Math.max(...properties.map(p => p.bedrooms || 0))
 
 function PropertiesContent() {
   const { t } = useLanguage()
   const searchParams = useSearchParams()
+
   const [activeLocation, setActiveLocation] = useState('All')
+
+  // Filter state (pending — applied on Search click)
+  const [draft, setDraft] = useState({
+    maxPrice: MAX_PRICE,
+    minBeds: 0,
+    minGuests: 0,
+  })
+  // Applied filter state
+  const [filters, setFilters] = useState(draft)
+  const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
     const loc = searchParams.get('location')
     if (loc && LOCATIONS.includes(loc)) setActiveLocation(loc)
   }, [searchParams])
 
-  const isComingSoon = COMING_SOON.includes(activeLocation)
-  const filtered = activeLocation === 'All'
-    ? properties
-    : properties.filter(p => p.location === activeLocation)
+  function applyFilters() {
+    setFilters({ ...draft })
+  }
+
+  function resetFilters() {
+    const defaults = { maxPrice: MAX_PRICE, minBeds: 0, minGuests: 0 }
+    setDraft(defaults)
+    setFilters(defaults)
+  }
+
+  const filtered = properties
+    .filter(p => activeLocation === 'All' || p.location === activeLocation)
+    .filter(p => p.nightlyRate <= filters.maxPrice)
+    .filter(p => (p.bedrooms || 0) >= filters.minBeds)
+    .filter(p => p.maxGuests >= filters.minGuests)
+    .sort((a, b) => b.nightlyRate - a.nightlyRate)
+
+  const filtersActive =
+    filters.maxPrice < MAX_PRICE || filters.minBeds > 0 || filters.minGuests > 0
 
   return (
     <>
@@ -34,58 +66,156 @@ function PropertiesContent() {
         <p className="text-white/60 max-w-xl mx-auto">{t.properties.subtitle}</p>
       </div>
 
-      {/* Filter tabs */}
+      {/* Location tabs + filter toggle */}
       <div className="sticky top-16 z-30 bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex gap-2 overflow-x-auto scrollbar-none">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-3 overflow-x-auto scrollbar-none">
           {['All', ...LOCATIONS].map(loc => (
             <button
               key={loc}
               onClick={() => setActiveLocation(loc)}
-              className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+              className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${
                 activeLocation === loc
                   ? 'bg-navy text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
               {loc === 'All' ? t.properties.filterAll : loc}
-              {COMING_SOON.includes(loc) && (
-                <span className="text-[10px] bg-gold/20 text-gold px-1.5 py-0.5 rounded-full font-semibold">
-                  Soon
-                </span>
-              )}
             </button>
           ))}
+
+          <div className="ml-auto flex-shrink-0">
+            <button
+              onClick={() => setShowFilters(v => !v)}
+              className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border transition-all ${
+                showFilters || filtersActive
+                  ? 'bg-navy text-white border-navy'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-navy hover:text-navy'
+              }`}
+            >
+              <SlidersHorizontal size={15} />
+              Filters
+              {filtersActive && (
+                <span className="w-2 h-2 rounded-full bg-gold" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Expandable filter panel */}
+        {showFilters && (
+          <div className="border-t border-gray-100 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="grid sm:grid-cols-3 gap-8 items-end">
+
+                {/* Max price */}
+                <div>
+                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
+                    Max Price per Night
+                    <span className="ml-2 text-navy font-bold">${draft.maxPrice.toLocaleString()}</span>
+                  </label>
+                  <input
+                    type="range"
+                    min={MIN_PRICE}
+                    max={MAX_PRICE}
+                    step={50}
+                    value={draft.maxPrice}
+                    onChange={e => setDraft(d => ({ ...d, maxPrice: Number(e.target.value) }))}
+                    className="w-full accent-gold"
+                  />
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>${MIN_PRICE}</span>
+                    <span>${MAX_PRICE}</span>
+                  </div>
+                </div>
+
+                {/* Min bedrooms */}
+                <div>
+                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
+                    Minimum Bedrooms
+                  </label>
+                  <div className="flex gap-2 flex-wrap">
+                    {[0, 1, 2, 3, 4, 5].map(n => (
+                      <button
+                        key={n}
+                        onClick={() => setDraft(d => ({ ...d, minBeds: n }))}
+                        className={`w-10 h-10 rounded-xl text-sm font-medium border transition-all ${
+                          draft.minBeds === n
+                            ? 'bg-navy text-white border-navy'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-navy'
+                        }`}
+                      >
+                        {n === 0 ? 'Any' : n + '+'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Min guests */}
+                <div>
+                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
+                    Minimum Guests
+                  </label>
+                  <div className="flex gap-2 flex-wrap">
+                    {[0, 2, 4, 6, 8, 10].map(n => (
+                      <button
+                        key={n}
+                        onClick={() => setDraft(d => ({ ...d, minGuests: n }))}
+                        className={`w-10 h-10 rounded-xl text-sm font-medium border transition-all ${
+                          draft.minGuests === n
+                            ? 'bg-navy text-white border-navy'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-navy'
+                        }`}
+                      >
+                        {n === 0 ? 'Any' : n + '+'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3 mt-6 justify-end">
+                {filtersActive && (
+                  <button
+                    onClick={resetFilters}
+                    className="px-5 py-2.5 text-sm text-gray-500 hover:text-navy transition-colors font-medium"
+                  >
+                    Reset
+                  </button>
+                )}
+                <button
+                  onClick={applyFilters}
+                  className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-8 py-2.5 rounded-full hover:bg-gold hover:text-navy transition-all"
+                >
+                  <Search size={15} />
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Grid or Coming Soon */}
+      {/* Results */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {isComingSoon ? (
+        {filtered.length === 0 ? (
           <div className="text-center py-24">
-            <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">🌊</span>
-            </div>
-            <h3 className="font-serif text-3xl text-navy mb-3">Coming Soon</h3>
-            <p className="text-gray-400 max-w-sm mx-auto text-sm leading-relaxed">
-              We're curating exceptional properties in La Cruz de Huanacaxtle. Check back soon or contact us — we may have an unlisted property that's perfect for you.
-            </p>
-            <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-6 bg-navy text-white text-sm font-semibold px-8 py-3 rounded-full hover:bg-gold hover:text-navy transition-colors"
-            >
-              Ask Us Directly
-            </a>
+            <p className="text-gray-400 mb-4">{t.properties.noProperties}</p>
+            <button onClick={resetFilters} className="text-navy text-sm font-medium underline">
+              Clear filters
+            </button>
           </div>
-        ) : filtered.length === 0 ? (
-          <p className="text-center text-gray-400 py-20">{t.properties.noProperties}</p>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map(p => (
-              <PropertyCard key={p.slug} property={p} />
-            ))}
-          </div>
+          <>
+            <p className="text-gray-400 text-sm mb-8">
+              {filtered.length} {filtered.length === 1 ? 'property' : 'properties'} · sorted by price
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filtered.map(p => (
+                <PropertyCard key={p.slug} property={p} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </>
