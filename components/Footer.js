@@ -28,7 +28,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="mb-4">
-              <Image src="/images/mar-logo.png" alt="MAR Collection" width={120} height={90} className="brightness-0 invert" />
+              <Image src="/images/mar-logo.png" alt="MAR Collection" width={200} height={150} className="brightness-0 invert" />
             </div>
             <p className="text-sm leading-relaxed text-white/60 mb-5">
               {t.footer.tagline}
