@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Instagram } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 
@@ -27,8 +28,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="mb-4">
-              <span className="font-serif text-2xl font-bold text-gold tracking-widest block">TC</span>
-              <span className="text-white/60 text-xs tracking-[0.4em] font-light">COLLECTION</span>
+              <Image src="/images/mar-logo.png" alt="MAR Collection" width={120} height={90} className="brightness-0 invert" />
             </div>
             <p className="text-sm leading-relaxed text-white/60 mb-5">
               {t.footer.tagline}
