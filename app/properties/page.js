@@ -110,7 +110,7 @@ function PropertiesContent() {
                 {/* Max price */}
                 <div>
                   <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
-                    Max Price per Night
+                    Price per Night
                     <span className="ml-2 text-navy font-bold">${draft.maxPrice.toLocaleString()}</span>
                   </label>
                   <input
@@ -131,7 +131,7 @@ function PropertiesContent() {
                 {/* Min bedrooms */}
                 <div>
                   <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
-                    Minimum Bedrooms
+                    Bedrooms
                   </label>
                   <div className="flex gap-2 flex-wrap">
                     {[0, 1, 2, 3, 4, 5].map(n => (
@@ -153,7 +153,7 @@ function PropertiesContent() {
                 {/* Min guests */}
                 <div>
                   <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
-                    Minimum Guests
+                    Guests
                   </label>
                   <div className="flex gap-2 flex-wrap">
                     {[0, 2, 4, 6, 8, 10].map(n => (
@@ -207,9 +207,6 @@ function PropertiesContent() {
           </div>
         ) : (
           <>
-            <p className="text-gray-400 text-sm mb-8">
-              {filtered.length} {filtered.length === 1 ? 'property' : 'properties'} · sorted by price
-            </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filtered.map(p => (
                 <PropertyCard key={p.slug} property={p} />
