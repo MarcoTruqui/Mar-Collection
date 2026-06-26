@@ -5,7 +5,7 @@ export async function generateMetadata({ params }) {
   if (!property) return {}
 
   return {
-    title: `${property.name} — ${property.location} | TC Collection`,
+    title: `${property.name} — ${property.location} | MAR Collection`,
     description: property.shortDescription,
     openGraph: {
       title: `${property.name} — Luxury Villa in ${property.location}`,

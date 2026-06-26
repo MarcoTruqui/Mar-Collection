@@ -16,12 +16,12 @@ const properties = [
     serviceFee: 100,
     shortDescription: 'Stunning beachfront villa in Bucerías with direct ocean access, 4 bedrooms, and space for up to 12 guests.',
     shortDescriptionEs: 'Impresionante villa frente al mar en Bucerías con acceso directo al océano, 4 habitaciones y espacio para hasta 12 huéspedes.',
-    description: `Villa Girasol is TC Collection's flagship Bucerías property â€” a magnificent beachfront estate sitting directly on the sand with unobstructed Pacific views from nearly every room. Named for the sunflowers that line its entrance, Villa Girasol radiates warmth and elegance in equal measure.
+    description: `Villa Girasol is MAR Collection's flagship Bucerías property â€” a magnificent beachfront estate sitting directly on the sand with unobstructed Pacific views from nearly every room. Named for the sunflowers that line its entrance, Villa Girasol radiates warmth and elegance in equal measure.
 
 The generous open-plan living and dining area opens directly to a private pool terrace and, beyond it, the beach itself â€” one of the most beloved stretches of sand in all of Nayarit. Four beautifully appointed bedroom suites accommodate up to 12 guests in total comfort, each finished with high-quality linens, ensuite bathrooms, and its own character.
 
 With Bucerías' cobblestone streets, art galleries, and renowned seafood restaurants minutes away on foot, Villa Girasol gives you total privacy and beachfront serenity with a vibrant town right at your doorstep.`,
-    descriptionEs: `Villa Girasol es la propiedad insignia de TC Collection en Bucerías â€” una magnífica villa frente al mar ubicada directamente sobre la arena, con vistas al Pacífico desde casi todos los rincones. Su nombre evoca los girasoles que adornan su entrada, y la villa irradia calidez y elegancia a partes iguales.
+    descriptionEs: `Villa Girasol es la propiedad insignia de MAR Collection en Bucerías â€” una magnífica villa frente al mar ubicada directamente sobre la arena, con vistas al Pacífico desde casi todos los rincones. Su nombre evoca los girasoles que adornan su entrada, y la villa irradia calidez y elegancia a partes iguales.
 
 La generosa sala y comedor de planta abierta desemboca en una terraza con alberca privada y, más allá, la playa misma â€” una de las franjas de arena más queridas de todo Nayarit. Cuatro suites bellamente decoradas alojan hasta 12 huéspedes con total comodidad, cada una con ropa de cama de alta calidad, baño privado y carácter propio.
 
@@ -300,10 +300,10 @@ La marina de La Cruz, el mercado orgánico del viernes, la música en vivo de Ph
     serviceFee: 50,
     shortDescription: 'Ocean-view studio at Zantamar in La Cruz de Huanacaxtle â€” king bed, bunk bed, 2 baths, up to 4 guests. Resort pool included.',
     shortDescriptionEs: 'Studio con vista al océano en Zantamar, La Cruz de Huanacaxtle â€” cama king, literas, 2 baños, hasta 4 huéspedes. Alberca de resort incluida.',
-    description: `Zantamar 304D is a refined ocean-view studio on the third floor of the Zantamar complex in La Cruz de Huanacaxtle. The studio layout â€” king bed, bunk bed, two bathrooms, and a private terrace overlooking Banderas Bay â€” is designed for the couple or small group who wants the character and warmth of La Cruz with the polish of a TC Collection property.
+    description: `Zantamar 304D is a refined ocean-view studio on the third floor of the Zantamar complex in La Cruz de Huanacaxtle. The studio layout â€” king bed, bunk bed, two bathrooms, and a private terrace overlooking Banderas Bay â€” is designed for the couple or small group who wants the character and warmth of La Cruz with the polish of a MAR Collection property.
 
 The Zantamar complex's pool, gardens, and serene atmosphere provide a resort-quality backdrop, while La Cruz's famous marina, market, and seafood scene are right at your doorstep.`,
-    descriptionEs: `Zantamar 304D es un refinado studio con vista al océano en el tercer piso del complejo Zantamar en La Cruz de Huanacaxtle. La distribución del studio â€” cama king, literas, dos baños y terraza privada con vistas a la Bahía de Banderas â€” está diseñada para la pareja o grupo pequeño que busca el carácter y la calidez de La Cruz con el acabado de una propiedad TC Collection.
+    descriptionEs: `Zantamar 304D es un refinado studio con vista al océano en el tercer piso del complejo Zantamar en La Cruz de Huanacaxtle. La distribución del studio â€” cama king, literas, dos baños y terraza privada con vistas a la Bahía de Banderas â€” está diseñada para la pareja o grupo pequeño que busca el carácter y la calidez de La Cruz con el acabado de una propiedad MAR Collection.
 
 La alberca, jardines y ambiente sereno del complejo Zantamar ofrecen un entorno de calidad resort, mientras que la famosa marina, el mercado y la escena gastronómica de La Cruz están a la vuelta de la esquina.`,
     amenities: ['Ocean View', 'Private Terrace', 'Complex Pool', 'King Bed + Bunk Bed', '2 Bathrooms', 'Air Conditioning', 'High-Speed WiFi', 'Fully Equipped Kitchen', 'Marina (walking distance)', 'Smart TV / Streaming', 'Washer & Dryer', 'Secure Parking', 'Daily Housekeeping'],
@@ -352,10 +352,10 @@ La terraza privada enmarca vistas panorámicas a la Bahía de Banderas, mientras
     shortDescriptionEs: 'Studio con vista al océano en Zantamar, La Cruz de Huanacaxtle â€” cama king, literas, 2 baños, hasta 4 huéspedes. Alberca de resort incluida.',
     description: `Zantamar 306D is an ocean-view studio at the Zantamar complex in La Cruz de Huanacaxtle â€” a beautifully appointed retreat with a king bed, bunk bed, two bathrooms, and a private terrace with panoramic Banderas Bay views.
 
-Compact, stylish, and complete, this studio is perfect for a couple or small family seeking the quintessential La Cruz experience at an accessible price point, with the full amenity backdrop of the Zantamar complex and TC Collection concierge service included.`,
+Compact, stylish, and complete, this studio is perfect for a couple or small family seeking the quintessential La Cruz experience at an accessible price point, with the full amenity backdrop of the Zantamar complex and MAR Collection concierge service included.`,
     descriptionEs: `Zantamar 306D es un studio con vista al océano en el complejo Zantamar en La Cruz de Huanacaxtle â€” un refugio bellamente decorado con cama king, literas, dos baños y terraza privada con vistas panorámicas a la Bahía de Banderas.
 
-Compacto, elegante y completo, este studio es perfecto para una pareja o familia pequeña que busca la experiencia quintaesencial de La Cruz a un precio accesible, con el respaldo total de las amenidades del complejo Zantamar y el servicio de concierge de TC Collection incluidos.`,
+Compacto, elegante y completo, este studio es perfecto para una pareja o familia pequeña que busca la experiencia quintaesencial de La Cruz a un precio accesible, con el respaldo total de las amenidades del complejo Zantamar y el servicio de concierge de MAR Collection incluidos.`,
     amenities: ['Ocean View', 'Private Terrace', 'Complex Pool', 'King Bed + Bunk Bed', '2 Bathrooms', 'Air Conditioning', 'High-Speed WiFi', 'Fully Equipped Kitchen', 'Marina (walking distance)', 'Smart TV / Streaming', 'Washer & Dryer', 'Secure Parking', 'Daily Housekeeping'],
     amenitiesEs: ['Vista al océano', 'Terraza privada', 'Alberca del complejo', 'Cama king + literas', '2 baños', 'Aire acondicionado', 'WiFi de alta velocidad', 'Cocina totalmente equipada', 'Marina (a pie)', 'Smart TV / Streaming', 'Lavadora y secadora', 'Estacionamiento seguro', 'Limpieza diaria'],
     images: Array.from({length: 23}, (_, i) => `https://res.cloudinary.com/dwutnv1bb/image/upload/zantamar306_${String(i+1).padStart(2,'0')}.jpg`),
@@ -379,12 +379,12 @@ Compacto, elegante y completo, este studio es perfecto para una pareja o familia
 
 Two bedrooms â€” a master with king bed and a second room with a king-size bunk bed â€” plus a pull-out sofa in the living area accommodate up to 6 guests across a generous multi-level layout. Step off your private terrace directly onto the beach; walk into your private pool whenever the mood strikes.
 
-TH7 delivers the intimacy and exclusivity of a private villa with the full amenity support of the Zantamar complex and TC Collection concierge service. It is, without question, the finest address in La Cruz.`,
+TH7 delivers the intimacy and exclusivity of a private villa with the full amenity support of the Zantamar complex and MAR Collection concierge service. It is, without question, the finest address in La Cruz.`,
     descriptionEs: `Zantamar TH7 es la joya de la corona del complejo Zantamar â€” un excepcional townhouse frente al mar ubicado directamente sobre la arena de La Cruz de Huanacaxtle, con alberca privada, amplias vistas a la bahía y el tipo de acceso directo al océano que sencillamente no existe a este precio en ningún lugar de la Riviera Nayarit.
 
 Dos habitaciones â€” una principal con cama king y una segunda con literas king â€” más un sofá cama en la sala alojan hasta 6 huéspedes en una generosa distribución de varios niveles. Sal de tu terraza privada directamente a la playa; entra a tu alberca privada cuando el momento lo pida.
 
-TH7 ofrece la intimidad y exclusividad de una villa privada con el respaldo completo de amenidades del complejo Zantamar y el servicio de concierge de TC Collection. Es, sin duda, la mejor dirección en La Cruz.`,
+TH7 ofrece la intimidad y exclusividad de una villa privada con el respaldo completo de amenidades del complejo Zantamar y el servicio de concierge de MAR Collection. Es, sin duda, la mejor dirección en La Cruz.`,
     amenities: ['Beachfront â€” Right on the Sand', 'Private Pool', 'Direct Beach Access', 'Ocean Views', 'Multi-Level Townhouse', 'King Bed + King Bunk Bed', 'Pull-Out Sofa', 'Air Conditioning', 'High-Speed WiFi', 'Fully Equipped Kitchen', 'Multiple Terraces', 'Complex Pool', 'Marina (walking distance)', 'Smart TV / Streaming', 'Washer & Dryer', 'Secure Parking', 'Daily Housekeeping', 'Concierge Service'],
     amenitiesEs: ['Frente al mar â€” Sobre la arena', 'Alberca privada', 'Acceso directo a la playa', 'Vistas al océano', 'Townhouse de varios niveles', 'Cama king + literas king', 'Sofá cama', 'Aire acondicionado', 'WiFi de alta velocidad', 'Cocina totalmente equipada', 'Múltiples terrazas', 'Alberca del complejo', 'Marina (a pie)', 'Smart TV / Streaming', 'Lavadora y secadora', 'Estacionamiento seguro', 'Limpieza diaria', 'Servicio de concierge'],
     images: Array.from({length: 18}, (_, i) => `https://res.cloudinary.com/dwutnv1bb/image/upload/th7_${String(i+1).padStart(2,'0')}.jpg`),
