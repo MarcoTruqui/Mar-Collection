@@ -18,6 +18,54 @@ function StarRating({ count = 5 }) {
   )
 }
 
+const FEATURED_SLUGS = ['palmas-8', 'villa-girasol', 'terrazas-g32', 'villa-turquesa', 'villa-perico']
+
+function FeaturedCarousel({ items }) {
+  const [current, setCurrent] = useState(0)
+  const total = items.length // 5
+  const visible = 3
+
+  const prev = () => setCurrent(i => (i - 1 + total) % total)
+  const next = () => setCurrent(i => (i + 1) % total)
+
+  const getVisible = () =>
+    Array.from({ length: visible }, (_, offset) => (current + offset) % total)
+
+  return (
+    <div className="relative">
+      <div className="grid md:grid-cols-3 gap-8">
+        {getVisible().map(idx => (
+          <PropertyCard key={items[idx].slug} property={items[idx]} />
+        ))}
+      </div>
+
+      <div className="flex items-center justify-center gap-6 mt-10">
+        <button
+          onClick={prev}
+          className="w-10 h-10 rounded-full border border-navy/30 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy transition-colors"
+        >
+          <ChevronLeft size={18} />
+        </button>
+        <div className="flex gap-2">
+          {items.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`h-1.5 rounded-full transition-all ${i === current ? 'bg-navy w-4' : 'bg-navy/20 w-1.5'}`}
+            />
+          ))}
+        </div>
+        <button
+          onClick={next}
+          className="w-10 h-10 rounded-full border border-navy/30 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy transition-colors"
+        >
+          <ChevronRight size={18} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function TestimonialCarousel({ testimonials }) {
   const [current, setCurrent] = useState(0)
 
@@ -78,7 +126,7 @@ function TestimonialCarousel({ testimonials }) {
 
 export default function HomePage() {
   const { t } = useLanguage()
-  const featured = properties.slice(0, 3)
+  const featured = FEATURED_SLUGS.map(slug => properties.find(p => p.slug === slug)).filter(Boolean)
 
   return (
     <>
@@ -170,11 +218,7 @@ export default function HomePage() {
             <p className="text-gray-500 max-w-xl mx-auto">{t.home.featuredSubtitle}</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {featured.map(p => (
-              <PropertyCard key={p.slug} property={p} />
-            ))}
-          </div>
+          <FeaturedCarousel items={featured} />
 
           <div className="text-center mt-12">
             <Link
