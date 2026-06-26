@@ -12,17 +12,6 @@ export default function IntroLoader() {
     if (hasRun.current) return
     hasRun.current = true
 
-    // Check if intro already shown today
-    const key = 'tc-intro-date'
-    const today = new Date().toDateString()
-    const last = sessionStorage.getItem(key)
-    if (last === today) {
-      setPhase('done')
-      return
-    }
-
-    sessionStorage.setItem(key, today)
-
     // Phase 1: fade in overlay
     setPhase('visible')
 
@@ -59,7 +48,7 @@ export default function IntroLoader() {
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: '#0a1628',
+        background: '#ffffff',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -86,10 +75,10 @@ export default function IntroLoader() {
         }}
       >
         <Image
-          src="/images/logo.svg"
-          alt="TC Collection"
+          src="/images/mar-logo.png"
+          alt="MAR Collection"
           width={480}
-          height={262}
+          height={360}
           priority
           style={{ display: 'block' }}
         />
