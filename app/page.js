@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronDown, Star, Award, Heart, Map } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { ChevronDown, ChevronLeft, ChevronRight, Star, Award, Heart, Map } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
 import properties from '@/data/properties'
@@ -13,6 +14,71 @@ function StarRating({ count = 5 }) {
       {Array.from({ length: count }).map((_, i) => (
         <Star key={i} size={14} className="fill-gold text-gold" />
       ))}
+    </div>
+  )
+}
+
+function TestimonialCarousel({ testimonials }) {
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent(i => (i + 1) % testimonials.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [testimonials.length])
+
+  const prev = () => setCurrent(i => (i - 1 + testimonials.length) % testimonials.length)
+  const next = () => setCurrent(i => (i + 1) % testimonials.length)
+
+  const getVisible = () => {
+    const indices = []
+    for (let offset = 0; offset < 3; offset++) {
+      indices.push((current + offset) % testimonials.length)
+    }
+    return indices
+  }
+
+  return (
+    <div className="relative">
+      {/* Cards */}
+      <div className="grid md:grid-cols-3 gap-8">
+        {getVisible().map((idx) => {
+          const t = testimonials[idx]
+          return (
+            <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/8 transition-colors">
+              <StarRating count={t.rating} />
+              <blockquote className="text-white/80 leading-relaxed mt-4 mb-6 text-sm italic">
+                "{t.text}"
+              </blockquote>
+              <div>
+                <p className="text-white font-semibold text-sm">{t.name}</p>
+                <p className="text-white/40 text-xs">{t.location}</p>
+                <p className="text-gold text-xs mt-1">{t.property}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Controls */}
+      <div className="flex items-center justify-center gap-6 mt-10">
+        <button onClick={prev} className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/50 transition-colors">
+          <ChevronLeft size={18} />
+        </button>
+        <div className="flex gap-2">
+          {testimonials.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`w-1.5 h-1.5 rounded-full transition-all ${i === current ? 'bg-gold w-4' : 'bg-white/30'}`}
+            />
+          ))}
+        </div>
+        <button onClick={next} className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/50 transition-colors">
+          <ChevronRight size={18} />
+        </button>
+      </div>
     </div>
   )
 }
@@ -137,21 +203,7 @@ export default function HomePage() {
             <p className="text-white/60 max-w-xl mx-auto">{t.home.testimonialsSubtitle}</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {t.testimonials.map((testimonial, i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/8 transition-colors">
-                <StarRating count={testimonial.rating} />
-                <blockquote className="text-white/80 leading-relaxed mt-4 mb-6 text-sm italic">
-                  "{testimonial.text}"
-                </blockquote>
-                <div>
-                  <p className="text-white font-semibold text-sm">{testimonial.name}</p>
-                  <p className="text-white/40 text-xs">{testimonial.location}</p>
-                  <p className="text-gold text-xs mt-1">{testimonial.property}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <TestimonialCarousel testimonials={t.testimonials} />
         </div>
       </section>
 
