@@ -52,8 +52,8 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-2xl overflow-hidden h-72 relative">
               <Image
-                src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=800&q=80"
-                alt="Banderas Bay Pacific coast"
+                src="/images/about-4.jpg"
+                alt="Punta Mita peninsula aerial"
                 fill
                 className="object-cover"
                 sizes="300px"
@@ -61,8 +61,8 @@ export default function AboutPage() {
             </div>
             <div className="rounded-2xl overflow-hidden h-72 relative mt-10">
               <Image
-                src="https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=800&q=80"
-                alt="Luxury pool villa Riviera Nayarit"
+                src="/images/about-1.webp"
+                alt="Islas Marietas hidden beach"
                 fill
                 className="object-cover"
                 sizes="300px"
@@ -72,39 +72,28 @@ export default function AboutPage() {
         </div>
 
         {/* Full-width image strip */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="rounded-2xl overflow-hidden h-56 relative">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="rounded-2xl overflow-hidden h-64 relative">
             <Image
-              src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=800&q=80"
-              alt="Punta Mita golf course"
+              src="/images/about-2.jpg"
+              alt="Puerto Vallarta church and culture"
               fill
               className="object-cover"
-              sizes="400px"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
-            <span className="absolute bottom-4 left-4 text-white text-sm font-semibold tracking-wide">Punta Mita Golf</span>
-          </div>
-          <div className="rounded-2xl overflow-hidden h-56 relative">
-            <Image
-              src="https://images.unsplash.com/photo-1568430428786-9e3cdc31f9a1?w=800&q=80"
-              alt="Puerto Vallarta ocean views"
-              fill
-              className="object-cover"
-              sizes="400px"
+              sizes="700px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
             <span className="absolute bottom-4 left-4 text-white text-sm font-semibold tracking-wide">Puerto Vallarta</span>
           </div>
-          <div className="rounded-2xl overflow-hidden h-56 relative">
+          <div className="rounded-2xl overflow-hidden h-64 relative">
             <Image
-              src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
-              alt="Sierra Madre mountains meeting the Pacific"
+              src="/images/about-3.jpg"
+              alt="La Cruz de Huanacaxtle marina"
               fill
               className="object-cover"
-              sizes="400px"
+              sizes="700px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy/50 to-transparent" />
-            <span className="absolute bottom-4 left-4 text-white text-sm font-semibold tracking-wide">Riviera Nayarit</span>
+            <span className="absolute bottom-4 left-4 text-white text-sm font-semibold tracking-wide">La Cruz de Huanacaxtle</span>
           </div>
         </div>
       </section>
