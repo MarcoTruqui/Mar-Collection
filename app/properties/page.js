@@ -38,6 +38,7 @@ function PropertiesContent() {
 
   function applyFilters() {
     setFilters({ ...draft })
+    setShowFilters(false)
   }
 
   function resetFilters() {
