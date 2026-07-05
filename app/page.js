@@ -3,10 +3,57 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { ChevronDown, ChevronLeft, ChevronRight, Star, Award, Heart, Map } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ChevronDown, ChevronLeft, ChevronRight, Star, Award, Heart, Map, Search } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
 import properties from '@/data/properties'
+
+const todayStr = new Date().toISOString().split('T')[0]
+
+function AvailabilityBar() {
+  const router = useRouter()
+  const [checkIn, setCheckIn]   = useState('')
+  const [checkOut, setCheckOut] = useState('')
+
+  function handleSearch() {
+    if (!checkIn || !checkOut) return
+    router.push(`/properties?checkIn=${checkIn}&checkOut=${checkOut}`)
+  }
+
+  return (
+    <div className="mt-10 bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-end max-w-2xl mx-auto">
+      <div className="flex-1">
+        <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-in</label>
+        <input
+          type="date"
+          min={todayStr}
+          value={checkIn}
+          onChange={e => { setCheckIn(e.target.value); if (e.target.value >= checkOut) setCheckOut('') }}
+          className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+        />
+      </div>
+      <div className="flex-1">
+        <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-out</label>
+        <input
+          type="date"
+          min={checkIn || todayStr}
+          value={checkOut}
+          onChange={e => setCheckOut(e.target.value)}
+          className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+        />
+      </div>
+      <button
+        onClick={handleSearch}
+        disabled={!checkIn || !checkOut}
+        className="flex items-center gap-2 bg-gold text-navy font-semibold px-7 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+      >
+        <Search size={15} />
+        Check Availability
+      </button>
+    </div>
+  )
+}
 
 function StarRating({ count = 5 }) {
   return (
@@ -163,6 +210,8 @@ export default function HomePage() {
           >
             {t.hero.cta}
           </Link>
+
+          <AvailabilityBar />
         </div>
 
         {/* Scroll indicator */}

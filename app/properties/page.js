@@ -3,59 +3,104 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { Search, SlidersHorizontal, CalendarDays, X } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
 import properties from '@/data/properties'
 
 const LOCATIONS = ['Punta Mita', 'Bucerías', 'La Cruz de Huanacaxtle']
-
 const MIN_PRICE = 90
 const MAX_PRICE = 1000
-const MAX_GUESTS = Math.max(...properties.map(p => p.maxGuests))
-const MAX_BEDS = Math.max(...properties.map(p => p.bedrooms || 0))
+const today = new Date().toISOString().split('T')[0]
+
+function isAvailable(slug, checkIn, checkOut, availability) {
+  if (!checkIn || !checkOut) return true
+  const booked = availability[slug] || []
+  return !booked.some(({ checkIn: bIn, checkOut: bOut }) =>
+    checkIn < bOut && checkOut > bIn
+  )
+}
 
 function PropertiesContent() {
   const { t } = useLanguage()
   const searchParams = useSearchParams()
 
   const [activeLocation, setActiveLocation] = useState('All')
+  const [showFilters, setShowFilters] = useState(false)
+  const [availability, setAvailability] = useState(null)
+  const [loadingAvail, setLoadingAvail] = useState(false)
 
-  // Filter state (pending — applied on Search click)
+  // Draft (before Search is clicked)
   const [draft, setDraft] = useState({
     maxPrice: MAX_PRICE,
     minBeds: 0,
     minGuests: 0,
+    checkIn: '',
+    checkOut: '',
   })
-  // Applied filter state
-  const [filters, setFilters] = useState(draft)
-  const [showFilters, setShowFilters] = useState(false)
 
+  // Applied filters
+  const [filters, setFilters] = useState(draft)
+
+  // Read URL params on load
   useEffect(() => {
-    const loc = searchParams.get('location')
+    const loc     = searchParams.get('location')
+    const checkIn = searchParams.get('checkIn')
+    const checkOut = searchParams.get('checkOut')
     if (loc && LOCATIONS.includes(loc)) setActiveLocation(loc)
+    if (checkIn && checkOut) {
+      const next = { ...draft, checkIn, checkOut }
+      setDraft(next)
+      setFilters(next)
+      setShowFilters(true)
+      fetchAvailability()
+    }
   }, [searchParams])
 
-  function applyFilters() {
+  async function fetchAvailability() {
+    setLoadingAvail(true)
+    try {
+      const res = await fetch('/api/availability')
+      const data = await res.json()
+      setAvailability(data)
+    } catch {
+      setAvailability({})
+    } finally {
+      setLoadingAvail(false)
+    }
+  }
+
+  async function applyFilters() {
+    if (draft.checkIn && draft.checkOut && !availability) {
+      await fetchAvailability()
+    }
     setFilters({ ...draft })
     setShowFilters(false)
   }
 
   function resetFilters() {
-    const defaults = { maxPrice: MAX_PRICE, minBeds: 0, minGuests: 0 }
+    const defaults = { maxPrice: MAX_PRICE, minBeds: 0, minGuests: 0, checkIn: '', checkOut: '' }
     setDraft(defaults)
     setFilters(defaults)
+    setAvailability(null)
   }
+
+  const filtersActive =
+    filters.maxPrice < MAX_PRICE ||
+    filters.minBeds > 0 ||
+    filters.minGuests > 0 ||
+    (filters.checkIn && filters.checkOut)
 
   const filtered = properties
     .filter(p => activeLocation === 'All' || p.location === activeLocation)
     .filter(p => filters.maxPrice >= MAX_PRICE || p.nightlyRate <= filters.maxPrice)
     .filter(p => (p.bedrooms || 0) >= filters.minBeds)
     .filter(p => p.maxGuests >= filters.minGuests)
+    .filter(p => !filters.checkIn || !filters.checkOut || !availability ||
+      isAvailable(p.slug, filters.checkIn, filters.checkOut, availability))
     .sort((a, b) => b.nightlyRate - a.nightlyRate)
 
-  const filtersActive =
-    filters.maxPrice < MAX_PRICE || filters.minBeds > 0 || filters.minGuests > 0
+  const dateFilterActive = filters.checkIn && filters.checkOut && availability
 
   return (
     <>
@@ -64,6 +109,45 @@ function PropertiesContent() {
         <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Our Portfolio</p>
         <h1 className="font-serif text-5xl text-white mb-4">{t.properties.title}</h1>
         <p className="text-white/60 max-w-xl mx-auto">{t.properties.subtitle}</p>
+
+        {/* Date search bar in header */}
+        <div className="mt-10 max-w-xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-end">
+            <div className="flex-1">
+              <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide">Check-in</label>
+              <input
+                type="date"
+                min={today}
+                value={draft.checkIn}
+                onChange={e => setDraft(d => ({ ...d, checkIn: e.target.value, checkOut: d.checkOut && e.target.value >= d.checkOut ? '' : d.checkOut }))}
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide">Check-out</label>
+              <input
+                type="date"
+                min={draft.checkIn || today}
+                value={draft.checkOut}
+                onChange={e => setDraft(d => ({ ...d, checkOut: e.target.value }))}
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+              />
+            </div>
+            <button
+              onClick={applyFilters}
+              disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
+              className="flex items-center gap-2 bg-gold text-navy font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              <Search size={15} />
+              {loadingAvail ? 'Searching...' : 'Check Availability'}
+            </button>
+          </div>
+          {dateFilterActive && (
+            <p className="text-white/50 text-xs mt-2">
+              Showing {filtered.length} available {filtered.length === 1 ? 'property' : 'properties'} for {filters.checkIn} → {filters.checkOut}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Location tabs + filter toggle */}
@@ -83,7 +167,15 @@ function PropertiesContent() {
             </button>
           ))}
 
-          <div className="ml-auto flex-shrink-0">
+          <div className="ml-auto flex-shrink-0 flex items-center gap-2">
+            {filtersActive && (
+              <button
+                onClick={resetFilters}
+                className="flex items-center gap-1 text-xs text-gray-400 hover:text-navy transition-colors px-2 py-1"
+              >
+                <X size={13} /> Clear all
+              </button>
+            )}
             <button
               onClick={() => setShowFilters(v => !v)}
               className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border transition-all ${
@@ -94,9 +186,7 @@ function PropertiesContent() {
             >
               <SlidersHorizontal size={15} />
               Filters
-              {filtersActive && (
-                <span className="w-2 h-2 rounded-full bg-gold" />
-              )}
+              {filtersActive && <span className="w-2 h-2 rounded-full bg-gold" />}
             </button>
           </div>
         </div>
@@ -105,7 +195,39 @@ function PropertiesContent() {
         {showFilters && (
           <div className="border-t border-gray-100 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              <div className="grid sm:grid-cols-3 gap-8 items-end">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
+
+                {/* Dates */}
+                <div className="sm:col-span-2 lg:col-span-1">
+                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium flex items-center gap-1">
+                    <CalendarDays size={13} /> Dates
+                  </label>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <p className="text-[10px] text-gray-400 mb-1">Check-in</p>
+                      <input
+                        type="date"
+                        min={today}
+                        value={draft.checkIn}
+                        onChange={e => setDraft(d => ({ ...d, checkIn: e.target.value, checkOut: d.checkOut && e.target.value >= d.checkOut ? '' : d.checkOut }))}
+                        className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs text-navy focus:outline-none focus:border-gold transition-colors"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[10px] text-gray-400 mb-1">Check-out</p>
+                      <input
+                        type="date"
+                        min={draft.checkIn || today}
+                        value={draft.checkOut}
+                        onChange={e => setDraft(d => ({ ...d, checkOut: e.target.value }))}
+                        className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs text-navy focus:outline-none focus:border-gold transition-colors"
+                      />
+                    </div>
+                  </div>
+                  {draft.checkIn && draft.checkOut && (
+                    <p className="text-[10px] text-gold mt-1">Will check real availability on Search</p>
+                  )}
+                </div>
 
                 {/* Max price */}
                 <div>
@@ -128,11 +250,9 @@ function PropertiesContent() {
                   </div>
                 </div>
 
-                {/* Min bedrooms */}
+                {/* Bedrooms */}
                 <div>
-                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
-                    Bedrooms
-                  </label>
+                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">Bedrooms</label>
                   <div className="flex gap-2 flex-wrap">
                     {[0, 1, 2, 3, 4, 5].map(n => (
                       <button
@@ -150,11 +270,9 @@ function PropertiesContent() {
                   </div>
                 </div>
 
-                {/* Min guests */}
+                {/* Guests */}
                 <div>
-                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
-                    Guests
-                  </label>
+                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">Guests</label>
                   <div className="flex gap-2 flex-wrap">
                     {[0, 2, 4, 6, 8, 10].map(n => (
                       <button
@@ -175,20 +293,13 @@ function PropertiesContent() {
 
               {/* Action buttons */}
               <div className="flex gap-3 mt-6 justify-end">
-                {filtersActive && (
-                  <button
-                    onClick={resetFilters}
-                    className="px-5 py-2.5 text-sm text-gray-500 hover:text-navy transition-colors font-medium"
-                  >
-                    Reset
-                  </button>
-                )}
                 <button
                   onClick={applyFilters}
-                  className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-8 py-2.5 rounded-full hover:bg-gold hover:text-navy transition-all"
+                  disabled={loadingAvail}
+                  className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-8 py-2.5 rounded-full hover:bg-gold hover:text-navy transition-all disabled:opacity-50"
                 >
                   <Search size={15} />
-                  Search
+                  {loadingAvail ? 'Checking availability...' : 'Search'}
                 </button>
               </div>
             </div>
@@ -198,21 +309,35 @@ function PropertiesContent() {
 
       {/* Results */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {dateFilterActive && (
+          <div className="flex items-center gap-2 mb-8 bg-gold/10 border border-gold/30 rounded-xl px-4 py-3 text-sm text-navy">
+            <CalendarDays size={16} className="text-gold flex-shrink-0" />
+            <span>
+              Showing <strong>{filtered.length}</strong> available {filtered.length === 1 ? 'property' : 'properties'} for <strong>{filters.checkIn}</strong> → <strong>{filters.checkOut}</strong>
+            </span>
+            <button onClick={resetFilters} className="ml-auto text-gray-400 hover:text-navy">
+              <X size={15} />
+            </button>
+          </div>
+        )}
+
         {filtered.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-gray-400 mb-4">{t.properties.noProperties}</p>
+            <CalendarDays size={40} className="text-gray-200 mx-auto mb-4" />
+            <p className="text-gray-500 font-medium mb-2">
+              {dateFilterActive ? 'No properties available for those dates' : t.properties.noProperties}
+            </p>
+            <p className="text-gray-400 text-sm mb-6">Try different dates or adjust your filters</p>
             <button onClick={resetFilters} className="text-navy text-sm font-medium underline">
               Clear filters
             </button>
           </div>
         ) : (
-          <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filtered.map(p => (
-                <PropertyCard key={p.slug} property={p} />
-              ))}
-            </div>
-          </>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filtered.map(p => (
+              <PropertyCard key={p.slug} property={p} />
+            ))}
+          </div>
         )}
       </div>
     </>
