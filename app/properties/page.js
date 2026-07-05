@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { Search, SlidersHorizontal, CalendarDays, X } from 'lucide-react'
@@ -31,6 +31,9 @@ function PropertiesContent() {
   const [loadingAvail, setLoadingAvail] = useState(false)
   const [mobileHeaderHidden, setMobileHeaderHidden] = useState(false)
   const [showMobileSearch, setShowMobileSearch] = useState(false)
+  const checkOutHeaderRef = useRef(null)
+  const checkOutMobileRef = useRef(null)
+  const checkOutFilterRef = useRef(null)
 
   // Draft (before Search is clicked)
   const [draft, setDraft] = useState({
@@ -125,13 +128,18 @@ function PropertiesContent() {
                 type="date"
                 min={today}
                 value={draft.checkIn}
-                onChange={e => setDraft(d => ({ ...d, checkIn: e.target.value, checkOut: d.checkOut && e.target.value >= d.checkOut ? '' : d.checkOut }))}
+                onChange={e => {
+                  const val = e.target.value
+                  setDraft(d => ({ ...d, checkIn: val, checkOut: d.checkOut && val >= d.checkOut ? '' : d.checkOut }))
+                  if (val) setTimeout(() => checkOutHeaderRef.current?.showPicker?.(), 50)
+                }}
                 className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
               />
             </div>
             <div className="flex-1">
               <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide">Check-out</label>
               <input
+                ref={checkOutHeaderRef}
                 type="date"
                 min={draft.checkIn || today}
                 value={draft.checkOut}
@@ -166,13 +174,18 @@ function PropertiesContent() {
                 type="date"
                 min={today}
                 value={draft.checkIn}
-                onChange={e => setDraft(d => ({ ...d, checkIn: e.target.value, checkOut: d.checkOut && e.target.value >= d.checkOut ? '' : d.checkOut }))}
+                onChange={e => {
+                  const val = e.target.value
+                  setDraft(d => ({ ...d, checkIn: val, checkOut: d.checkOut && val >= d.checkOut ? '' : d.checkOut }))
+                  if (val) setTimeout(() => checkOutMobileRef.current?.showPicker?.(), 50)
+                }}
                 className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
               />
             </div>
             <div>
               <label className="block text-white/60 text-xs mb-1.5 tracking-wide">Check-out</label>
               <input
+                ref={checkOutMobileRef}
                 type="date"
                 min={draft.checkIn || today}
                 value={draft.checkOut}
@@ -193,7 +206,7 @@ function PropertiesContent() {
       )}
 
       {/* Location tabs + filter toggle */}
-      <div className="sticky top-16 z-30 bg-white border-b border-gray-100 shadow-sm">
+      <div className="sticky top-[100px] z-30 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-3 overflow-x-auto scrollbar-none">
           {['All', ...LOCATIONS].map(loc => (
             <button
@@ -259,13 +272,18 @@ function PropertiesContent() {
                         type="date"
                         min={today}
                         value={draft.checkIn}
-                        onChange={e => setDraft(d => ({ ...d, checkIn: e.target.value, checkOut: d.checkOut && e.target.value >= d.checkOut ? '' : d.checkOut }))}
+                        onChange={e => {
+                          const val = e.target.value
+                          setDraft(d => ({ ...d, checkIn: val, checkOut: d.checkOut && val >= d.checkOut ? '' : d.checkOut }))
+                          if (val) setTimeout(() => checkOutFilterRef.current?.showPicker?.(), 50)
+                        }}
                         className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs text-navy focus:outline-none focus:border-gold transition-colors"
                       />
                     </div>
                     <div className="flex-1">
                       <p className="text-[10px] text-gray-400 mb-1">Check-out</p>
                       <input
+                        ref={checkOutFilterRef}
                         type="date"
                         min={draft.checkIn || today}
                         value={draft.checkOut}

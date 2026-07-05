@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronDown, ChevronLeft, ChevronRight, Star, Award, Heart, Map, Search } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
@@ -15,6 +15,7 @@ function AvailabilityBar() {
   const router = useRouter()
   const [checkIn, setCheckIn]   = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const checkOutRef = useRef(null)
 
   function handleSearch() {
     if (!checkIn || !checkOut) return
@@ -22,35 +23,43 @@ function AvailabilityBar() {
   }
 
   return (
-    <div className="mt-10 bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-end max-w-2xl mx-auto">
-      <div className="flex-1">
-        <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-in</label>
-        <input
-          type="date"
-          min={todayStr}
-          value={checkIn}
-          onChange={e => { setCheckIn(e.target.value); if (e.target.value >= checkOut) setCheckOut('') }}
-          className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-        />
+    <div className="mt-10 w-full px-4 max-w-2xl mx-auto">
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
+        <div className="flex-1">
+          <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-in</label>
+          <input
+            type="date"
+            min={todayStr}
+            value={checkIn}
+            onChange={e => {
+              const val = e.target.value
+              setCheckIn(val)
+              if (val >= checkOut) setCheckOut('')
+              if (val) setTimeout(() => checkOutRef.current?.showPicker?.(), 50)
+            }}
+            className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+          />
+        </div>
+        <div className="flex-1">
+          <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-out</label>
+          <input
+            ref={checkOutRef}
+            type="date"
+            min={checkIn || todayStr}
+            value={checkOut}
+            onChange={e => setCheckOut(e.target.value)}
+            className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+          />
+        </div>
+        <button
+          onClick={handleSearch}
+          disabled={!checkIn || !checkOut}
+          className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-7 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto"
+        >
+          <Search size={15} />
+          Check Availability
+        </button>
       </div>
-      <div className="flex-1">
-        <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-out</label>
-        <input
-          type="date"
-          min={checkIn || todayStr}
-          value={checkOut}
-          onChange={e => setCheckOut(e.target.value)}
-          className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-        />
-      </div>
-      <button
-        onClick={handleSearch}
-        disabled={!checkIn || !checkOut}
-        className="flex items-center gap-2 bg-gold text-navy font-semibold px-7 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
-      >
-        <Search size={15} />
-        Check Availability
-      </button>
     </div>
   )
 }
