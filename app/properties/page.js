@@ -29,6 +29,8 @@ function PropertiesContent() {
   const [showFilters, setShowFilters] = useState(false)
   const [availability, setAvailability] = useState(null)
   const [loadingAvail, setLoadingAvail] = useState(false)
+  const [mobileHeaderHidden, setMobileHeaderHidden] = useState(false)
+  const [showMobileSearch, setShowMobileSearch] = useState(false)
 
   // Draft (before Search is clicked)
   const [draft, setDraft] = useState({
@@ -76,6 +78,8 @@ function PropertiesContent() {
     }
     setFilters({ ...draft })
     setShowFilters(false)
+    setMobileHeaderHidden(true)
+    setShowMobileSearch(false)
   }
 
   function resetFilters() {
@@ -83,6 +87,8 @@ function PropertiesContent() {
     setDraft(defaults)
     setFilters(defaults)
     setAvailability(null)
+    setMobileHeaderHidden(false)
+    setShowMobileSearch(false)
   }
 
   const filtersActive =
@@ -104,15 +110,15 @@ function PropertiesContent() {
 
   return (
     <>
-      {/* Header */}
-      <div className="bg-navy pt-32 pb-16 text-center px-4">
+      {/* Header — hidden on mobile after search */}
+      <div className={`bg-navy pt-32 pb-16 text-center px-4 ${mobileHeaderHidden ? 'hidden sm:block' : ''}`}>
         <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Our Portfolio</p>
         <h1 className="font-serif text-5xl text-white mb-4">{t.properties.title}</h1>
         <p className="text-white/60 max-w-xl mx-auto">{t.properties.subtitle}</p>
 
         {/* Date search bar in header */}
-        <div className="mt-10 max-w-xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-end">
+        <div className="mt-10 max-w-xl mx-auto px-2">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
             <div className="flex-1">
               <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide">Check-in</label>
               <input
@@ -136,7 +142,7 @@ function PropertiesContent() {
             <button
               onClick={applyFilters}
               disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
-              className="flex items-center gap-2 bg-gold text-navy font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto"
             >
               <Search size={15} />
               {loadingAvail ? 'Searching...' : 'Check Availability'}
@@ -149,6 +155,42 @@ function PropertiesContent() {
           )}
         </div>
       </div>
+
+      {/* Mobile search overlay — shown when magnifying glass tapped after search */}
+      {mobileHeaderHidden && showMobileSearch && (
+        <div className="sm:hidden bg-navy px-4 pt-20 pb-6">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex flex-col gap-3">
+            <div>
+              <label className="block text-white/60 text-xs mb-1.5 tracking-wide">Check-in</label>
+              <input
+                type="date"
+                min={today}
+                value={draft.checkIn}
+                onChange={e => setDraft(d => ({ ...d, checkIn: e.target.value, checkOut: d.checkOut && e.target.value >= d.checkOut ? '' : d.checkOut }))}
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+              />
+            </div>
+            <div>
+              <label className="block text-white/60 text-xs mb-1.5 tracking-wide">Check-out</label>
+              <input
+                type="date"
+                min={draft.checkIn || today}
+                value={draft.checkOut}
+                onChange={e => setDraft(d => ({ ...d, checkOut: e.target.value }))}
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
+              />
+            </div>
+            <button
+              onClick={applyFilters}
+              disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
+              className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Search size={15} />
+              {loadingAvail ? 'Searching...' : 'Check Availability'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Location tabs + filter toggle */}
       <div className="sticky top-16 z-30 bg-white border-b border-gray-100 shadow-sm">
@@ -168,6 +210,14 @@ function PropertiesContent() {
           ))}
 
           <div className="ml-auto flex-shrink-0 flex items-center gap-2">
+            {mobileHeaderHidden && (
+              <button
+                onClick={() => setShowMobileSearch(v => !v)}
+                className="sm:hidden flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-navy hover:border-navy transition-colors"
+              >
+                <Search size={15} />
+              </button>
+            )}
             {filtersActive && (
               <button
                 onClick={resetFilters}
