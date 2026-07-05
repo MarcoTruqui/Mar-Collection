@@ -78,11 +78,12 @@ export default function PropertyDetailPage({ params }) {
         <div className="hidden sm:grid grid-cols-4 grid-rows-2 gap-2 h-[480px] rounded-2xl overflow-hidden">
           <div className="col-span-2 row-span-2 relative cursor-pointer" onClick={() => setLightboxIndex(0)}>
             <Image
-              src={property.images[0]}
+              src={property.images[0].replace('/upload/', '/upload/w_1200,q_auto,f_auto/')}
               alt={`${property.name} main`}
               fill
               className="object-cover hover:scale-105 transition-transform duration-500"
               priority
+              unoptimized
               sizes="50vw"
             />
           </div>
