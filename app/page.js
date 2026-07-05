@@ -220,7 +220,9 @@ export default function HomePage() {
             {t.hero.cta}
           </Link>
 
-          <AvailabilityBar />
+          <div className="hidden sm:block">
+            <AvailabilityBar />
+          </div>
         </div>
 
         {/* Scroll indicator */}
