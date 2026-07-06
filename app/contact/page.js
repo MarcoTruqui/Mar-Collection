@@ -6,6 +6,12 @@ import properties from '@/data/properties'
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'
 
+const MONTHS_ES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+function formatDate(dateStr) {
+  const [y, m, d] = dateStr.split('-')
+  return `${d}-${MONTHS_ES[parseInt(m) - 1]}-${y}`
+}
+
 function WhatsAppIcon({ size = 20 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -34,7 +40,7 @@ export default function ContactPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          dates: form.checkIn && form.checkOut ? `${form.checkIn} → ${form.checkOut}` : '',
+          dates: form.checkIn && form.checkOut ? `${formatDate(form.checkIn)} → ${formatDate(form.checkOut)}` : '',
         }),
       })
       if (!res.ok) throw new Error('Failed')
