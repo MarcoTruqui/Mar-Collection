@@ -18,7 +18,7 @@ export default function ContactPage() {
   const { t } = useLanguage()
   const [status, setStatus] = useState('idle') // idle | sending | sent | error
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', message: '', property: '', dates: '',
+    name: '', email: '', phone: '', message: '', property: '', checkIn: '', checkOut: '',
   })
 
   function handleChange(e) {
@@ -32,7 +32,10 @@ export default function ContactPage() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          dates: form.checkIn && form.checkOut ? `${form.checkIn} → ${form.checkOut}` : '',
+        }),
       })
       if (!res.ok) throw new Error('Failed')
       setStatus('sent')
@@ -109,16 +112,28 @@ export default function ContactPage() {
                       placeholder="+1 (555) 123-4567"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.preferredDates}</label>
-                    <input
-                      type="text"
-                      name="dates"
-                      value={form.dates}
-                      onChange={handleChange}
-                      className={inputClass}
-                      placeholder="e.g. Dec 20–27, 2025"
-                    />
+                  <div className="grid grid-cols-2 gap-2 sm:col-span-1">
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">Check-in</label>
+                      <input
+                        type="date"
+                        name="checkIn"
+                        value={form.checkIn}
+                        onChange={handleChange}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">Check-out</label>
+                      <input
+                        type="date"
+                        name="checkOut"
+                        min={form.checkIn || undefined}
+                        value={form.checkOut}
+                        onChange={handleChange}
+                        className={inputClass}
+                      />
+                    </div>
                   </div>
                 </div>
 
