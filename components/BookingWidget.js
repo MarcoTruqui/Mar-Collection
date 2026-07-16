@@ -47,8 +47,14 @@ export default function BookingWidget({ property }) {
         setCalOpen(false)
       }
     }
-    if (calOpen) document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+    if (calOpen) {
+      document.addEventListener('click', handleClick)
+      document.addEventListener('touchend', handleClick)
+    }
+    return () => {
+      document.removeEventListener('click', handleClick)
+      document.removeEventListener('touchend', handleClick)
+    }
   }, [calOpen])
 
   const stay = (checkIn && checkOut)
@@ -160,7 +166,11 @@ export default function BookingWidget({ property }) {
 
         {/* Popover calendar */}
         {calOpen && (
-          <div className="absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-gray-200 rounded-2xl shadow-xl p-4">
+          <div
+            className="absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-gray-200 rounded-2xl shadow-xl p-4"
+            onClick={e => e.stopPropagation()}
+            onTouchEnd={e => e.stopPropagation()}
+          >
             <Calendar
               bookedRanges={bookedRanges}
               checkIn={checkIn}

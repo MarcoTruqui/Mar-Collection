@@ -18,9 +18,13 @@ function addMonths(year, month, n) {
 function getDaysInMonth(y, m) { return new Date(y, m + 1, 0).getDate() }
 function getFirstDow(y, m)    { return new Date(y, m, 1).getDay() }
 
-// Returns true if dateStr falls within any booked range [checkIn, checkOut)
-function isBookedDate(dateStr, bookedRanges) {
-  return bookedRanges.some(({ checkIn, checkOut }) => dateStr >= checkIn && dateStr < checkOut)
+// Returns true if dateStr falls within any booked range (checkIn inclusive, checkOut exclusive)
+// allowAsCheckout: if true, a date that is exactly a booking's checkIn is allowed (same-day turnover)
+function isBookedDate(dateStr, bookedRanges, allowAsCheckout = false) {
+  return bookedRanges.some(({ checkIn, checkOut }) => {
+    if (allowAsCheckout && dateStr === checkIn) return false
+    return dateStr >= checkIn && dateStr < checkOut
+  })
 }
 
 // Returns true if any night in (start, end) is booked
@@ -178,7 +182,10 @@ export default function Calendar({ bookedRanges = [], checkIn = '', checkOut = '
   function handleDayClick(dateStr) {
     if (!interactive) return
     if (dateStr < todayStr) return
-    if (isBookedDate(dateStr, bookedRanges)) return
+
+    // Selecting checkout: allow clicking on another booking's checkIn (same-day turnover)
+    const selectingCheckout = !!(checkIn && !checkOut)
+    if (isBookedDate(dateStr, bookedRanges, selectingCheckout)) return
 
     // No selection yet, or both already selected → start fresh
     if (!checkIn || (checkIn && checkOut)) {
@@ -188,7 +195,6 @@ export default function Calendar({ bookedRanges = [], checkIn = '', checkOut = '
 
     // checkIn set, no checkOut yet
     if (dateStr <= checkIn) {
-      // Clicked before or on checkIn → restart
       onChange(dateStr, '')
       return
     }
@@ -200,9 +206,8 @@ export default function Calendar({ bookedRanges = [], checkIn = '', checkOut = '
       return
     }
 
-    // Check no booked nights in the range
+    // Check no booked nights in the range (exclude the checkout date itself)
     if (rangeContainsBooked(checkIn, dateStr, bookedRanges)) {
-      // Start fresh from clicked date
       onChange(dateStr, '')
       return
     }
