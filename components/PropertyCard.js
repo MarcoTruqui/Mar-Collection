@@ -2,16 +2,25 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Users, Bed, Bath } from 'lucide-react'
+import { MapPin, Users, Bed, Bath, CalendarDays } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { getCurrentRate } from '@/lib/currentRate'
+import { calculateStayPrice } from '@/lib/pricingEngine'
 
-export default function PropertyCard({ property }) {
+export default function PropertyCard({ property, checkIn, checkOut }) {
   const { t, lang, formatPrice } = useLanguage()
   const displayRate = getCurrentRate(property.slug, property.nightlyRate)
 
+  const stay = (checkIn && checkOut)
+    ? calculateStayPrice(property.slug, checkIn, checkOut, property.nightlyRate, property.cleaningFee, property.serviceFee)
+    : null
+
+  const href = checkIn && checkOut
+    ? `/properties/${property.slug}?checkIn=${checkIn}&checkOut=${checkOut}`
+    : `/properties/${property.slug}`
+
   return (
-    <Link href={`/properties/${property.slug}`} className="group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+    <Link href={href} className="group block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
       {/* Image */}
       <div className="relative h-60 overflow-hidden">
         <Image
@@ -51,9 +60,21 @@ export default function PropertyCard({ property }) {
         {/* Rate + CTA */}
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-xs text-gray-400 block">{t.properties.from ?? 'From'}</span>
-            <span className="text-2xl font-bold text-navy">{formatPrice(displayRate)}</span>
-            <span className="text-gray-400 text-xs ml-1">{t.properties.nightlyRate}</span>
+            {stay ? (
+              <>
+                <span className="text-xs text-gold font-medium flex items-center gap-1 mb-0.5">
+                  <CalendarDays size={11} /> {stay.nights} nights
+                </span>
+                <span className="text-2xl font-bold text-navy">{formatPrice(stay.total)}</span>
+                <span className="text-gray-400 text-xs ml-1">total</span>
+              </>
+            ) : (
+              <>
+                <span className="text-xs text-gray-400 block">{t.properties.from ?? 'From'}</span>
+                <span className="text-2xl font-bold text-navy">{formatPrice(displayRate)}</span>
+                <span className="text-gray-400 text-xs ml-1">{t.properties.nightlyRate}</span>
+              </>
+            )}
           </div>
           <span className="bg-navy text-white text-sm px-4 py-2 rounded-lg group-hover:bg-gold group-hover:text-navy transition-colors font-medium">
             {t.properties.viewDetails}

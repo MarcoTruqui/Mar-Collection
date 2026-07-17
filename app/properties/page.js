@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
-import { Search, SlidersHorizontal, CalendarDays, X } from 'lucide-react'
+import { SlidersHorizontal, CalendarDays, X, Search } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
+import Calendar from '@/components/Calendar'
 import properties from '@/data/properties'
 
 const LOCATIONS = ['Punta Mita', 'Bucerías', 'La Cruz de Huanacaxtle']
@@ -30,10 +31,8 @@ function PropertiesContent() {
   const [availability, setAvailability] = useState(null)
   const [loadingAvail, setLoadingAvail] = useState(false)
   const [mobileHeaderHidden, setMobileHeaderHidden] = useState(false)
-  const [showMobileSearch, setShowMobileSearch] = useState(false)
-  const checkOutHeaderRef = useRef(null)
-  const checkOutMobileRef = useRef(null)
-  const checkOutFilterRef = useRef(null)
+  const [calOpen, setCalOpen] = useState(false)
+  const calRef = useRef(null)
 
   // Draft (before Search is clicked)
   const [draft, setDraft] = useState({
@@ -75,14 +74,29 @@ function PropertiesContent() {
     }
   }
 
+  // Close calendar on outside click
+  useEffect(() => {
+    function handleClick(e) {
+      if (calRef.current && !calRef.current.contains(e.target)) setCalOpen(false)
+    }
+    if (calOpen) {
+      document.addEventListener('click', handleClick)
+      document.addEventListener('touchend', handleClick)
+    }
+    return () => {
+      document.removeEventListener('click', handleClick)
+      document.removeEventListener('touchend', handleClick)
+    }
+  }, [calOpen])
+
   async function applyFilters() {
     if (draft.checkIn && draft.checkOut && !availability) {
       await fetchAvailability()
     }
     setFilters({ ...draft })
     setShowFilters(false)
+    setCalOpen(false)
     setMobileHeaderHidden(true)
-    setShowMobileSearch(false)
   }
 
   function resetFilters() {
@@ -91,7 +105,7 @@ function PropertiesContent() {
     setFilters(defaults)
     setAvailability(null)
     setMobileHeaderHidden(false)
-    setShowMobileSearch(false)
+    setCalOpen(false)
   }
 
   const filtersActive =
@@ -119,91 +133,60 @@ function PropertiesContent() {
         <h1 className="font-serif text-5xl text-white mb-4">{t.properties.title}</h1>
         <p className="text-white/60 max-w-xl mx-auto">{t.properties.subtitle}</p>
 
-        {/* Date search bar in header */}
+        {/* Custom calendar date picker */}
         <div className="mt-10 max-w-xl mx-auto px-2">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
-            <div className="flex-1">
-              <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide">Check-in</label>
-              <input
-                type="date"
-                min={today}
-                value={draft.checkIn}
-                onChange={e => {
-                  const val = e.target.value
-                  setDraft(d => ({ ...d, checkIn: val, checkOut: d.checkOut && val >= d.checkOut ? '' : d.checkOut }))
-                  if (val) setTimeout(() => checkOutHeaderRef.current?.showPicker?.(), 50)
-                }}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide">Check-out</label>
-              <input
-                ref={checkOutHeaderRef}
-                type="date"
-                min={draft.checkIn || today}
-                value={draft.checkOut}
-                onChange={e => setDraft(d => ({ ...d, checkOut: e.target.value }))}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-              />
-            </div>
-            <button
-              onClick={applyFilters}
-              disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
-              className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto"
+          <div className="relative" ref={calRef}>
+            {/* Trigger row */}
+            <div
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex gap-3 items-center cursor-pointer"
+              onClick={() => setCalOpen(o => !o)}
             >
-              <Search size={15} />
-              {loadingAvail ? 'Searching...' : 'Check Availability'}
-            </button>
+              <CalendarDays size={18} className="text-white/60 flex-shrink-0" />
+              <div className="flex-1 text-left">
+                {draft.checkIn && draft.checkOut ? (
+                  <p className="text-white text-sm font-medium">{draft.checkIn} → {draft.checkOut}</p>
+                ) : draft.checkIn ? (
+                  <p className="text-white text-sm">Check-in: <strong>{draft.checkIn}</strong> &nbsp;·&nbsp; <span className="text-white/50">Select check-out</span></p>
+                ) : (
+                  <p className="text-white/50 text-sm">Select your check-in & check-out dates</p>
+                )}
+              </div>
+              {(draft.checkIn || draft.checkOut) && (
+                <button onClick={e => { e.stopPropagation(); setDraft(d => ({ ...d, checkIn: '', checkOut: '' })) }} className="text-white/40 hover:text-white text-xs px-1">✕</button>
+              )}
+              <button
+                onClick={e => { e.stopPropagation(); applyFilters() }}
+                disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
+                className="flex-shrink-0 bg-gold text-navy font-semibold px-5 py-2 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {loadingAvail ? 'Searching…' : 'Search'}
+              </button>
+            </div>
+
+            {/* Calendar popover */}
+            {calOpen && (
+              <div
+                className="absolute left-0 right-0 top-full mt-2 z-40 bg-white border border-gray-200 rounded-2xl shadow-xl p-4"
+                onClick={e => e.stopPropagation()}
+                onTouchEnd={e => e.stopPropagation()}
+              >
+                <Calendar
+                  bookedRanges={[]}
+                  checkIn={draft.checkIn}
+                  checkOut={draft.checkOut}
+                  onChange={(ci, co) => {
+                    setDraft(d => ({ ...d, checkIn: ci, checkOut: co }))
+                    if (ci && co) setCalOpen(false)
+                  }}
+                  monthsToShow={1}
+                  minNights={2}
+                />
+                <p className="text-xs text-gray-400 mt-3 text-center">Select check-in, then check-out</p>
+              </div>
+            )}
           </div>
-          {dateFilterActive && (
-            <p className="text-white/50 text-xs mt-2">
-              Showing {filtered.length} available {filtered.length === 1 ? 'property' : 'properties'} for {filters.checkIn} → {filters.checkOut}
-            </p>
-          )}
         </div>
       </div>
-
-      {/* Mobile search overlay — shown when magnifying glass tapped after search */}
-      {mobileHeaderHidden && showMobileSearch && (
-        <div className="sm:hidden bg-navy px-4 pt-20 pb-6">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex flex-col gap-3">
-            <div>
-              <label className="block text-white/60 text-xs mb-1.5 tracking-wide">Check-in</label>
-              <input
-                type="date"
-                min={today}
-                value={draft.checkIn}
-                onChange={e => {
-                  const val = e.target.value
-                  setDraft(d => ({ ...d, checkIn: val, checkOut: d.checkOut && val >= d.checkOut ? '' : d.checkOut }))
-                  if (val) setTimeout(() => checkOutMobileRef.current?.showPicker?.(), 50)
-                }}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-              />
-            </div>
-            <div>
-              <label className="block text-white/60 text-xs mb-1.5 tracking-wide">Check-out</label>
-              <input
-                ref={checkOutMobileRef}
-                type="date"
-                min={draft.checkIn || today}
-                value={draft.checkOut}
-                onChange={e => setDraft(d => ({ ...d, checkOut: e.target.value }))}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-              />
-            </div>
-            <button
-              onClick={applyFilters}
-              disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
-              className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-6 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Search size={15} />
-              {loadingAvail ? 'Searching...' : 'Check Availability'}
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Location tabs + filter toggle */}
       <div className="sticky top-[100px] z-30 bg-white border-b border-gray-100 shadow-sm">
@@ -223,14 +206,6 @@ function PropertiesContent() {
           ))}
 
           <div className="ml-auto flex-shrink-0 flex items-center gap-2">
-            {mobileHeaderHidden && (
-              <button
-                onClick={() => setShowMobileSearch(v => !v)}
-                className="sm:hidden flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:text-navy hover:border-navy transition-colors"
-              >
-                <Search size={15} />
-              </button>
-            )}
             {filtersActive && (
               <button
                 onClick={resetFilters}
@@ -265,32 +240,13 @@ function PropertiesContent() {
                   <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium flex items-center gap-1">
                     <CalendarDays size={13} /> Dates
                   </label>
-                  <div className="flex gap-2">
-                    <div className="flex-1">
-                      <p className="text-[10px] text-gray-400 mb-1">Check-in</p>
-                      <input
-                        type="date"
-                        min={today}
-                        value={draft.checkIn}
-                        onChange={e => {
-                          const val = e.target.value
-                          setDraft(d => ({ ...d, checkIn: val, checkOut: d.checkOut && val >= d.checkOut ? '' : d.checkOut }))
-                          if (val) setTimeout(() => checkOutFilterRef.current?.showPicker?.(), 50)
-                        }}
-                        className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs text-navy focus:outline-none focus:border-gold transition-colors"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[10px] text-gray-400 mb-1">Check-out</p>
-                      <input
-                        ref={checkOutFilterRef}
-                        type="date"
-                        min={draft.checkIn || today}
-                        value={draft.checkOut}
-                        onChange={e => setDraft(d => ({ ...d, checkOut: e.target.value }))}
-                        className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs text-navy focus:outline-none focus:border-gold transition-colors"
-                      />
-                    </div>
+                  <div className="border border-gray-200 rounded-xl p-3 text-xs text-navy bg-white">
+                    {draft.checkIn && draft.checkOut
+                      ? <span className="font-medium">{draft.checkIn} → {draft.checkOut}</span>
+                      : draft.checkIn
+                        ? <span>{draft.checkIn} → <span className="text-gray-400">pick check-out above</span></span>
+                        : <span className="text-gray-400">Use the calendar above to pick dates</span>
+                    }
                   </div>
                   {draft.checkIn && draft.checkOut && (
                     <p className="text-[10px] text-gold mt-1">Will check real availability on Search</p>
@@ -403,7 +359,7 @@ function PropertiesContent() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filtered.map(p => (
-              <PropertyCard key={p.slug} property={p} />
+              <PropertyCard key={p.slug} property={p} checkIn={filters.checkIn} checkOut={filters.checkOut} />
             ))}
           </div>
         )}
