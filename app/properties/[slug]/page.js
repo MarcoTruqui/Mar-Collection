@@ -13,7 +13,7 @@ import Calendar from '@/components/Calendar'
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'
 
-function GalleryLightbox({ images, startIndex, onClose }) {
+function GalleryLightbox({ images, startIndex, onClose, propertyName }) {
   const [current, setCurrent] = useState(startIndex)
   return (
     <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center" onClick={onClose}>
@@ -27,7 +27,7 @@ function GalleryLightbox({ images, startIndex, onClose }) {
         ‹
       </button>
       <div className="relative w-full max-w-4xl h-[80vh] mx-8" onClick={e => e.stopPropagation()}>
-        <Image src={images[current]} alt="" fill className="object-contain" sizes="90vw" />
+        <Image src={images[current]} alt={`${propertyName} — photo ${current + 1}`} fill className="object-contain" sizes="90vw" />
       </div>
       <button
         onClick={e => { e.stopPropagation(); setCurrent(i => (i + 1) % images.length) }}
@@ -133,6 +133,7 @@ export default function PropertyDetailPage({ params }) {
           images={property.images}
           startIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
+          propertyName={property.name}
         />
       )}
 

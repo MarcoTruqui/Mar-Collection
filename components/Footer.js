@@ -62,6 +62,8 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-gold transition-colors">{t.nav.home}</Link></li>
               <li><Link href="/properties" className="hover:text-gold transition-colors">{t.nav.properties}</Link></li>
               <li><Link href="/about" className="hover:text-gold transition-colors">{t.nav.about}</Link></li>
+              <li><Link href="/guides" className="hover:text-gold transition-colors">{t.footer.guides}</Link></li>
+              <li><Link href="/faq" className="hover:text-gold transition-colors">{t.footer.faq}</Link></li>
               <li><Link href="/contact" className="hover:text-gold transition-colors">{t.nav.contact}</Link></li>
             </ul>
           </div>
@@ -70,9 +72,10 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold text-sm tracking-widest mb-4">{t.footer.locations}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/properties?location=Punta+Mita" className="hover:text-gold transition-colors">{t.footer.puntaMita}</Link></li>
-              <li><Link href="/properties?location=Bucerías" className="hover:text-gold transition-colors">{t.footer.bucerias}</Link></li>
-              <li><Link href="/properties?location=La+Cruz+de+Huanacaxtle" className="hover:text-gold transition-colors">{t.footer.laCruz}</Link></li>
+              <li><Link href="/puerto-vallarta" className="hover:text-gold transition-colors">Puerto Vallarta Area</Link></li>
+              <li><Link href="/punta-mita" className="hover:text-gold transition-colors">{t.footer.puntaMita}</Link></li>
+              <li><Link href="/bucerias" className="hover:text-gold transition-colors">{t.footer.bucerias}</Link></li>
+              <li><Link href="/la-cruz-de-huanacaxtle" className="hover:text-gold transition-colors">{t.footer.laCruz}</Link></li>
             </ul>
           </div>
 

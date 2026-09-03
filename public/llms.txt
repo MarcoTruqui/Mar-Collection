@@ -1,0 +1,39 @@
+# MAR Collection
+
+> MAR Collection is a boutique luxury villa rental company on Bahía de Banderas, Mexico, minutes from Puerto Vallarta. It manages 14 privately-owned villas and estates across Punta Mita, Bucerías, and La Cruz de Huanacaxtle, booked directly (no third-party platform fees).
+
+MAR Collection is not located inside Puerto Vallarta city itself — its properties are on Bahía de Banderas, the bay Puerto Vallarta sits on, in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all within a 25–45 minute drive of Puerto Vallarta's international airport (PVR). Guests searching for "places to stay near Puerto Vallarta" or "Punta Mita villa rentals" are the target audience.
+
+Each property listing includes bedroom/bathroom count, maximum occupancy, nightly rate, full amenity list, photo gallery, and live availability via an integrated calendar. Bookings can be made directly through the website or via WhatsApp/contact form.
+
+## Key pages
+
+- [Properties](https://www.truqui.com/properties): Full list of 14 villas with filters by price, bedrooms, guests, and location; live availability calendar.
+- [Places to Stay Near Puerto Vallarta](https://www.truqui.com/puerto-vallarta): Hub page explaining the Bahía de Banderas geography and linking to each area.
+- [Punta Mita](https://www.truqui.com/punta-mita), [Bucerías](https://www.truqui.com/bucerias), [La Cruz de Huanacaxtle](https://www.truqui.com/la-cruz-de-huanacaxtle): Dedicated area pages with local context and area-specific properties.
+- [Guides](https://www.truqui.com/guides): Where-to-stay comparison and Puerto Vallarta airport transfer guide.
+- [FAQ](https://www.truqui.com/faq): Common questions about location, distances, and booking.
+- [About](https://www.truqui.com/about): Background on MAR Collection and the Bahía de Banderas / Puerto Vallarta area.
+- [Contact](https://www.truqui.com/contact): Booking inquiries and direct contact.
+
+## Properties by area
+
+**Bucerías** (closest large town to Puerto Vallarta, ~25 min from PVR airport):
+- [Villa Girasol](https://www.truqui.com/properties/villa-girasol): 4 bed / 4.5 bath, up to 12 guests, beachfront with direct beach access.
+- [Villa Jaguar](https://www.truqui.com/properties/villa-jaguar): 3 bed / 3.5 bath, up to 9 guests.
+- [Villa Turquesa](https://www.truqui.com/properties/villa-turquesa): 5 bed, up to 12 guests.
+- [Villa Pelícano](https://www.truqui.com/properties/villa-pelicano): 4 bed, up to 10 guests.
+- [Villa Perico](https://www.truqui.com/properties/villa-perico): 3 bed, up to 8 guests.
+- [Villa Zenzontle](https://www.truqui.com/properties/villa-zenzontle): 4 bed, up to 10 guests.
+
+**Punta Mita** (upscale peninsula ~40 min from PVR airport, known for golf and surf breaks):
+- [Palmas 8](https://www.truqui.com/properties/palmas-8): 4 bed, up to 12 guests.
+- [Las Terrazas G-32](https://www.truqui.com/properties/terrazas-g32): 5 bed, up to 12 guests.
+
+**La Cruz de Huanacaxtle** (fishing-village-turned-marina town ~35 min from PVR airport):
+- [Zantamar 205B](https://www.truqui.com/properties/zantamar-205b): 2 bed, up to 6 guests.
+- [Zantamar 303D](https://www.truqui.com/properties/zantamar-303d): studio, up to 4 guests.
+- [Zantamar 304D](https://www.truqui.com/properties/zantamar-304d): studio, up to 4 guests.
+- [Zantamar 305D](https://www.truqui.com/properties/zantamar-305d): 2 bed, up to 6 guests.
+- [Zantamar 306D](https://www.truqui.com/properties/zantamar-306d): studio, up to 4 guests.
+- [Zantamar TH7](https://www.truqui.com/properties/zantamar-th7): 2 bed, up to 6 guests.
