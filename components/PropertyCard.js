@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/LocaleLink'
 import { MapPin, Users, Bed, Bath, CalendarDays } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { getCurrentRate } from '@/lib/currentRate'

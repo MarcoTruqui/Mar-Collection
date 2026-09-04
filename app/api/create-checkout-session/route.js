@@ -17,9 +17,11 @@ export async function POST(request) {
       nightlyRate,
       total,
       guests,
+      lang,
     } = body
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const localePrefix = lang === 'es' ? '/es' : ''
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -45,8 +47,8 @@ export async function POST(request) {
         nights: String(nights),
         guests: String(guests),
       },
-      success_url: `${siteUrl}/booking-confirmed?property=${encodeURIComponent(propertyName)}&checkIn=${checkIn}&checkOut=${checkOut}&total=${total}&method=card`,
-      cancel_url: `${siteUrl}/properties/${slug}`,
+      success_url: `${siteUrl}${localePrefix}/booking-confirmed?property=${encodeURIComponent(propertyName)}&checkIn=${checkIn}&checkOut=${checkOut}&total=${total}&method=card`,
+      cancel_url: `${siteUrl}${localePrefix}/properties/${slug}`,
     })
 
     return NextResponse.json({ url: session.url })

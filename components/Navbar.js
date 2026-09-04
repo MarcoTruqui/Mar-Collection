@@ -1,7 +1,7 @@
 ﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
+import Link from '@/components/LocaleLink'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown } from 'lucide-react'
@@ -13,6 +13,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [exploreOpen, setExploreOpen] = useState(false)
   const pathname = usePathname()
+  const normalizedPath = pathname.replace(/^\/es(?=\/|$)/, '') || '/'
   const exploreRef = useRef(null)
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled || menuOpen || pathname !== '/'
+        scrolled || menuOpen || normalizedPath !== '/'
           ? 'bg-navy shadow-lg py-3'
           : 'bg-transparent py-5'
       }`}
@@ -80,7 +81,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               className={`text-sm tracking-wide transition-colors ${
-                pathname === link.href
+                normalizedPath === link.href
                   ? 'text-gold'
                   : 'text-white/80 hover:text-gold'
               }`}
@@ -94,7 +95,7 @@ export default function Navbar() {
             <button
               onClick={() => setExploreOpen(o => !o)}
               className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
-                exploreLinks.some(l => l.href === pathname)
+                exploreLinks.some(l => l.href === normalizedPath)
                   ? 'text-gold'
                   : 'text-white/80 hover:text-gold'
               }`}
@@ -111,7 +112,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setExploreOpen(false)}
                     className={`block px-4 py-2.5 text-sm transition-colors ${
-                      pathname === link.href
+                      normalizedPath === link.href
                         ? 'text-gold bg-gray-50'
                         : 'text-navy hover:bg-gray-50 hover:text-gold'
                     }`}
@@ -128,7 +129,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               className={`text-sm tracking-wide transition-colors ${
-                pathname === link.href
+                normalizedPath === link.href
                   ? 'text-gold'
                   : 'text-white/80 hover:text-gold'
               }`}
@@ -179,7 +180,7 @@ export default function Navbar() {
               href={link.href}
               onClick={() => setMenuOpen(false)}
               className={`text-base py-1 transition-colors ${
-                pathname === link.href ? 'text-gold' : 'text-white/80'
+                normalizedPath === link.href ? 'text-gold' : 'text-white/80'
               }`}
             >
               {link.label}
@@ -195,7 +196,7 @@ export default function Navbar() {
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   className={`text-base py-1 transition-colors ${
-                    pathname === link.href ? 'text-gold' : 'text-white/80'
+                    normalizedPath === link.href ? 'text-gold' : 'text-white/80'
                   }`}
                 >
                   {link.label}
@@ -211,7 +212,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 className={`text-base py-1 transition-colors ${
-                  pathname === link.href ? 'text-gold' : 'text-white/80'
+                  normalizedPath === link.href ? 'text-gold' : 'text-white/80'
                 }`}
               >
                 {link.label}

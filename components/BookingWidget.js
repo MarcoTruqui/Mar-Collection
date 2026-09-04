@@ -96,6 +96,7 @@ export default function BookingWidget({ property }) {
           serviceFee:  stay.serviceFee,
           total,
           guests,
+          lang,
         }),
       })
       const data = await res.json()
@@ -127,7 +128,7 @@ export default function BookingWidget({ property }) {
 
   function onPayPalApprove(data, actions) {
     return actions.order.capture().then(() => {
-      window.location.href = `/booking-confirmed?property=${encodeURIComponent(property.name)}&checkIn=${checkIn}&checkOut=${checkOut}&total=${total}&method=paypal`
+      window.location.href = `${lang === 'es' ? '/es' : ''}/booking-confirmed?property=${encodeURIComponent(property.name)}&checkIn=${checkIn}&checkOut=${checkOut}&total=${total}&method=paypal`
     })
   }
 

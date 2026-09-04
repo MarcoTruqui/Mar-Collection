@@ -5,7 +5,7 @@ export default function robots() {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/booking-confirmed'],
+      disallow: ['/api/', '/booking-confirmed', '/es/booking-confirmed'],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   }
