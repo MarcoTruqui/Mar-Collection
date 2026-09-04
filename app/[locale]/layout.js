@@ -34,6 +34,9 @@ export function generateMetadata({ params }) {
       icon: '/images/logo.svg',
       shortcut: '/images/logo.svg',
     },
+    verification: {
+      google: '5JY5ELASiwjqmWfNLREwacmWoDX0pFgBjD5NUP4aS-4',
+    },
     openGraph: {
       title: c.title,
       description: c.description,
