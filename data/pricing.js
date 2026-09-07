@@ -184,6 +184,14 @@ const pricing = {
     serviceFee: 50,
   },
 
+  'zantamar-403d': {
+    low:  125,
+    high: 155,
+    peak: 220,
+    cleaningFee: 0,
+    serviceFee: 0,
+  },
+
   'zantamar-th7': {
     low:  180,
     high: 220,

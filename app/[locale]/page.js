@@ -254,7 +254,7 @@ export default function HomePage() {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-6">
             {[
-              { icon: Award, value: '14', label: 'Properties' },
+              { icon: Award, value: '15', label: 'Properties' },
               { icon: Map, value: '3', label: 'Prime Locations' },
               { icon: Star, value: '100+', label: '5-Star Reviews' },
               { icon: Heart, value: '12', label: 'Max Guests / Villa' },

@@ -362,6 +362,38 @@ Compacto, elegante y completo, este studio es perfecto para una pareja o familia
   },
 
   {
+    slug: 'zantamar-403d',
+    name: 'Zantamar 403D',
+    location: 'La Cruz de Huanacaxtle',
+    bedrooms: 0,
+    bathrooms: 2,
+    maxGuests: 4,
+    studio: true,
+    sleeping: '1 king bed · bunk bed',
+    nightlyRate: 125,
+    cleaningFee: 0,
+    serviceFee: 0,
+    shortDescription: 'Ocean-view studio at Zantamar in La Cruz de Huanacaxtle — fourth floor, king bed, bunk bed, 2 baths, up to 4 guests. Resort pool included.',
+    shortDescriptionEs: 'Studio con vista al océano en Zantamar, La Cruz de Huanacaxtle — cuarto piso, cama king, literas, 2 baños, hasta 4 huéspedes. Alberca de resort incluida.',
+    description: `Zantamar 403D is an ocean-view studio on the fourth floor of the prestigious Zantamar complex in La Cruz de Huanacaxtle — one floor up from its sister units, with the extra elevation bringing an even wider sweep of Banderas Bay from its private terrace. The studio features a king bed, a bunk bed, and two full bathrooms in an efficient, stylish layout that makes clever use of every square foot.
+
+Access to the Zantamar complex's resort-quality pool and lush grounds is included, making every day feel like a luxury stay at a boutique Pacific hotel.
+
+La Cruz's marina, Friday organic market, Philo's live music, and world-class whale watching are all a short walk away.`,
+    descriptionEs: `Zantamar 403D es un studio con vista al océano en el cuarto piso del prestigioso complejo Zantamar en La Cruz de Huanacaxtle — un piso arriba de sus unidades hermanas, con la altura adicional que ofrece una vista aún más amplia de la Bahía de Banderas desde su terraza privada. El studio cuenta con cama king, literas y dos baños completos en una distribución eficiente y elegante que aprovecha cada metro cuadrado.
+
+El acceso a la alberca de calidad resort y los jardines del complejo Zantamar está incluido, haciendo que cada día se sienta como una estadía de lujo en un hotel boutique frente al Pacífico.
+
+La marina de La Cruz, el mercado orgánico del viernes, la música en vivo de Philo's y el avistamiento de ballenas están a pocos pasos.`,
+    amenities: ['Ocean View', 'Private Terrace', 'Complex Pool', 'King Bed + Bunk Bed', '2 Bathrooms', 'Air Conditioning', 'High-Speed WiFi', 'Fully Equipped Kitchen', 'Marina (walking distance)', 'Smart TV / Streaming', 'Washer & Dryer', 'Secure Parking', 'Daily Housekeeping'],
+    amenitiesEs: ['Vista al océano', 'Terraza privada', 'Alberca del complejo', 'Cama king + literas', '2 baños', 'Aire acondicionado', 'WiFi de alta velocidad', 'Cocina totalmente equipada', 'Marina (a pie)', 'Smart TV / Streaming', 'Lavadora y secadora', 'Estacionamiento seguro', 'Limpieza diaria'],
+    // Curated order (not numeric) — leads with the ocean-view room shots and the
+    // infinity pool, then fills in remaining room angles, ending with gym/lounge.
+    images: [1, 11, 4, 2, 16, 19, 9, 8, 3, 12, 10, 13, 7, 6, 15, 5, 18, 21, 17, 14, 20, 22]
+      .map(n => `https://res.cloudinary.com/dwutnv1bb/image/upload/zantamar403_${n}.jpg`),
+  },
+
+  {
     slug: 'zantamar-th7',
     name: 'Zantamar TH7',
     location: 'La Cruz de Huanacaxtle',
