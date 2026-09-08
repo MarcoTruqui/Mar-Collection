@@ -121,7 +121,11 @@ function PropertiesContent() {
     .filter(p => p.maxGuests >= filters.minGuests)
     .filter(p => !filters.checkIn || !filters.checkOut || !availability ||
       isAvailable(p.slug, filters.checkIn, filters.checkOut, availability))
-    .sort((a, b) => b.nightlyRate - a.nightlyRate)
+    .sort((a, b) => {
+      if (a.isNew && !b.isNew) return -1
+      if (!a.isNew && b.isNew) return 1
+      return b.nightlyRate - a.nightlyRate
+    })
 
   const dateFilterActive = filters.checkIn && filters.checkOut && availability
 

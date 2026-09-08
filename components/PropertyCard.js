@@ -35,6 +35,11 @@ export default function PropertyCard({ property, checkIn, checkOut }) {
           <MapPin size={11} />
           {property.location}
         </span>
+        {property.isNew && (
+          <span className="absolute top-3 right-3 bg-gold text-navy text-xs font-bold px-3 py-1 rounded-full tracking-wide shadow-sm">
+            {lang === 'es' ? 'NUEVO' : 'NEW'}
+          </span>
+        )}
       </div>
 
       {/* Body */}

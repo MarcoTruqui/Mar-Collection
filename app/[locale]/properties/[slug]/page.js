@@ -149,6 +149,11 @@ export default function PropertyDetailPage({ params }) {
                   <span className="flex items-center gap-1 text-gold text-sm mb-2">
                     <MapPin size={14} />
                     {property.location}
+                    {property.isNew && (
+                      <span className="ml-2 bg-gold text-navy text-xs font-bold px-2.5 py-0.5 rounded-full tracking-wide">
+                        {lang === 'es' ? 'NUEVO' : 'NEW'}
+                      </span>
+                    )}
                   </span>
                   <h1 className="font-serif text-4xl text-navy">{property.name}</h1>
                 </div>

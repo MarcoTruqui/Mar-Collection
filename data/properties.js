@@ -365,6 +365,7 @@ Compacto, elegante y completo, este studio es perfecto para una pareja o familia
     slug: 'zantamar-403d',
     name: 'Zantamar 403D',
     location: 'La Cruz de Huanacaxtle',
+    isNew: true,
     bedrooms: 0,
     bathrooms: 2,
     maxGuests: 4,
