@@ -1,14 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { loadStripe } from '@stripe/stripe-js'
-import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { useLanguage } from '@/lib/LanguageContext'
 import { Minus, Plus, Tag, AlertCircle, CalendarDays } from 'lucide-react'
 import { calculateStayPrice } from '@/lib/pricingEngine'
 import Calendar from '@/components/Calendar'
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
 
 const SEASON_LABELS = {
   peak: { en: 'Peak Season', es: 'Temporada Peak' },
@@ -23,7 +19,7 @@ function fmt(dateStr) {
 }
 
 export default function BookingWidget({ property }) {
-  const { t, lang, formatPrice } = useLanguage()
+  const { t, lang, formatPrice, rates } = useLanguage()
   const [checkIn, setCheckIn]           = useState('')
   const [checkOut, setCheckOut]         = useState('')
   const [guests, setGuests]             = useState(1)
@@ -59,12 +55,12 @@ export default function BookingWidget({ property }) {
 
   const stay = (checkIn && checkOut)
     ? calculateStayPrice(
+        rates,
         property.slug,
         checkIn,
         checkOut,
         property.nightlyRate,
         property.cleaningFee,
-        property.serviceFee,
       )
     : null
 
@@ -78,23 +74,21 @@ export default function BookingWidget({ property }) {
     return true
   }
 
-  async function handleStripe() {
+  // Starts the booking: creates a locked-price contract link via the Apps
+  // Script website API and sends the guest there to fill in their info, review
+  // the contract, and sign. Payment happens only after that, on a separate
+  // page — see /booking-payment.
+  async function handleBookNow() {
     if (!validate()) return
     setLoading(true)
     try {
-      const res = await fetch('/api/create-checkout-session', {
+      const res = await fetch('/api/create-booking-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          propertyName: property.name,
           slug: property.slug,
           checkIn,
           checkOut,
-          nights,
-          nightlyRate: stay.averageRate,
-          cleaningFee: stay.cleaningFee,
-          serviceFee:  stay.serviceFee,
-          total,
           guests,
           lang,
         }),
@@ -103,33 +97,13 @@ export default function BookingWidget({ property }) {
       if (data.url) {
         window.location.href = data.url
       } else {
-        setError('Payment initialization failed. Please try again.')
+        setError(data.error || 'Could not start booking. Please try again.')
       }
     } catch {
-      setError('Payment initialization failed. Please try again.')
+      setError('Could not start booking. Please try again.')
     } finally {
       setLoading(false)
     }
-  }
-
-  const paypalOptions = {
-    clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'test',
-    currency: 'USD',
-  }
-
-  function createPayPalOrder(data, actions) {
-    return actions.order.create({
-      purchase_units: [{
-        description: `${property.name} — ${checkIn} to ${checkOut}`,
-        amount: { currency_code: 'USD', value: total.toFixed(2) },
-      }],
-    })
-  }
-
-  function onPayPalApprove(data, actions) {
-    return actions.order.capture().then(() => {
-      window.location.href = `${lang === 'es' ? '/es' : ''}/booking-confirmed?property=${encodeURIComponent(property.name)}&checkIn=${checkIn}&checkOut=${checkOut}&total=${total}&method=paypal`
-    })
   }
 
   return (
@@ -244,6 +218,20 @@ export default function BookingWidget({ property }) {
             </div>
           )}
 
+          {stay.cleaningFee > 0 && (
+            <div className="flex justify-between text-gray-600">
+              <span>{t.booking.cleaningFee}</span>
+              <span>{formatPrice(stay.cleaningFee)}</span>
+            </div>
+          )}
+
+          {stay.serviceFee > 0 && (
+            <div className="flex justify-between text-gray-600">
+              <span>{t.booking.serviceFee}</span>
+              <span>{formatPrice(stay.serviceFee)}</span>
+            </div>
+          )}
+
           <div className="flex justify-between font-bold text-navy pt-2 border-t border-gray-200">
             <span>{t.booking.total}</span>
             <span>{formatPrice(total)}</span>
@@ -263,39 +251,15 @@ export default function BookingWidget({ property }) {
         </div>
       )}
 
-      {/* Stripe button */}
-      <div>
-        <button
-          onClick={handleStripe}
-          disabled={loading}
-          className="w-full bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy/90 transition-colors text-sm disabled:opacity-50"
-        >
-          {loading ? t.booking.processing : t.booking.payStripe}
-        </button>
-        <p className="text-center text-xs text-gold font-medium mt-1 tracking-wide">Coming Soon</p>
-      </div>
-
-      {/* PayPal */}
-      <div>
-        {nights >= 2 && total > 0 ? (
-          <PayPalScriptProvider options={paypalOptions}>
-            <PayPalButtons
-              style={{ layout: 'horizontal', color: 'gold', shape: 'rect', label: 'pay', height: 44 }}
-              createOrder={createPayPalOrder}
-              onApprove={onPayPalApprove}
-              onError={() => setError('PayPal payment failed. Please try again.')}
-            />
-          </PayPalScriptProvider>
-        ) : (
-          <button
-            onClick={validate}
-            className="w-full border border-gray-200 text-gray-400 font-semibold py-3 rounded-xl text-sm cursor-not-allowed"
-          >
-            {t.booking.payPaypal}
-          </button>
-        )}
-        <p className="text-center text-xs text-gold font-medium mt-1 tracking-wide">Coming Soon</p>
-      </div>
+      {/* Book Now — starts the contract flow. Payment method (Stripe/PayPal) is
+          chosen after the contract is signed, on /booking-payment. */}
+      <button
+        onClick={handleBookNow}
+        disabled={loading}
+        className="w-full bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy/90 transition-colors text-sm disabled:opacity-50"
+      >
+        {loading ? t.booking.startingBooking : t.booking.bookNow}
+      </button>
     </div>
   )
 }

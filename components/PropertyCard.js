@@ -8,11 +8,11 @@ import { getCurrentRate } from '@/lib/currentRate'
 import { calculateStayPrice } from '@/lib/pricingEngine'
 
 export default function PropertyCard({ property, checkIn, checkOut }) {
-  const { t, lang, formatPrice } = useLanguage()
-  const displayRate = getCurrentRate(property.slug, property.nightlyRate)
+  const { t, lang, formatPrice, rates } = useLanguage()
+  const displayRate = getCurrentRate(rates, property.slug, property.nightlyRate)
 
   const stay = (checkIn && checkOut)
-    ? calculateStayPrice(property.slug, checkIn, checkOut, property.nightlyRate, property.cleaningFee, property.serviceFee)
+    ? calculateStayPrice(rates, property.slug, checkIn, checkOut, property.nightlyRate, property.cleaningFee)
     : null
 
   const href = checkIn && checkOut

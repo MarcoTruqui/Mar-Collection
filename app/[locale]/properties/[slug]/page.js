@@ -44,7 +44,7 @@ function GalleryLightbox({ images, startIndex, onClose, propertyName }) {
 
 export default function PropertyDetailPage({ params }) {
   const { slug } = params
-  const { t, lang, formatPrice } = useLanguage()
+  const { t, lang, formatPrice, rates } = useLanguage()
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const [bookedRanges, setBookedRanges] = useState([])
 
@@ -58,7 +58,7 @@ export default function PropertyDetailPage({ params }) {
   const property = properties.find(p => p.slug === slug)
   if (!property) notFound()
 
-  const displayRate = getCurrentRate(property.slug, property.nightlyRate)
+  const displayRate = getCurrentRate(rates, property.slug, property.nightlyRate)
 
   const whatsappMsg = `Hi! I'm interested in ${property.name} (${property.location}). Could you help me check availability and pricing?`
 

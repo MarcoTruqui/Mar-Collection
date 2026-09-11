@@ -55,7 +55,7 @@ function ConfirmedContent() {
             {total && (
               <div className="flex justify-between font-semibold pt-2 border-t border-gray-200">
                 <span className="text-gray-600">Total Paid</span>
-                <span className="text-navy">${Number(total).toLocaleString()} USD</span>
+                <span className="text-navy">${Number(total).toLocaleString()} MXN</span>
               </div>
             )}
             <div className="flex justify-between text-xs pt-1">

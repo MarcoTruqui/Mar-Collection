@@ -49,6 +49,17 @@ export const DISCOUNTS = {
   weekly: { minNights: 7, percent: 10, label: '7-night stay discount' },
 }
 
+// ── SERVICE FEE ───────────────────────────────────────────────────────────────
+// Flat percentage applied to every booking, every property, every season —
+// replaces the old per-property flat-dollar service fee.
+export const SERVICE_FEE_PERCENT = 5
+
+// ── EXCHANGE RATE ─────────────────────────────────────────────────────────────
+// All prices above are set in USD. Every payment is actually charged in MXN
+// (avoids the ~4% foreign-currency fee on USD charges), converted using this
+// rate. Update by hand as the peso moves — not a live rate.
+export const MXN_RATE = 17.5
+
 // ── PROMOS ───────────────────────────────────────────────────────────────────
 // Set active: true to show a promo banner on the booking widget.
 // seasonId: 'low' | 'high' | 'peak' — which season this promo applies to.
