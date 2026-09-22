@@ -20,7 +20,7 @@ export async function POST(request) {
     const { stay, mxnRate } = await resolveBooking({ slug, checkIn, checkOut, guests })
     const totalMxn = Math.round(stay.total * mxnRate)
 
-    const { link } = await createBookingLink({
+    const { token } = await createBookingLink({
       villa,
       price: totalMxn,
       currency: 'MXN',
@@ -30,7 +30,12 @@ export async function POST(request) {
       language: lang === 'es' ? 'es' : 'en',
     })
 
-    return NextResponse.json({ url: link })
+    // The contract itself is filled out and signed on our own site now (not
+    // Apps Script's page) — see /booking-contract. Apps Script's own link is
+    // ignored; we only need the token it generated.
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const localePrefix = lang === 'es' ? '/es' : ''
+    return NextResponse.json({ url: `${siteUrl}${localePrefix}/booking-contract?token=${token}` })
   } catch (error) {
     if (error instanceof BookingValidationError) {
       return NextResponse.json({ error: error.message }, { status: 400 })
