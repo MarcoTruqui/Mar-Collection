@@ -13,14 +13,14 @@ export async function POST(request) {
     }
 
     await resend.emails.send({
-      from: 'MAR Collection <contact@truqui.com>',
+      from: 'TC Collection <contact@truqui.com>',
       to: TO_EMAIL,
       replyTo: email,
       subject: `New Inquiry from ${name}${property ? ` — ${property}` : ''}`,
       html: `
         <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #0a1628;">
           <div style="background: #0a1628; padding: 32px; text-align: center;">
-            <h1 style="color: #c9a84c; font-size: 22px; margin: 0; letter-spacing: 2px;">MAR COLLECTION</h1>
+            <h1 style="color: #c9a84c; font-size: 22px; margin: 0; letter-spacing: 2px;">TC COLLECTION</h1>
             <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 8px 0 0; letter-spacing: 4px;">NEW INQUIRY</p>
           </div>
 

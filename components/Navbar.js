@@ -66,8 +66,8 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center group">
           <Image
-            src="/images/logo.svg"
-            alt="MAR Collection"
+            src="/images/tc-logo.svg"
+            alt="TC Collection"
             width={140}
             height={76}
             className="object-contain group-hover:opacity-90 transition-opacity"

@@ -75,8 +75,8 @@ export default function IntroLoader() {
         }}
       >
         <Image
-          src="/images/mar-logo.png"
-          alt="MAR Collection"
+          src="/images/tc-logo.svg"
+          alt="TC Collection"
           width={480}
           height={360}
           priority
