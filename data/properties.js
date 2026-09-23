@@ -55,7 +55,10 @@ Cada una de las tres suites es un refugio propio, con ropa de cama premium, bañ
 Villa Jaguar está a minutos del famoso malecón de Bucerías, el paseo de arte del sábado y una escena gastronómica que atrae a gourmets de todo México.`,
     amenities: ['Private Pool', 'Lush Tropical Garden', 'Air Conditioning', 'High-Speed WiFi', 'Fully Equipped Kitchen', 'Outdoor Terrace & Dining', 'Beach (2 min walk)', 'Smart TV / Streaming', 'Washer & Dryer', 'Covered Parking', 'Daily Housekeeping', 'Concierge Service', 'BBQ Grill'],
     amenitiesEs: ['Alberca privada', 'Jardín tropical exuberante', 'Aire acondicionado', 'WiFi de alta velocidad', 'Cocina totalmente equipada', 'Terraza y comedor exterior', 'Playa (2 min caminando)', 'Smart TV / Streaming', 'Lavadora y secadora', 'Estacionamiento techado', 'Limpieza diaria', 'Servicio de concierge', 'Asador'],
-    images: Array.from({length: 37}, (_, i) => `https://res.cloudinary.com/dwutnv1bb/image/upload/jaguar_${String(i+1).padStart(2,'0')}.jpg`),
+    // Curated order (not numeric) — cover photo stays first, then 20-33, then
+    // the untouched middle (8, 11-19, 34-37), then 9-10, then 2-7 at the end.
+    images: [1, 20,21,22,23,24,25,26,27,28,29,30,31,32,33, 8, 11,12,13,14,15,16,17,18,19, 34,35,36,37, 9,10, 2,3,4,5,6,7]
+      .map(n => `https://res.cloudinary.com/dwutnv1bb/image/upload/jaguar_${String(n).padStart(2,'0')}.jpg`),
   },
 
   {
@@ -89,31 +92,30 @@ Ideal para bodas, reuniones familiares, cumpleaños especiales y cualquier ocasi
     slug: 'villa-pelicano',
     name: 'Villa Pelícano',
     location: 'Bucerías',
-    bedrooms: 4,
-    bathrooms: 4,
-    maxGuests: 10,
+    bedrooms: 3,
+    bathrooms: 3.5,
+    maxGuests: 8,
     nightlyRate: 500,
     cleaningFee: 175,
     serviceFee: 90,
-    shortDescription: 'Beautiful 4-bedroom villa in Bucerías with a private pool, tropical gardens, and a short walk to the beach and town center.',
-    shortDescriptionEs: 'Hermosa villa de 4 habitaciones en Bucerías con alberca privada, jardines tropicales y a pocos pasos de la playa y el centro del pueblo.',
-    description: `Villa Pelícano is a stunning private retreat in the heart of Bucerías — a four-bedroom villa where every detail has been curated for comfort, style, and the unhurried pace of the Mexican Pacific coast. Named for the magnificent pelicans that soar above the Nayarit coastline, this property captures the spirit of the sea in every room.
+    shortDescription: 'Beautiful 3-bedroom villa in Bucerías with a private pool, tropical gardens, and a short walk to the beach and town center.',
+    shortDescriptionEs: 'Hermosa villa de 3 habitaciones en Bucerías con alberca privada, jardines tropicales y a pocos pasos de la playa y el centro del pueblo.',
+    description: `Villa Pelícano is a stunning private retreat in the heart of Bucerías — a three-bedroom villa where every detail has been curated for comfort, style, and the unhurried pace of the Mexican Pacific coast. Named for the magnificent pelicans that soar above the Nayarit coastline, this property captures the spirit of the sea in every room.
 
 A private pool sits at the center of lush tropical gardens, creating a serene sanctuary that draws you outside from the moment you wake. The interiors blend warm Mexican craftsmanship with modern comfort — generous living spaces, a fully equipped kitchen, and bedrooms designed for genuine rest.
 
 Bucerías' vibrant malecón, Saturday art walk, and celebrated seafood scene are a short walk away, making Villa Pelícano the ideal base for those who want the best of authentic Nayarit living.`,
-    descriptionEs: `Villa Pelícano es un impresionante refugio privado en el corazón de Bucerías — una villa de cuatro habitaciones donde cada detalle ha sido cuidadosamente seleccionado para la comodidad, el estilo y el ritmo pausado de la costa del Pacífico mexicano. Su nombre evoca los magníficos pelícanos que surcan los cielos de Nayarit.
+    descriptionEs: `Villa Pelícano es un impresionante refugio privado en el corazón de Bucerías — una villa de tres habitaciones donde cada detalle ha sido cuidadosamente seleccionado para la comodidad, el estilo y el ritmo pausado de la costa del Pacífico mexicano. Su nombre evoca los magníficos pelícanos que surcan los cielos de Nayarit.
 
 Una alberca privada ocupa el centro de exuberantes jardines tropicales, creando un santuario sereno que te invita a salir desde el momento en que despiertas. Los interiores combinan la artesanía mexicana con comodidades modernas — amplias salas de estar, cocina totalmente equipada y habitaciones diseñadas para el descanso genuino.
 
 El malecón vibrante de Bucerías, el paseo de arte del sábado y la celebrada escena de mariscos están a pocos pasos, haciendo de Villa Pelícano la base ideal para quienes buscan lo mejor de la vida auténtica en Nayarit.`,
     amenities: ['Private Pool', 'Tropical Gardens', 'Air Conditioning', 'High-Speed WiFi', 'Fully Equipped Kitchen', 'Outdoor Dining & Terrace', 'Beach (walking distance)', 'Smart TV / Streaming', 'Washer & Dryer', 'Covered Parking', 'Daily Housekeeping', 'BBQ Grill', 'Concierge Service'],
     amenitiesEs: ['Alberca privada', 'Jardines tropicales', 'Aire acondicionado', 'WiFi de alta velocidad', 'Cocina totalmente equipada', 'Comedor y terraza exterior', 'Playa (a pie)', 'Smart TV / Streaming', 'Lavadora y secadora', 'Estacionamiento techado', 'Limpieza diaria', 'Asador', 'Servicio de concierge'],
-    images: [
-      'https://res.cloudinary.com/dwutnv1bb/image/upload/pelicano-01.jpg',
-      'https://res.cloudinary.com/dwutnv1bb/image/upload/pelicano-02.jpg',
-      ...Array.from({length: 42}, (_, i) => `https://res.cloudinary.com/dwutnv1bb/image/upload/pelicano-${String(i+4).padStart(2,'0')}.jpg`),
-    ],
+    // Curated order (not numeric, hand-tweaked in several passes) — there's no
+    // pelicano-03.jpg.
+    images: [1,19,20,21,29,30,31,4,5,6,7,8,9,10,11,12,13,14,24,25,26,15,16,17,22,23,27,28,32,33,34,35,36,37,38,39,40,18,41,42,43,44,45,2]
+      .map(n => `https://res.cloudinary.com/dwutnv1bb/image/upload/pelicano-${String(n).padStart(2,'0')}.jpg`),
   },
 
   {
