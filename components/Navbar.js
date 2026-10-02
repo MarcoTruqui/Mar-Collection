@@ -10,17 +10,36 @@ import { useLanguage } from '@/lib/LanguageContext'
 export default function Navbar() {
   const { t, lang, toggleLang, currency, toggleCurrency } = useLanguage()
   const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [exploreOpen, setExploreOpen] = useState(false)
   const pathname = usePathname()
   const normalizedPath = pathname.replace(/^\/es(?=\/|$)/, '') || '/'
   const exploreRef = useRef(null)
+  const lastScrollY = useRef(0)
 
+  // Mobile-only (see md:translate-y-0 below): hides the fixed header when
+  // scrolling down past the top, so it stops covering buttons further down
+  // the page, and brings it back on any scroll up or near the top.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
+    function onScroll() {
+      const y = window.scrollY
+      setScrolled(y > 20)
+      if (y < 80) {
+        setHidden(false)
+      } else {
+        setHidden(y > lastScrollY.current)
+      }
+      lastScrollY.current = y
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Never stay hidden while the mobile menu is open.
+  useEffect(() => {
+    if (menuOpen) setHidden(false)
+  }, [menuOpen])
 
   useEffect(() => {
     function handleClick(e) {
@@ -60,7 +79,7 @@ export default function Navbar() {
         scrolled || menuOpen || normalizedPath !== '/'
           ? 'bg-navy shadow-lg py-3'
           : 'bg-transparent py-5'
-      }`}
+      } ${hidden ? '-translate-y-full' : 'translate-y-0'} md:translate-y-0`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
