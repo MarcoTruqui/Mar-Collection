@@ -2,20 +2,21 @@ import Link from '@/components/LocaleLink'
 import Image from 'next/image'
 import properties from '@/data/properties'
 import PropertyCard from '@/components/PropertyCard'
+import { BRAND_NAME } from '@/lib/brand'
 
 const STRINGS = {
   en: {
     availableNow: 'Available Now',
     villasAndProperties: 'Villas & Properties',
     readyTitle: 'Ready to Book Your Stay?',
-    readyBody: 'Browse live availability across all 15 MAR Collection villas and book direct — no third-party platform fees.',
+    readyBody: `Browse live availability across all 15 ${BRAND_NAME} villas and book direct — no third-party platform fees.`,
     viewAll: 'View All Properties',
   },
   es: {
     availableNow: 'Disponible Ahora',
     villasAndProperties: 'Villas y Propiedades',
     readyTitle: '¿Listo para Reservar tu Estadía?',
-    readyBody: 'Consulta disponibilidad en tiempo real de las 15 villas de MAR Collection y reserva directo — sin comisiones de plataformas externas.',
+    readyBody: `Consulta disponibilidad en tiempo real de las 15 villas de ${BRAND_NAME} y reserva directo — sin comisiones de plataformas externas.`,
     viewAll: 'Ver Todas las Propiedades',
   },
 }

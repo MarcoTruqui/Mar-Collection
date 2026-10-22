@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
+import { BRAND_NAME } from '@/lib/brand'
 
 export default function Navbar() {
   const { t, lang, toggleLang, currency, toggleCurrency } = useLanguage()
@@ -86,7 +87,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center group">
           <Image
             src="/images/tc-logo.svg"
-            alt="TC Collection"
+            alt={BRAND_NAME}
             width={140}
             height={76}
             className="object-contain group-hover:opacity-90 transition-opacity"

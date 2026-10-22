@@ -2,6 +2,7 @@ import AreaPageLayout, { Section } from '@/components/AreaPageLayout'
 import { breadcrumbJsonLd, faqJsonLd } from '@/lib/structuredData'
 import { buildMetadata } from '@/lib/seo'
 import Link from '@/components/LocaleLink'
+import { BRAND_NAME } from '@/lib/brand'
 
 const copy = {
   en: {
@@ -12,14 +13,14 @@ const copy = {
     title: 'Bucerías Villa Rentals — Beachfront Homes Near Puerto Vallarta',
     subtitle: 'The closest Bahía de Banderas town to Puerto Vallarta — cobblestone streets, art galleries, and villas that open straight onto the sand.',
     fitTitle: 'Where Bucerías Fits on Bahía de Banderas',
-    fitBody: "Bucerías sits on Bahía de Banderas immediately north of Puerto Vallarta, just across the Ameca River that marks the border between the states of Jalisco and Nayarit. It's the nearest of the three Riviera Nayarit towns where MAR Collection operates to Puerto Vallarta International Airport (PVR) — about 20-25 minutes by car — which makes it a popular choice for travelers who want easy airport access without staying inside the city itself.",
+    fitBody: `Bucerías sits on Bahía de Banderas immediately north of Puerto Vallarta, just across the Ameca River that marks the border between the states of Jalisco and Nayarit. It's the nearest of the three Riviera Nayarit towns where ${BRAND_NAME} operates to Puerto Vallarta International Airport (PVR) — about 20-25 minutes by car — which makes it a popular choice for travelers who want easy airport access without staying inside the city itself.`,
     knownTitle: 'What Bucerías Is Known For',
     knownBody: "Bucerías has kept the character of a real Mexican beach town while building a reputation for its arts scene — galleries and studios line several blocks of the town center, alongside long-running seafood restaurants and a beach that stretches for miles along the bay. It's quieter and more local-feeling than Puerto Vallarta's hotel zone, but close enough to reach it for a night out or a day of shopping.",
     faqTitle: 'Frequently Asked Questions',
     faqs: [
       { question: 'How far is Bucerías from Puerto Vallarta?', answer: 'Bucerías is about 20-25 minutes by car from Puerto Vallarta International Airport (PVR) and roughly the same from downtown Puerto Vallarta, just across the Ameca River in the state of Nayarit.' },
       { question: 'Is Bucerías walkable?', answer: 'Yes. Bucerías has a compact, walkable town center with cobblestone streets, art galleries, and seafood restaurants, all within a short walk of the beach.' },
-      { question: 'Do I need a car to stay in Bucerías?', answer: 'Not necessarily. Many MAR Collection villas in Bucerías are within walking distance of restaurants and the beach, though a rental car or taxi is useful for day trips to Puerto Vallarta, Punta Mita, or La Cruz de Huanacaxtle.' },
+      { question: 'Do I need a car to stay in Bucerías?', answer: `Not necessarily. Many ${BRAND_NAME} villas in Bucerías are within walking distance of restaurants and the beach, though a rental car or taxi is useful for day trips to Puerto Vallarta, Punta Mita, or La Cruz de Huanacaxtle.` },
     ],
     footerPre: 'Comparing areas? See our guide to',
     footerGuideLink: 'where to stay near Puerto Vallarta',
@@ -35,14 +36,14 @@ const copy = {
     title: 'Renta de Villas en Bucerías — Casas Frente al Mar Cerca de Puerto Vallarta',
     subtitle: 'El pueblo de la Bahía de Banderas más cercano a Puerto Vallarta — calles empedradas, galerías de arte y villas que dan directo a la arena.',
     fitTitle: 'Dónde Está Bucerías en la Bahía de Banderas',
-    fitBody: 'Bucerías se ubica en la Bahía de Banderas justo al norte de Puerto Vallarta, cruzando el Río Ameca que marca el límite entre los estados de Jalisco y Nayarit. Es el más cercano de los tres pueblos de la Riviera Nayarit donde opera MAR Collection al Aeropuerto Internacional de Puerto Vallarta (PVR) — unos 20-25 minutos en auto — lo que lo convierte en una opción popular para quienes buscan fácil acceso al aeropuerto sin hospedarse dentro de la ciudad.',
+    fitBody: `Bucerías se ubica en la Bahía de Banderas justo al norte de Puerto Vallarta, cruzando el Río Ameca que marca el límite entre los estados de Jalisco y Nayarit. Es el más cercano de los tres pueblos de la Riviera Nayarit donde opera ${BRAND_NAME} al Aeropuerto Internacional de Puerto Vallarta (PVR) — unos 20-25 minutos en auto — lo que lo convierte en una opción popular para quienes buscan fácil acceso al aeropuerto sin hospedarse dentro de la ciudad.`,
     knownTitle: 'Por Qué Es Conocido Bucerías',
     knownBody: 'Bucerías ha conservado el carácter de un verdadero pueblo costero mexicano mientras construye una reputación por su escena artística — galerías y estudios ocupan varias cuadras del centro, junto con restaurantes de mariscos de larga tradición y una playa que se extiende por kilómetros a lo largo de la bahía. Es más tranquilo y de ambiente más local que la zona hotelera de Puerto Vallarta, pero lo suficientemente cerca para llegar en una noche de salida o un día de compras.',
     faqTitle: 'Preguntas Frecuentes',
     faqs: [
       { question: '¿Qué tan lejos está Bucerías de Puerto Vallarta?', answer: 'Bucerías está a unos 20-25 minutos en auto del Aeropuerto Internacional de Puerto Vallarta (PVR) y aproximadamente lo mismo del centro de Puerto Vallarta, cruzando el Río Ameca en el estado de Nayarit.' },
       { question: '¿Se puede caminar en Bucerías?', answer: 'Sí. Bucerías tiene un centro compacto y caminable con calles empedradas, galerías de arte y restaurantes de mariscos, todo a poca distancia de la playa.' },
-      { question: '¿Necesito auto para hospedarme en Bucerías?', answer: 'No necesariamente. Muchas villas de MAR Collection en Bucerías están a poca distancia a pie de restaurantes y la playa, aunque un auto rentado o taxi es útil para excursiones de un día a Puerto Vallarta, Punta Mita o La Cruz de Huanacaxtle.' },
+      { question: '¿Necesito auto para hospedarme en Bucerías?', answer: `No necesariamente. Muchas villas de ${BRAND_NAME} en Bucerías están a poca distancia a pie de restaurantes y la playa, aunque un auto rentado o taxi es útil para excursiones de un día a Puerto Vallarta, Punta Mita o La Cruz de Huanacaxtle.` },
     ],
     footerPre: '¿Comparando zonas? Consulta nuestra guía sobre',
     footerGuideLink: 'dónde hospedarte cerca de Puerto Vallarta',

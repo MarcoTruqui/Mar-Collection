@@ -1,6 +1,7 @@
 import Link from '@/components/LocaleLink'
 import { breadcrumbJsonLd, faqJsonLd } from '@/lib/structuredData'
 import { buildMetadata } from '@/lib/seo'
+import { BRAND_NAME } from '@/lib/brand'
 
 const copy = {
   en: {
@@ -12,7 +13,7 @@ const copy = {
     eyebrow: 'Guide',
     title: 'Puerto Vallarta Airport to Riviera Nayarit',
     subtitle: 'Drive times and options for reaching Punta Mita, Bucerías, and La Cruz de Huanacaxtle from PVR.',
-    intro: "All three of the Riviera Nayarit towns where MAR Collection has properties are reached the same way from Puerto Vallarta International Airport (PVR): north along the coastal highway that follows Bahía de Banderas. The main difference is how far you're going.",
+    intro: `All three of the Riviera Nayarit towns where ${BRAND_NAME} has properties are reached the same way from Puerto Vallarta International Airport (PVR): north along the coastal highway that follows Bahía de Banderas. The main difference is how far you're going.`,
     tableHeaders: { destination: 'Destination', drive: 'Approx. Drive Time', notes: 'Notes' },
     distances: [
       { area: 'Bucerías', drive: '~20-25 minutes', notes: 'Closest area; a short, straightforward drive north along the coastal highway.' },
@@ -24,14 +25,14 @@ const copy = {
     optionRentalLabel: 'Rental car:',
     optionRentalBody: 'Available at the airport, and the most flexible option if you plan to explore multiple towns or make day trips into Puerto Vallarta.',
     optionTransferLabel: 'Private transfer:',
-    optionTransferBody: 'Pre-arranged transfers take you directly to your villa without the logistics of renting and driving. Contact MAR Collection ahead of your stay for guidance on arranging one.',
+    optionTransferBody: `Pre-arranged transfers take you directly to your villa without the logistics of renting and driving. Contact ${BRAND_NAME} ahead of your stay for guidance on arranging one.`,
     optionTaxiLabel: 'Authorized airport taxis:',
     optionTaxiBody: "Available at the airport's official taxi stand for point-to-point trips.",
     faqTitle: 'Frequently Asked Questions',
     faqs: [
       { question: 'What is the airport code for Puerto Vallarta?', answer: 'Puerto Vallarta International Airport uses the code PVR (Licenciado Gustavo Díaz Ordaz International Airport).' },
       { question: 'Is it better to rent a car or arrange a private transfer?', answer: "It depends on your plans. A rental car gives you flexibility to explore multiple towns and visit Puerto Vallarta on your own schedule. A private transfer is more convenient if you plan to stay mostly at your villa and don't want to navigate driving in Mexico. Many guests do one or the other rather than relying on taxis for every trip, since the towns are spread along the bay rather than clustered together." },
-      { question: 'Do I need to arrange transportation in advance?', answer: "It's a good idea, especially for Punta Mita given the longer drive. Contact MAR Collection ahead of your stay and we can advise on transfer options for your specific villa." },
+      { question: 'Do I need to arrange transportation in advance?', answer: `It's a good idea, especially for Punta Mita given the longer drive. Contact ${BRAND_NAME} ahead of your stay and we can advise on transfer options for your specific villa.` },
     ],
     backTo: 'Back to:',
     backLink: 'Where to Stay Near Puerto Vallarta',
@@ -45,7 +46,7 @@ const copy = {
     eyebrow: 'Guía',
     title: 'Del Aeropuerto de Puerto Vallarta a la Riviera Nayarit',
     subtitle: 'Tiempos de traslado y opciones para llegar a Punta Mita, Bucerías y La Cruz de Huanacaxtle desde el PVR.',
-    intro: 'A los tres pueblos de la Riviera Nayarit donde MAR Collection tiene propiedades se llega de la misma forma desde el Aeropuerto Internacional de Puerto Vallarta (PVR): hacia el norte por la carretera costera que bordea la Bahía de Banderas. La principal diferencia es qué tan lejos vas.',
+    intro: `A los tres pueblos de la Riviera Nayarit donde ${BRAND_NAME} tiene propiedades se llega de la misma forma desde el Aeropuerto Internacional de Puerto Vallarta (PVR): hacia el norte por la carretera costera que bordea la Bahía de Banderas. La principal diferencia es qué tan lejos vas.`,
     tableHeaders: { destination: 'Destino', drive: 'Tiempo Aprox. de Traslado', notes: 'Notas' },
     distances: [
       { area: 'Bucerías', drive: '~20-25 minutos', notes: 'La zona más cercana; un trayecto corto y directo hacia el norte por la carretera costera.' },
@@ -57,14 +58,14 @@ const copy = {
     optionRentalLabel: 'Auto rentado:',
     optionRentalBody: 'Disponible en el aeropuerto, y la opción más flexible si planeas explorar varios pueblos o hacer excursiones de un día a Puerto Vallarta.',
     optionTransferLabel: 'Traslado privado:',
-    optionTransferBody: 'Los traslados pre-arreglados te llevan directo a tu villa sin la logística de rentar y manejar. Contacta a MAR Collection antes de tu estadía para orientación sobre cómo arreglar uno.',
+    optionTransferBody: `Los traslados pre-arreglados te llevan directo a tu villa sin la logística de rentar y manejar. Contacta a ${BRAND_NAME} antes de tu estadía para orientación sobre cómo arreglar uno.`,
     optionTaxiLabel: 'Taxis autorizados del aeropuerto:',
     optionTaxiBody: 'Disponibles en la base oficial de taxis del aeropuerto para viajes de punto a punto.',
     faqTitle: 'Preguntas Frecuentes',
     faqs: [
       { question: '¿Cuál es el código del aeropuerto de Puerto Vallarta?', answer: 'El Aeropuerto Internacional de Puerto Vallarta usa el código PVR (Aeropuerto Internacional Licenciado Gustavo Díaz Ordaz).' },
       { question: '¿Es mejor rentar un auto o arreglar un traslado privado?', answer: 'Depende de tus planes. Un auto rentado te da flexibilidad para explorar varios pueblos y visitar Puerto Vallarta a tu propio ritmo. Un traslado privado es más conveniente si planeas quedarte principalmente en tu villa y no quieres manejar en México. Muchos huéspedes optan por una de las dos opciones en lugar de depender de taxis para cada viaje, ya que los pueblos están repartidos a lo largo de la bahía en vez de estar agrupados.' },
-      { question: '¿Necesito arreglar el transporte con anticipación?', answer: 'Es buena idea, especialmente para Punta Mita dado el trayecto más largo. Contacta a MAR Collection antes de tu estadía y podemos orientarte sobre las opciones de traslado para tu villa específica.' },
+      { question: '¿Necesito arreglar el transporte con anticipación?', answer: `Es buena idea, especialmente para Punta Mita dado el trayecto más largo. Contacta a ${BRAND_NAME} antes de tu estadía y podemos orientarte sobre las opciones de traslado para tu villa específica.` },
     ],
     backTo: 'Regresar a:',
     backLink: 'Dónde Hospedarse Cerca de Puerto Vallarta',

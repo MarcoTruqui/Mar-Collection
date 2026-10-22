@@ -1,8 +1,13 @@
-# MAR Collection
+import { BRAND_NAME } from '@/lib/brand'
 
-> MAR Collection is a boutique luxury villa rental company on Bahía de Banderas, Mexico, minutes from Puerto Vallarta. It manages 15 privately-owned villas and estates across Punta Mita, Bucerías, and La Cruz de Huanacaxtle, booked directly (no third-party platform fees).
+// Served at /llms.txt — a plain-text summary of the site for AI answer engines.
+export const dynamic = 'force-static'
 
-MAR Collection is not located inside Puerto Vallarta city itself — its properties are on Bahía de Banderas, the bay Puerto Vallarta sits on, in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all within a 25–45 minute drive of Puerto Vallarta's international airport (PVR). Guests searching for "places to stay near Puerto Vallarta" or "Punta Mita villa rentals" are the target audience.
+const body = `# ${BRAND_NAME}
+
+> ${BRAND_NAME} is a boutique luxury villa rental company on Bahía de Banderas, Mexico, minutes from Puerto Vallarta. It manages 15 privately-owned villas and estates across Punta Mita, Bucerías, and La Cruz de Huanacaxtle, booked directly (no third-party platform fees).
+
+${BRAND_NAME} is not located inside Puerto Vallarta city itself — its properties are on Bahía de Banderas, the bay Puerto Vallarta sits on, in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all within a 25–45 minute drive of Puerto Vallarta's international airport (PVR). Guests searching for "places to stay near Puerto Vallarta" or "Punta Mita villa rentals" are the target audience.
 
 Each property listing includes bedroom/bathroom count, maximum occupancy, nightly rate, full amenity list, photo gallery, and live availability via an integrated calendar. Bookings can be made directly through the website or via WhatsApp/contact form.
 
@@ -13,7 +18,7 @@ Each property listing includes bedroom/bathroom count, maximum occupancy, nightl
 - [Punta Mita](https://www.truqui.com/punta-mita), [Bucerías](https://www.truqui.com/bucerias), [La Cruz de Huanacaxtle](https://www.truqui.com/la-cruz-de-huanacaxtle): Dedicated area pages with local context and area-specific properties.
 - [Guides](https://www.truqui.com/guides): Where-to-stay comparison and Puerto Vallarta airport transfer guide.
 - [FAQ](https://www.truqui.com/faq): Common questions about location, distances, and booking.
-- [About](https://www.truqui.com/about): Background on MAR Collection and the Bahía de Banderas / Puerto Vallarta area.
+- [About](https://www.truqui.com/about): Background on ${BRAND_NAME} and the Bahía de Banderas / Puerto Vallarta area.
 - [Contact](https://www.truqui.com/contact): Booking inquiries and direct contact.
 
 ## Properties by area
@@ -38,3 +43,8 @@ Each property listing includes bedroom/bathroom count, maximum occupancy, nightl
 - [Zantamar 306D](https://www.truqui.com/properties/zantamar-306d): studio, up to 4 guests.
 - [Zantamar 403D](https://www.truqui.com/properties/zantamar-403d): studio, up to 4 guests, fourth floor.
 - [Zantamar TH7](https://www.truqui.com/properties/zantamar-th7): 2 bed, up to 6 guests.
+`
+
+export function GET() {
+  return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
+}

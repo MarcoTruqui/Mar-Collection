@@ -4,6 +4,7 @@ import Link from '@/components/LocaleLink'
 import Image from 'next/image'
 import { Instagram } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
+import { BRAND_NAME } from '@/lib/brand'
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '15551234567'
 const EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@menacollection.com'
@@ -28,7 +29,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="mb-4">
-              <Image src="/images/tc-logo.svg" alt="TC Collection" width={200} height={150} className="brightness-0 invert" />
+              <Image src="/images/tc-logo.svg" alt={BRAND_NAME} width={200} height={150} className="brightness-0 invert" />
             </div>
             <p className="text-sm leading-relaxed text-white/60 mb-5">
               {t.footer.tagline}

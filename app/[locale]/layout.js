@@ -5,6 +5,7 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import IntroLoader from '@/components/IntroLoader'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import { buildMetadata } from '@/lib/seo'
+import { BRAND_NAME, BRAND_LOGO } from '@/lib/brand'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.truqui.com'
 
@@ -14,11 +15,11 @@ export async function generateStaticParams() {
 
 const copy = {
   en: {
-    title: 'MAR Collection — Luxury Villas Near Puerto Vallarta | Punta Mita, Bucerías, Bahía de Banderas',
+    title: `${BRAND_NAME} — Luxury Villas Near Puerto Vallarta | Punta Mita, Bucerías, Bahía de Banderas`,
     description: 'Handpicked luxury villas and estates on Bahía de Banderas, minutes from Puerto Vallarta — in Punta Mita, Bucerías, and La Cruz de Huanacaxtle, Mexico.',
   },
   es: {
-    title: 'MAR Collection — Villas de Lujo Cerca de Puerto Vallarta | Punta Mita, Bucerías, Bahía de Banderas',
+    title: `${BRAND_NAME} — Villas de Lujo Cerca de Puerto Vallarta | Punta Mita, Bucerías, Bahía de Banderas`,
     description: 'Villas y residencias de lujo seleccionadas en la Bahía de Banderas, a minutos de Puerto Vallarta — en Punta Mita, Bucerías y La Cruz de Huanacaxtle, México.',
   },
 }
@@ -28,7 +29,7 @@ export function generateMetadata({ params }) {
   return {
     ...buildMetadata({ path: '/', locale: params.locale, ...c }),
     metadataBase: new URL(SITE_URL),
-    title: { default: c.title, template: '%s | MAR Collection' },
+    title: { default: c.title, template: `%s | ${BRAND_NAME}` },
     keywords: 'places to stay in Puerto Vallarta, Puerto Vallarta villa rental, Punta Mita luxury rentals, Bahía de Banderas vacation rental, Bucerías villa, Riviera Nayarit, La Cruz de Huanacaxtle, Mexico vacation rental',
     icons: {
       icon: '/images/logo.svg',
@@ -41,7 +42,7 @@ export function generateMetadata({ params }) {
       title: c.title,
       description: c.description,
       url: SITE_URL,
-      siteName: 'MAR Collection',
+      siteName: BRAND_NAME,
       type: 'website',
     },
   }
@@ -51,9 +52,9 @@ const organizationJsonLd = {
   en: {
     '@context': 'https://schema.org',
     '@type': 'TravelAgency',
-    name: 'MAR Collection',
+    name: BRAND_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/images/mar-logo.png`,
+    logo: `${SITE_URL}${BRAND_LOGO}`,
     description: 'Luxury villa rentals on Bahía de Banderas near Puerto Vallarta, Mexico — Punta Mita, Bucerías, and La Cruz de Huanacaxtle.',
     areaServed: [
       { '@type': 'Place', name: 'Puerto Vallarta, Jalisco, Mexico' },
@@ -66,9 +67,9 @@ const organizationJsonLd = {
   es: {
     '@context': 'https://schema.org',
     '@type': 'TravelAgency',
-    name: 'MAR Collection',
+    name: BRAND_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/images/mar-logo.png`,
+    logo: `${SITE_URL}${BRAND_LOGO}`,
     description: 'Renta de villas de lujo en la Bahía de Banderas cerca de Puerto Vallarta, México — Punta Mita, Bucerías y La Cruz de Huanacaxtle.',
     areaServed: [
       { '@type': 'Place', name: 'Puerto Vallarta, Jalisco, México' },

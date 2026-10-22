@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { BRAND_NAME } from '@/lib/brand'
 
 const TO_EMAIL = 'tch@truqui.com'
 
@@ -13,7 +14,7 @@ export async function POST(request) {
     }
 
     await resend.emails.send({
-      from: 'TC Collection <contact@truqui.com>',
+      from: `${BRAND_NAME} <contact@truqui.com>`,
       to: TO_EMAIL,
       replyTo: email,
       subject: `New Inquiry from ${name}${property ? ` — ${property}` : ''}`,

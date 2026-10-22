@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { submitContract, getBookingByToken } from '@/lib/appsScript'
+import { BRAND_NAME } from '@/lib/brand'
 
 const TO_EMAIL = 'tch@truqui.com'
 
@@ -35,7 +36,7 @@ async function notifyNewBooking(form) {
   const resend = new Resend(process.env.RESEND_API_KEY)
 
   await resend.emails.send({
-    from: 'TC Collection <contact@truqui.com>',
+    from: `${BRAND_NAME} <contact@truqui.com>`,
     to: TO_EMAIL,
     subject: `New Booking — ${booking.villa} (${form.fullName})`,
     html: `

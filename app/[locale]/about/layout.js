@@ -1,13 +1,14 @@
 import { buildMetadata } from '@/lib/seo'
+import { BRAND_NAME } from '@/lib/brand'
 
 const copy = {
   en: {
-    title: 'About MAR Collection — Boutique Villa Rentals on Bahía de Banderas, Near Puerto Vallarta',
-    description: 'MAR Collection curates luxury villas across Punta Mita, Bucerías, and La Cruz de Huanacaxtle on Bahía de Banderas, just north of Puerto Vallarta, Mexico.',
+    title: `About ${BRAND_NAME} — Boutique Villa Rentals on Bahía de Banderas, Near Puerto Vallarta`,
+    description: `${BRAND_NAME} curates luxury villas across Punta Mita, Bucerías, and La Cruz de Huanacaxtle on Bahía de Banderas, just north of Puerto Vallarta, Mexico.`,
   },
   es: {
-    title: 'Sobre MAR Collection — Renta de Villas Boutique en Bahía de Banderas, Cerca de Puerto Vallarta',
-    description: 'MAR Collection selecciona villas de lujo en Punta Mita, Bucerías y La Cruz de Huanacaxtle, en la Bahía de Banderas, justo al norte de Puerto Vallarta, México.',
+    title: `Sobre ${BRAND_NAME} — Renta de Villas Boutique en Bahía de Banderas, Cerca de Puerto Vallarta`,
+    description: `${BRAND_NAME} selecciona villas de lujo en Punta Mita, Bucerías y La Cruz de Huanacaxtle, en la Bahía de Banderas, justo al norte de Puerto Vallarta, México.`,
   },
 }
 

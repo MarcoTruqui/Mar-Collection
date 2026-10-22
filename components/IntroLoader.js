@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
+import { BRAND_NAME } from '@/lib/brand'
 
 // Only shows on first visit of the day. Subsequent page navigations skip it.
 export default function IntroLoader() {
@@ -76,7 +77,7 @@ export default function IntroLoader() {
       >
         <Image
           src="/images/tc-logo.svg"
-          alt="TC Collection"
+          alt={BRAND_NAME}
           width={480}
           height={360}
           priority

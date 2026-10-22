@@ -5,18 +5,19 @@ import PropertyCard from '@/components/PropertyCard'
 import properties from '@/data/properties'
 import { breadcrumbJsonLd, faqJsonLd } from '@/lib/structuredData'
 import { buildMetadata } from '@/lib/seo'
+import { BRAND_NAME } from '@/lib/brand'
 
 const copy = {
   en: {
     metaTitle: 'Places to Stay Near Puerto Vallarta — Luxury Villas on Bahía de Banderas',
-    metaDescription: 'Looking for places to stay near Puerto Vallarta? MAR Collection manages 15 luxury villas on Bahía de Banderas in Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all 20-45 minutes from Puerto Vallarta International Airport.',
+    metaDescription: `Looking for places to stay near Puerto Vallarta? ${BRAND_NAME} manages 15 luxury villas on Bahía de Banderas in Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all 20-45 minutes from Puerto Vallarta International Airport.`,
     breadcrumbHome: 'Home',
     breadcrumbSelf: 'Puerto Vallarta Area',
     eyebrow: 'Bahía de Banderas',
     title: 'Places to Stay Near Puerto Vallarta',
     subtitle: '15 luxury villas across three Riviera Nayarit towns, all a short drive from Puerto Vallarta International Airport.',
     geoTitle: 'The Honest Geography',
-    geoBody1: "If you're searching for places to stay near Puerto Vallarta, here's what you should know: MAR Collection's villas aren't inside Puerto Vallarta's city limits. They're on Bahía de Banderas — the same bay Puerto Vallarta sits on — in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, just across the state line in Nayarit. Depending on the town, that's roughly 20 to 45 minutes from Puerto Vallarta International Airport (PVR) and downtown Puerto Vallarta by car.",
+    geoBody1: `If you're searching for places to stay near Puerto Vallarta, here's what you should know: ${BRAND_NAME}'s villas aren't inside Puerto Vallarta's city limits. They're on Bahía de Banderas — the same bay Puerto Vallarta sits on — in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, just across the state line in Nayarit. Depending on the town, that's roughly 20 to 45 minutes from Puerto Vallarta International Airport (PVR) and downtown Puerto Vallarta by car.`,
     geoBody2: "For many travelers, that trade-off is the point: more privacy, more beachfront, and lower density than the city's hotel zone, while still being a short drive from Puerto Vallarta's restaurants, nightlife, and airport.",
     chooseTitle: 'Choose Your Area',
     areas: [
@@ -28,7 +29,7 @@ const copy = {
     featuredTitle: 'Featured Villas',
     faqTitle: 'Frequently Asked Questions',
     faqs: [
-      { question: 'Are MAR Collection villas actually in Puerto Vallarta?', answer: 'No, and we want to be upfront about that. MAR Collection villas are on Bahía de Banderas, the bay Puerto Vallarta sits on, in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all in the state of Nayarit. They range from about 20 to 45 minutes from Puerto Vallarta International Airport and downtown Puerto Vallarta by car.' },
+      { question: `Are ${BRAND_NAME} villas actually in Puerto Vallarta?`, answer: `No, and we want to be upfront about that. ${BRAND_NAME} villas are on Bahía de Banderas, the bay Puerto Vallarta sits on, in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all in the state of Nayarit. They range from about 20 to 45 minutes from Puerto Vallarta International Airport and downtown Puerto Vallarta by car.` },
       { question: 'What is the closest area to Puerto Vallarta with villa rentals?', answer: 'Bucerías is the closest, about 20-25 minutes from Puerto Vallarta International Airport (PVR), just across the Ameca River that separates Jalisco from Nayarit.' },
       { question: 'Which area should I choose: Punta Mita, Bucerías, or La Cruz de Huanacaxtle?', answer: 'Bucerías suits travelers who want a walkable town and easy airport access. La Cruz de Huanacaxtle suits those who want a quieter marina-village feel. Punta Mita suits those who want gated-community privacy, golf, and surf, and don\'t mind a longer drive from the airport.' },
     ],
@@ -39,14 +40,14 @@ const copy = {
   },
   es: {
     metaTitle: 'Dónde Hospedarse Cerca de Puerto Vallarta — Villas de Lujo en la Bahía de Banderas',
-    metaDescription: '¿Buscas dónde hospedarte cerca de Puerto Vallarta? MAR Collection administra 15 villas de lujo en la Bahía de Banderas en Punta Mita, Bucerías y La Cruz de Huanacaxtle, todas a 20-45 minutos del Aeropuerto Internacional de Puerto Vallarta.',
+    metaDescription: `¿Buscas dónde hospedarte cerca de Puerto Vallarta? ${BRAND_NAME} administra 15 villas de lujo en la Bahía de Banderas en Punta Mita, Bucerías y La Cruz de Huanacaxtle, todas a 20-45 minutos del Aeropuerto Internacional de Puerto Vallarta.`,
     breadcrumbHome: 'Inicio',
     breadcrumbSelf: 'Zona Puerto Vallarta',
     eyebrow: 'Bahía de Banderas',
     title: 'Dónde Hospedarse Cerca de Puerto Vallarta',
     subtitle: '15 villas de lujo en tres pueblos de la Riviera Nayarit, todos a poca distancia del Aeropuerto Internacional de Puerto Vallarta.',
     geoTitle: 'La Geografía Honesta',
-    geoBody1: 'Si buscas dónde hospedarte cerca de Puerto Vallarta, esto es lo que debes saber: las villas de MAR Collection no están dentro de los límites de la ciudad de Puerto Vallarta. Están en la Bahía de Banderas — la misma bahía donde se ubica Puerto Vallarta — en los pueblos vecinos de la Riviera Nayarit: Punta Mita, Bucerías y La Cruz de Huanacaxtle, cruzando el límite estatal hacia Nayarit. Dependiendo del pueblo, eso significa entre 20 y 45 minutos en auto del Aeropuerto Internacional de Puerto Vallarta (PVR) y del centro de Puerto Vallarta.',
+    geoBody1: `Si buscas dónde hospedarte cerca de Puerto Vallarta, esto es lo que debes saber: las villas de ${BRAND_NAME} no están dentro de los límites de la ciudad de Puerto Vallarta. Están en la Bahía de Banderas — la misma bahía donde se ubica Puerto Vallarta — en los pueblos vecinos de la Riviera Nayarit: Punta Mita, Bucerías y La Cruz de Huanacaxtle, cruzando el límite estatal hacia Nayarit. Dependiendo del pueblo, eso significa entre 20 y 45 minutos en auto del Aeropuerto Internacional de Puerto Vallarta (PVR) y del centro de Puerto Vallarta.`,
     geoBody2: 'Para muchos viajeros, ese intercambio es justamente el atractivo: más privacidad, más frente de playa y menor densidad que la zona hotelera de la ciudad, mientras se mantiene a poca distancia de los restaurantes, la vida nocturna y el aeropuerto de Puerto Vallarta.',
     chooseTitle: 'Elige tu Zona',
     areas: [
@@ -58,7 +59,7 @@ const copy = {
     featuredTitle: 'Villas Destacadas',
     faqTitle: 'Preguntas Frecuentes',
     faqs: [
-      { question: '¿Las villas de MAR Collection están realmente en Puerto Vallarta?', answer: 'No, y queremos ser claros al respecto. Las villas de MAR Collection están en la Bahía de Banderas, la bahía donde se ubica Puerto Vallarta, en los pueblos vecinos de la Riviera Nayarit: Punta Mita, Bucerías y La Cruz de Huanacaxtle, todos en el estado de Nayarit. Están a entre 20 y 45 minutos en auto del Aeropuerto Internacional de Puerto Vallarta y del centro de Puerto Vallarta.' },
+      { question: `¿Las villas de ${BRAND_NAME} están realmente en Puerto Vallarta?`, answer: `No, y queremos ser claros al respecto. Las villas de ${BRAND_NAME} están en la Bahía de Banderas, la bahía donde se ubica Puerto Vallarta, en los pueblos vecinos de la Riviera Nayarit: Punta Mita, Bucerías y La Cruz de Huanacaxtle, todos en el estado de Nayarit. Están a entre 20 y 45 minutos en auto del Aeropuerto Internacional de Puerto Vallarta y del centro de Puerto Vallarta.` },
       { question: '¿Cuál es la zona más cercana a Puerto Vallarta con renta de villas?', answer: 'Bucerías es la más cercana, a unos 20-25 minutos del Aeropuerto Internacional de Puerto Vallarta (PVR), cruzando el Río Ameca que separa Jalisco de Nayarit.' },
       { question: '¿Qué zona debo elegir: Punta Mita, Bucerías o La Cruz de Huanacaxtle?', answer: 'Bucerías es ideal para quienes buscan un pueblo caminable y fácil acceso al aeropuerto. La Cruz de Huanacaxtle es ideal para quienes buscan un ambiente más tranquilo de pueblo de marina. Punta Mita es ideal para quienes buscan privacidad en comunidad cerrada, golf y surf, sin importarles un trayecto más largo desde el aeropuerto.' },
     ],
