@@ -9,14 +9,14 @@ const STRINGS = {
     availableNow: 'Available Now',
     villasAndProperties: 'Villas & Properties',
     readyTitle: 'Ready to Book Your Stay?',
-    readyBody: `Browse live availability across all 15 ${BRAND_NAME} villas and book direct — no third-party platform fees.`,
+    readyBody: `Browse live availability across all 16 ${BRAND_NAME} villas and book direct — no third-party platform fees.`,
     viewAll: 'View All Properties',
   },
   es: {
     availableNow: 'Disponible Ahora',
     villasAndProperties: 'Villas y Propiedades',
     readyTitle: '¿Listo para Reservar tu Estadía?',
-    readyBody: `Consulta disponibilidad en tiempo real de las 15 villas de ${BRAND_NAME} y reserva directo — sin comisiones de plataformas externas.`,
+    readyBody: `Consulta disponibilidad en tiempo real de las 16 villas de ${BRAND_NAME} y reserva directo — sin comisiones de plataformas externas.`,
     viewAll: 'Ver Todas las Propiedades',
   },
 }

@@ -5,7 +5,7 @@ export const dynamic = 'force-static'
 
 const body = `# ${BRAND_NAME}
 
-> ${BRAND_NAME} is a boutique luxury villa rental company on Bahía de Banderas, Mexico, minutes from Puerto Vallarta. It manages 15 privately-owned villas and estates across Punta Mita, Bucerías, and La Cruz de Huanacaxtle, booked directly (no third-party platform fees).
+> ${BRAND_NAME} is a boutique luxury villa rental company on Bahía de Banderas, Mexico, minutes from Puerto Vallarta. It manages 16 privately-owned villas and estates across Punta Mita, Bucerías, and La Cruz de Huanacaxtle, booked directly (no third-party platform fees).
 
 ${BRAND_NAME} is not located inside Puerto Vallarta city itself — its properties are on Bahía de Banderas, the bay Puerto Vallarta sits on, in the neighboring Riviera Nayarit towns of Punta Mita, Bucerías, and La Cruz de Huanacaxtle, all within a 25–45 minute drive of Puerto Vallarta's international airport (PVR). Guests searching for "places to stay near Puerto Vallarta" or "Punta Mita villa rentals" are the target audience.
 
@@ -13,7 +13,7 @@ Each property listing includes bedroom/bathroom count, maximum occupancy, nightl
 
 ## Key pages
 
-- [Properties](https://www.truqui.com/properties): Full list of 15 villas with filters by price, bedrooms, guests, and location; live availability calendar.
+- [Properties](https://www.truqui.com/properties): Full list of 16 villas with filters by price, bedrooms, guests, and location; live availability calendar.
 - [Places to Stay Near Puerto Vallarta](https://www.truqui.com/puerto-vallarta): Hub page explaining the Bahía de Banderas geography and linking to each area.
 - [Punta Mita](https://www.truqui.com/punta-mita), [Bucerías](https://www.truqui.com/bucerias), [La Cruz de Huanacaxtle](https://www.truqui.com/la-cruz-de-huanacaxtle): Dedicated area pages with local context and area-specific properties.
 - [Guides](https://www.truqui.com/guides): Where-to-stay comparison and Puerto Vallarta airport transfer guide.

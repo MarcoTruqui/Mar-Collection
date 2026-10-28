@@ -193,7 +193,7 @@ function PropertiesContent() {
       </div>
 
       {/* Location tabs + filter toggle */}
-      <div className="sticky top-[100px] z-30 bg-white border-b border-gray-100 shadow-sm">
+      <div className="md:sticky md:top-[100px] z-30 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-3 overflow-x-auto scrollbar-none">
           {['All', ...LOCATIONS].map(loc => (
             <button

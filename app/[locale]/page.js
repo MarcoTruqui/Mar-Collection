@@ -4,61 +4,90 @@ import Link from '@/components/LocaleLink'
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, ChevronLeft, ChevronRight, Star, Award, Heart, Map, Search } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, Star, Award, Heart, Map, Search, CalendarDays } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
+import Calendar from '@/components/Calendar'
+import HeroVideo from '@/components/HeroVideo'
 import properties from '@/data/properties'
 
-const todayStr = new Date().toISOString().split('T')[0]
-
+// One calendar for both dates: first click sets check-in, second sets
+// check-out, and month arrows work without ever closing the popup.
 function AvailabilityBar() {
   const router = useRouter()
+  const { lang } = useLanguage()
   const [checkIn, setCheckIn]   = useState('')
   const [checkOut, setCheckOut] = useState('')
-  const checkOutRef = useRef(null)
+  const [calOpen, setCalOpen]   = useState(false)
+  const wrapRef = useRef(null)
+
+  useEffect(() => {
+    if (!calOpen) return
+    function onOutside(e) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setCalOpen(false)
+    }
+    document.addEventListener('mousedown', onOutside)
+    document.addEventListener('touchstart', onOutside)
+    return () => {
+      document.removeEventListener('mousedown', onOutside)
+      document.removeEventListener('touchstart', onOutside)
+    }
+  }, [calOpen])
 
   function handleSearch() {
     if (!checkIn || !checkOut) return
-    router.push(`/properties?checkIn=${checkIn}&checkOut=${checkOut}`)
+    const prefix = lang === 'es' ? '/es' : ''
+    router.push(`${prefix}/properties?checkIn=${checkIn}&checkOut=${checkOut}`)
   }
 
   return (
     <div className="mt-10 w-full px-4 max-w-2xl mx-auto">
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
-        <div className="flex-1">
-          <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-in</label>
-          <input
-            type="date"
-            min={todayStr}
-            value={checkIn}
-            onChange={e => {
-              const val = e.target.value
-              setCheckIn(val)
-              if (val >= checkOut) setCheckOut('')
-              if (val) setTimeout(() => checkOutRef.current?.showPicker?.(), 50)
-            }}
-            className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-          />
+      <div className="relative" ref={wrapRef}>
+        <div className="bg-navy/60 rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+          <button
+            type="button"
+            onClick={() => setCalOpen(o => !o)}
+            className="flex-1 flex items-center gap-3 bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-left hover:border-gold transition-colors"
+          >
+            <CalendarDays size={18} className="text-white/60 flex-shrink-0" />
+            {checkIn && checkOut ? (
+              <span className="text-white text-sm">{checkIn} → {checkOut}</span>
+            ) : checkIn ? (
+              <span className="text-white text-sm">{checkIn} → <span className="text-white/50">Select check-out</span></span>
+            ) : (
+              <span className="text-white/60 text-sm">Check-in → Check-out</span>
+            )}
+          </button>
+          <button
+            onClick={handleSearch}
+            disabled={!checkIn || !checkOut}
+            className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-7 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto"
+          >
+            <Search size={15} />
+            Check Availability
+          </button>
         </div>
-        <div className="flex-1">
-          <label className="block text-white/60 text-xs mb-1.5 text-left tracking-wide uppercase">Check-out</label>
-          <input
-            ref={checkOutRef}
-            type="date"
-            min={checkIn || todayStr}
-            value={checkOut}
-            onChange={e => setCheckOut(e.target.value)}
-            className="w-full bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-gold transition-colors [color-scheme:dark]"
-          />
-        </div>
-        <button
-          onClick={handleSearch}
-          disabled={!checkIn || !checkOut}
-          className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-7 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto"
-        >
-          <Search size={15} />
-          Check Availability
-        </button>
+
+        {calOpen && (
+          <div className="absolute left-0 right-0 top-full mt-2 z-40 bg-white border border-gray-200 rounded-2xl shadow-xl p-4 text-left">
+            <Calendar
+              bookedRanges={[]}
+              checkIn={checkIn}
+              checkOut={checkOut}
+              lang={lang}
+              monthsToShow={1}
+              minNights={2}
+              onChange={(ci, co) => {
+                setCheckIn(ci)
+                setCheckOut(co)
+                if (ci && co) setCalOpen(false)
+              }}
+            />
+            <p className="text-xs text-gray-400 mt-3 text-center">
+              {checkIn && !checkOut ? 'Now select your check-out date' : 'Select check-in, then check-out'}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -187,18 +216,10 @@ export default function HomePage() {
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center">
         {/* Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-          >
-            <source src="https://res.cloudinary.com/dwutnv1bb/video/upload/4006-176282263_1_dim63c.mp4" type="video/mp4" />
-          </video>
+        <div className="absolute inset-0 z-0 bg-navy">
+          <HeroVideo />
           <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/40 to-navy/70" />
         </div>
 
@@ -254,7 +275,7 @@ export default function HomePage() {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-6">
             {[
-              { icon: Award, value: '15', label: 'Properties' },
+              { icon: Award, value: '16', label: 'Properties' },
               { icon: Map, value: '3', label: 'Prime Locations' },
               { icon: Star, value: '100+', label: '5-Star Reviews' },
               { icon: Heart, value: '12', label: 'Max Guests / Villa' },

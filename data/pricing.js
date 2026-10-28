@@ -211,6 +211,17 @@ const pricing = {
     serviceFee: 80,
   },
 
+  // ── LA CRUZ — ÁLIK MARINA ───────────────────────────────────────────────────
+
+  // Same rates as Zantamar 205B.
+  'alik-a11': {
+    low:  160,
+    high: 180,
+    peak: 280,
+    cleaningFee: 120,
+    serviceFee: 55,
+  },
+
 }
 
 export default pricing

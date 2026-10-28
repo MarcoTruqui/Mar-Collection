@@ -427,6 +427,78 @@ TH7 ofrece la intimidad y exclusividad de una villa privada con el respaldo comp
     images: Array.from({length: 18}, (_, i) => `https://res.cloudinary.com/dwutnv1bb/image/upload/th7_${String(i+1).padStart(2,'0')}.jpg`),
   },
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // LA CRUZ DE HUANACAXTLE — ÁLIK Marina
+  // ─────────────────────────────────────────────────────────────────────────
+
+  {
+    slug: 'alik-a11',
+    name: 'ÁLIK Marina A11',
+    location: 'La Cruz de Huanacaxtle',
+    isNew: true,
+    bedrooms: 2,
+    bathrooms: 2,
+    maxGuests: 6,
+    studio: false,
+    sleeping: '1 king bed · 1 queen bed · sofa bed',
+    nightlyRate: 160,
+    cleaningFee: 120,
+    serviceFee: 55,
+    shortDescription: 'Elegant 2-bedroom condo at ÁLIK Marina in La Cruz de Huanacaxtle — unobstructed marina view, rooftop infinity pool, Marriott Beach Club access, up to 6 guests.',
+    shortDescriptionEs: 'Elegante condominio de 2 habitaciones en ÁLIK Marina, La Cruz de Huanacaxtle — vista despejada a la marina, alberca infinita en la azotea, acceso al Marriott Beach Club, hasta 6 huéspedes.',
+    description: `ÁLIK Marina A11 is an elegant two-bedroom condo in one of La Cruz de Huanacaxtle's most exclusive developments. Modern interiors and spacious windows frame one of the best views in the building — an unobstructed look over the La Cruz marina, with boats and sailboats coming and going through the day and golden sunsets in the afternoon, all enjoyed from the living room, dining area, and private balcony.
+
+Two comfortable bedrooms — a primary with a king bed and a second with a queen bed — plus a sofa bed in the living room sleep up to 6 guests. Both bedrooms have high-speed WiFi and Smart TVs, and a dedicated workspace makes working remotely easy. The fully equipped kitchen, with a dishwasher, oven, coffee maker, and blender, opens to the dining area and terrace.
+
+Guests enjoy ÁLIK's rooftop infinity pool with ocean views, a gym, and access to the exclusive Marriott Beach Club for beach days. The marina, restaurants, cafés, shops, and boat trips are all steps from your door.`,
+    descriptionEs: `ÁLIK Marina A11 es un elegante condominio de dos habitaciones en uno de los desarrollos más exclusivos de La Cruz de Huanacaxtle. Interiores modernos y amplios ventanales enmarcan una de las mejores vistas del edificio — una vista despejada de la marina de La Cruz, con botes y veleros que van y vienen durante el día y atardeceres dorados por la tarde, todo desde la sala, el comedor y el balcón privado.
+
+Dos cómodas habitaciones — una principal con cama king y una segunda con cama queen — más un sofá cama en la sala alojan hasta 6 huéspedes. Ambas habitaciones cuentan con WiFi de alta velocidad y Smart TV, y un espacio de trabajo dedicado facilita trabajar a distancia. La cocina totalmente equipada, con lavavajillas, horno, cafetera y licuadora, se abre al comedor y la terraza.
+
+Los huéspedes disfrutan de la alberca infinita en la azotea de ÁLIK con vista al océano, gimnasio y acceso al exclusivo Marriott Beach Club para pasar días de playa. La marina, restaurantes, cafés, tiendas y paseos en bote están a pocos pasos de tu puerta.`,
+    amenities: ['Marina & Ocean Views', 'Rooftop Infinity Pool', 'Marriott Beach Club Access', 'Private Balcony', '2 Bedrooms (King + Queen)', 'Sofa Bed', 'Air Conditioning', 'High-Speed WiFi', 'Dedicated Workspace', 'Fully Equipped Kitchen', 'Dishwasher', 'Smart TV in Both Bedrooms', 'Washer', 'In-Unit Safe', 'Gym', 'Elevator', 'Free Parking', 'BBQ Grill', 'Marina (walking distance)'],
+    amenitiesEs: ['Vista a la marina y al océano', 'Alberca infinita en la azotea', 'Acceso al Marriott Beach Club', 'Balcón privado', '2 habitaciones (King + Queen)', 'Sofá cama', 'Aire acondicionado', 'WiFi de alta velocidad', 'Espacio de trabajo', 'Cocina totalmente equipada', 'Lavavajillas', 'Smart TV en ambas habitaciones', 'Lavadora', 'Caja fuerte', 'Gimnasio', 'Elevador', 'Estacionamiento gratuito', 'Asador', 'Marina (a pie)'],
+    // Uploaded under their camera names (Cloudinary added the random suffix), so
+    // this lists the real IDs in display order.
+    images: [
+      'DSC08123_bvpkot',
+      'DSC08079_cgysnx',
+      'DSC08104_prehwh',
+      'DSC08134_o5ymro',
+      'DSC08139_epehil',
+      'DSC08099_hs2if0',
+      'DSC08114_1_p3d3r3',
+      'DSC08083_j74dym',
+      'DSC08089_bv4gc9',
+      'DSC08094_kn73ow',
+      'DSC08119_xq97x6',
+      'DSC08128_w32wo6',
+      'DSC08149_iks7rq',
+      'DSC08144_kfqiz4',
+      'DSC08159_z7yjwx',
+      'DSC08205_dfy9sl',
+      'DSC08199_ozd12t',
+      'DSC08209_v8ixps',
+      'DSC08218_javopg',
+      'DSC08224_kcavdw',
+      'DSC08109_xq5cfl',
+      'DSC08194_awcuep',
+      'DSC08179_bo9m0n',
+      'DSC08189_kxziml',
+      'DSC08184_anrzzh',
+      'DSC08244_trzfi1',
+      'DSC08249_lo3huc',
+      'DSC08279_tx8nb0',
+      'DSC08284_ru1vbc',
+      'DSC08162_eqs571',
+      'DSC08168_nfkqa4',
+      'DSC08233_lbwstl',
+      'DSC08238_1_zl5fi5',
+      'DSC08074_wsqqit',
+      'DSC08289_rao1kt',
+    ].map(id => `https://res.cloudinary.com/dwutnv1bb/image/upload/${id}.jpg`),
+  },
+
 ]
 
 export default properties
