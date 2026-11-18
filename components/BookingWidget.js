@@ -30,7 +30,7 @@ export default function BookingWidget({ property }) {
   const calRef                          = useRef(null)
 
   useEffect(() => {
-    fetch('/api/availability')
+    fetch('/api/availability', { cache: 'no-store' })
       .then(r => r.json())
       .then(data => setBookedRanges(data[property.slug] || []))
       .catch(() => {})

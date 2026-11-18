@@ -49,7 +49,7 @@ export default function PropertyDetailPage({ params }) {
   const [bookedRanges, setBookedRanges] = useState([])
 
   useEffect(() => {
-    fetch('/api/availability')
+    fetch('/api/availability', { cache: 'no-store' })
       .then(r => r.json())
       .then(data => setBookedRanges(data[slug] || []))
       .catch(() => {})

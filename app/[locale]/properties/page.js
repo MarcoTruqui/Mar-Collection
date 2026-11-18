@@ -64,7 +64,7 @@ function PropertiesContent() {
   async function fetchAvailability() {
     setLoadingAvail(true)
     try {
-      const res = await fetch('/api/availability')
+      const res = await fetch('/api/availability', { cache: 'no-store' })
       const data = await res.json()
       setAvailability(data)
     } catch {

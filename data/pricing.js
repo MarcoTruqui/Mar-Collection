@@ -58,7 +58,7 @@ export const SERVICE_FEE_PERCENT = 5
 // All prices above are set in USD. Every payment is actually charged in MXN
 // (avoids the ~4% foreign-currency fee on USD charges), converted using this
 // rate. Update by hand as the peso moves — not a live rate.
-export const MXN_RATE = 17.5
+export const MXN_RATE = 19
 
 // ── PROMOS ───────────────────────────────────────────────────────────────────
 // Set active: true to show a promo banner on the booking widget.
@@ -213,12 +213,13 @@ const pricing = {
 
   // ── LA CRUZ — ÁLIK MARINA ───────────────────────────────────────────────────
 
-  // Same rates as Zantamar 205B.
+  // Same rates as Zantamar 205B. Cleaning fee is 0 because the pricing sheet
+  // sets 0 for every property, which overrides the code value (205B's included).
   'alik-a11': {
     low:  160,
     high: 180,
     peak: 280,
-    cleaningFee: 120,
+    cleaningFee: 0,
     serviceFee: 55,
   },
 
