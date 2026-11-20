@@ -11,6 +11,12 @@ import Calendar from '@/components/Calendar'
 import HeroVideo from '@/components/HeroVideo'
 import properties from '@/data/properties'
 
+// The testimonials in lib/translations.js are placeholder text, not real guest
+// reviews, so the "Guest Stories" section stays hidden. Replace them with real
+// Airbnb reviews (exact wording, real first name + initial, real villa), then
+// set this to true. Never show or advertise reviews that guests didn't write.
+const SHOW_GUEST_REVIEWS = false
+
 // One calendar for both dates: first click sets check-in, second sets
 // check-out, and month arrows work without ever closing the popup.
 function AvailabilityBar() {
@@ -277,7 +283,8 @@ export default function HomePage() {
             {[
               { icon: Award, value: '16', label: 'Properties' },
               { icon: Map, value: '3', label: 'Prime Locations' },
-              { icon: Star, value: '100+', label: '5-Star Reviews' },
+              // Per Marco (2026-11-20): 300+ five-star reviews across our Airbnb listings.
+              { icon: Star, value: '300+', label: '5-Star Airbnb Reviews' },
               { icon: Heart, value: '12', label: 'Max Guests / Villa' },
             ].map(({ icon: Icon, value, label }) => (
               <div key={label} className="bg-gray-50 rounded-2xl p-6 text-center">
@@ -313,6 +320,7 @@ export default function HomePage() {
       </section>
 
       {/* ── TESTIMONIALS ─────────────────────────────────────── */}
+      {SHOW_GUEST_REVIEWS && (
       <section className="py-24 bg-navy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -324,6 +332,7 @@ export default function HomePage() {
           <TestimonialCarousel testimonials={t.testimonials} />
         </div>
       </section>
+      )}
 
       {/* ── CTA BANNER ───────────────────────────────────────── */}
       <section className="py-24 bg-white">

@@ -4,20 +4,27 @@ import { BRAND_NAME } from '@/lib/brand'
 
 const TO_EMAIL = 'tch@truqui.com'
 
+// Visitor-typed text goes into an HTML email, so escape it first.
+function esc(v) {
+  return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 export async function POST(request) {
   const resend = new Resend(process.env.RESEND_API_KEY)
   try {
-    const { name, email, phone, property, dates, message } = await request.json()
-
-    if (!name || !email || !message) {
+    const body = await request.json()
+    if (!body.name || !body.email || !body.message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
+    const name = esc(body.name), email = esc(body.email), phone = esc(body.phone)
+    const property = esc(body.property), dates = esc(body.dates), message = esc(body.message)
+    const guests = esc(body.guests)
 
     await resend.emails.send({
       from: `${BRAND_NAME} <contact@truqui.com>`,
       to: TO_EMAIL,
-      replyTo: email,
-      subject: `New Inquiry from ${name}${property ? ` — ${property}` : ''}`,
+      replyTo: body.email,
+      subject: `New Inquiry from ${body.name}${body.property ? ` — ${body.property}` : ''}`,
       html: `
         <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #0a1628;">
           <div style="background: #0a1628; padding: 32px; text-align: center;">
@@ -51,6 +58,11 @@ export async function POST(request) {
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Dates</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628;">${dates}</td>
+              </tr>` : ''}
+              ${guests ? `
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Guests</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628;">${guests}</td>
               </tr>` : ''}
             </table>
 

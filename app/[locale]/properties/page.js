@@ -8,6 +8,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
 import Calendar from '@/components/Calendar'
 import properties from '@/data/properties'
+import { getCurrentRate } from '@/lib/currentRate'
 
 const LOCATIONS = ['Punta Mita', 'Bucerías', 'La Cruz de Huanacaxtle']
 const MIN_PRICE = 90
@@ -23,7 +24,9 @@ function isAvailable(slug, checkIn, checkOut, availability) {
 }
 
 function PropertiesContent() {
-  const { t } = useLanguage()
+  const { t, rates } = useLanguage()
+  // Same live price the cards show, so filtering/sorting matches what guests see.
+  const rateOf = p => getCurrentRate(rates, p.slug, p.nightlyRate)
   const searchParams = useSearchParams()
 
   const [activeLocation, setActiveLocation] = useState('All')
@@ -116,7 +119,7 @@ function PropertiesContent() {
 
   const filtered = properties
     .filter(p => activeLocation === 'All' || p.location === activeLocation)
-    .filter(p => filters.maxPrice >= MAX_PRICE || p.nightlyRate <= filters.maxPrice)
+    .filter(p => filters.maxPrice >= MAX_PRICE || rateOf(p) <= filters.maxPrice)
     .filter(p => (p.bedrooms || 0) >= filters.minBeds)
     .filter(p => p.maxGuests >= filters.minGuests)
     .filter(p => !filters.checkIn || !filters.checkOut || !availability ||
@@ -124,7 +127,7 @@ function PropertiesContent() {
     .sort((a, b) => {
       if (a.isNew && !b.isNew) return -1
       if (!a.isNew && b.isNew) return 1
-      return b.nightlyRate - a.nightlyRate
+      return rateOf(b) - rateOf(a)
     })
 
   const dateFilterActive = filters.checkIn && filters.checkOut && availability

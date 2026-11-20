@@ -10,6 +10,7 @@ import BookingWidget from '@/components/BookingWidget'
 import { useLanguage } from '@/lib/LanguageContext'
 import { getCurrentRate } from '@/lib/currentRate'
 import Calendar from '@/components/Calendar'
+import InquiryForm from '@/components/InquiryForm'
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'
 
@@ -220,6 +221,21 @@ export default function PropertyDetailPage({ params }) {
               </div>
             </div>
 
+            {/* Inquiry form — same form as the Contact page, locked to this villa */}
+            <div id="inquire" className="mb-8 scroll-mt-24">
+              <h2 className="font-serif text-2xl text-navy mb-2">
+                {lang === 'es' ? `Consulta sobre ${property.name}` : `Ask About ${property.name}`}
+              </h2>
+              <p className="text-gray-500 text-sm mb-5">
+                {lang === 'es'
+                  ? '¿Preguntas, fechas flexibles o un grupo grande? Escríbenos y te respondemos en 24 horas.'
+                  : 'Questions, flexible dates, or a larger group? Send us a note and we will reply within 24 hours.'}
+              </p>
+              <div className="bg-gray-50 rounded-2xl p-5 sm:p-6">
+                <InquiryForm property={property} />
+              </div>
+            </div>
+
             {/* WhatsApp inquiry */}
             <a
               href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(whatsappMsg)}`}
@@ -242,12 +258,12 @@ export default function PropertyDetailPage({ params }) {
       </section>
 
       {/* Similar properties */}
-      <SimilarProperties current={property} t={t} />
+      <SimilarProperties current={property} t={t} rates={rates} formatPrice={formatPrice} />
     </div>
   )
 }
 
-function SimilarProperties({ current, t }) {
+function SimilarProperties({ current, t, rates, formatPrice }) {
   const similar = properties
     .filter(p => p.slug !== current.slug && p.location === current.location)
     .slice(0, 2)
@@ -267,7 +283,7 @@ function SimilarProperties({ current, t }) {
               <div className="p-5">
                 <h3 className="font-serif text-lg text-navy">{p.name}</h3>
                 <p className="text-gray-400 text-sm mt-1">{p.bedrooms} bd · {p.bathrooms} ba · {p.maxGuests} guests</p>
-                <p className="text-navy font-bold mt-2">${p.nightlyRate.toLocaleString()} <span className="text-gray-400 text-xs font-normal">{t.properties.nightlyRate}</span></p>
+                <p className="text-navy font-bold mt-2">{formatPrice(getCurrentRate(rates, p.slug, p.nightlyRate))} <span className="text-gray-400 text-xs font-normal">{t.properties.nightlyRate}</span></p>
               </div>
             </Link>
           ))}

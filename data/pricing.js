@@ -89,7 +89,7 @@ const pricing = {
 
   'villa-girasol': {
     low:  1250,
-    high: 1600,
+    high: 1650,
     peak: 3000,
     cleaningFee: 200,
     serviceFee: 100,

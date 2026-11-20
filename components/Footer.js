@@ -2,9 +2,9 @@
 
 import Link from '@/components/LocaleLink'
 import Image from 'next/image'
-import { Instagram } from 'lucide-react'
+import { Instagram, Facebook } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
-import { BRAND_NAME } from '@/lib/brand'
+import { BRAND_NAME, INSTAGRAM_URL, FACEBOOK_URL } from '@/lib/brand'
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '15551234567'
 const EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@menacollection.com'
@@ -35,15 +35,28 @@ export default function Footer() {
               {t.footer.tagline}
             </p>
             <div className="flex gap-3">
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={16} />
-              </a>
+              {INSTAGRAM_URL && (
+                <a
+                  href={INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram size={16} />
+                </a>
+              )}
+              {FACEBOOK_URL && (
+                <a
+                  href={FACEBOOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook size={16} />
+                </a>
+              )}
               <a
                 href={`https://wa.me/${WHATSAPP}`}
                 target="_blank"

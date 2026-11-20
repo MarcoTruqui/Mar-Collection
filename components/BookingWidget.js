@@ -247,7 +247,17 @@ export default function BookingWidget({ property }) {
       {error && (
         <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-3 mb-4 text-sm text-red-600">
           <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
-          <span>{error}</span>
+          <span>
+            {error}{' '}
+            <a
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'}?text=${encodeURIComponent(`Hi! I'd like to book ${property.name}${checkIn && checkOut ? ` from ${checkIn} to ${checkOut}` : ''}.`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline font-medium"
+            >
+              {lang === 'es' ? 'O resérvala por WhatsApp.' : 'Or book via WhatsApp.'}
+            </a>
+          </span>
         </div>
       )}
 

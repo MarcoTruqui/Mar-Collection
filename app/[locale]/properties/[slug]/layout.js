@@ -1,6 +1,8 @@
 import properties from '@/data/properties'
 import { breadcrumbJsonLd } from '@/lib/structuredData'
 import { buildMetadata } from '@/lib/seo'
+import { getPricingConfig } from '@/lib/pricingSheet'
+import { getCurrentRate } from '@/lib/currentRate'
 
 const AREA_SLUGS = {
   'Punta Mita': '/punta-mita',
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }) {
   })
 }
 
-function propertyJsonLd(property, locale) {
+function propertyJsonLd(property, locale, fromRate) {
   const description = locale === 'es' && property.shortDescriptionEs ? property.shortDescriptionEs : property.shortDescription
   const amenities = locale === 'es' && property.amenitiesEs ? property.amenitiesEs : property.amenities
 
@@ -63,7 +65,7 @@ function propertyJsonLd(property, locale) {
       name,
       value: true,
     })),
-    priceRange: `$${property.nightlyRate}+ USD/night`,
+    priceRange: `$${fromRate}+ USD/night`,
     occupancy: {
       '@type': 'QuantitativeValue',
       maxValue: property.maxGuests,
@@ -71,15 +73,22 @@ function propertyJsonLd(property, locale) {
   }
 }
 
-export default function PropertyLayout({ children, params }) {
+export default async function PropertyLayout({ children, params }) {
   const property = properties.find(p => p.slug === params.slug)
   const { locale } = params
   const homeLabel = locale === 'es' ? 'Inicio' : 'Home'
   const propertiesLabel = locale === 'es' ? 'Propiedades' : 'Properties'
 
+  // Same live pricing-sheet rate the page itself shows, so Google sees the real price.
+  let fromRate = property?.nightlyRate
+  if (property) {
+    const { rates } = await getPricingConfig()
+    fromRate = getCurrentRate(rates, property.slug, property.nightlyRate)
+  }
+
   const jsonLd = property
     ? [
-        propertyJsonLd(property, locale),
+        propertyJsonLd(property, locale, fromRate),
         breadcrumbJsonLd([
           { name: homeLabel, path: '/' },
           { name: propertiesLabel, path: '/properties' },
