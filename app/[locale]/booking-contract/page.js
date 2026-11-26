@@ -60,7 +60,7 @@ function ProgressBar({ step, t }) {
           <div key={item.key} className="flex items-center">
             <div className="flex flex-col items-center gap-1">
               <div className={`w-[26px] h-[26px] rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                active ? 'bg-navy text-white' : done ? 'bg-gold text-navy' : 'bg-gray-100 text-gray-400'
+                active ? 'bg-navy text-white' : done ? 'bg-navy text-bone' : 'bg-gray-100 text-gray-400'
               }`}>
                 {i + 1}
               </div>

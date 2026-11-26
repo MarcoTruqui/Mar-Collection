@@ -74,37 +74,47 @@ export default function Navbar() {
     { href: '/contact', label: t.nav.contact },
   ]
 
+  // Transparent with light text only while sitting on top of the homepage video.
+  const solid = scrolled || menuOpen || normalizedPath !== '/'
+
+  const linkBase = 'text-[12px] uppercase tracking-[0.16em] transition-colors'
+  const linkIdle = solid ? 'text-navy/75 hover:text-navy' : 'text-white/85 hover:text-white'
+  const linkActive = solid ? 'text-navy' : 'text-white'
+  const underline = 'relative after:absolute after:left-0 after:-bottom-1.5 after:h-px after:w-full after:bg-current'
+  const chip = `text-[11px] tracking-[0.16em] px-2.5 py-1 border transition-colors ${
+    solid ? 'border-navy/25 text-navy/70 hover:border-navy hover:text-navy' : 'border-white/40 text-white/85 hover:border-white hover:text-white'
+  }`
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled || menuOpen || normalizedPath !== '/'
-          ? 'bg-navy shadow-lg py-3'
-          : 'bg-transparent py-5'
+        solid
+          ? 'bg-bone/95 backdrop-blur-sm border-b border-navy/10 py-2.5'
+          // Over the video: a soft, feathered shade (darkens + slightly blurs,
+          // fading out below the bar) so the menu reads but the video shows through.
+          : "border-b border-transparent py-4 before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-[165%] before:-z-10 before:pointer-events-none before:bg-gradient-to-b before:from-black/55 before:via-black/25 before:to-transparent before:backdrop-blur-[3px] before:[mask-image:linear-gradient(to_bottom,black_45%,transparent)]"
       } ${hidden ? '-translate-y-full' : 'translate-y-0'} md:translate-y-0`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center group">
           <Image
             src="/images/tc-logo.svg"
             alt={BRAND_NAME}
-            width={140}
-            height={76}
-            className="object-contain group-hover:opacity-90 transition-opacity"
+            width={75}
+            height={56}
+            priority
+            className="h-14 md:h-16 w-auto object-contain group-hover:opacity-80 transition-opacity"
           />
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-9">
           {navLinks.map(link => (
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm tracking-wide transition-colors ${
-                normalizedPath === link.href
-                  ? 'text-gold'
-                  : 'text-white/80 hover:text-gold'
-              }`}
+              className={`${linkBase} ${normalizedPath === link.href ? `${linkActive} ${underline}` : linkIdle}`}
             >
               {link.label}
             </Link>
@@ -114,27 +124,25 @@ export default function Navbar() {
           <div className="relative" ref={exploreRef}>
             <button
               onClick={() => setExploreOpen(o => !o)}
-              className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
-                exploreLinks.some(l => l.href === normalizedPath)
-                  ? 'text-gold'
-                  : 'text-white/80 hover:text-gold'
+              className={`flex items-center gap-1 ${linkBase} ${
+                exploreLinks.some(l => l.href === normalizedPath) ? linkActive : linkIdle
               }`}
             >
               {t.nav.explore}
-              <ChevronDown size={14} className={`transition-transform ${exploreOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown size={13} strokeWidth={1.5} className={`transition-transform ${exploreOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {exploreOpen && (
-              <div className="absolute left-0 top-full mt-3 w-64 bg-white rounded-xl shadow-xl overflow-hidden py-2">
+              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-64 bg-bone border border-navy/10 shadow-lg py-3">
                 {exploreLinks.map(link => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setExploreOpen(false)}
-                    className={`block px-4 py-2.5 text-sm transition-colors ${
+                    className={`block px-5 py-2 text-sm transition-colors ${
                       normalizedPath === link.href
-                        ? 'text-gold bg-gray-50'
-                        : 'text-navy hover:bg-gray-50 hover:text-gold'
+                        ? 'text-gold'
+                        : 'text-navy/80 hover:text-gold'
                     }`}
                   >
                     {link.label}
@@ -148,11 +156,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm tracking-wide transition-colors ${
-                normalizedPath === link.href
-                  ? 'text-gold'
-                  : 'text-white/80 hover:text-gold'
-              }`}
+              className={`${linkBase} ${normalizedPath === link.href ? `${linkActive} ${underline}` : linkIdle}`}
             >
               {link.label}
             </Link>
@@ -160,63 +164,71 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop right actions */}
-        <div className="hidden md:flex items-center gap-4">
-          <button
-            onClick={toggleCurrency}
-            className="text-white/70 hover:text-gold text-sm tracking-widest transition-colors border border-white/20 hover:border-gold/50 px-3 py-1 rounded"
-          >
+        <div className="hidden md:flex items-center gap-3">
+          <button onClick={toggleCurrency} className={chip}>
             {currency === 'USD' ? 'MXN' : 'USD'}
           </button>
-          <button
-            onClick={toggleLang}
-            className="text-white/70 hover:text-gold text-sm tracking-widest transition-colors border border-white/20 hover:border-gold/50 px-3 py-1 rounded"
-          >
+          <button onClick={toggleLang} className={chip}>
             {lang === 'en' ? 'ES' : 'EN'}
           </button>
           <Link
             href="/properties"
-            className="bg-gold text-navy text-sm font-semibold px-5 py-2 rounded hover:bg-gold/90 transition-colors tracking-wide"
+            className={`ml-2 text-[12px] uppercase tracking-[0.16em] px-5 py-2.5 transition-colors ${
+              solid ? 'bg-navy text-bone hover:bg-gold' : 'bg-bone text-navy hover:bg-white'
+            }`}
           >
             {t.nav.bookNow}
           </Link>
         </div>
 
-        {/* Mobile menu button */}
-        <button
-          className="md:hidden text-white p-1"
-          onClick={() => setMenuOpen(prev => !prev)}
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Mobile: Book + menu */}
+        <div className="md:hidden flex items-center gap-3">
+          <Link
+            href="/properties"
+            className={`text-[11px] uppercase tracking-[0.16em] px-3.5 py-2 ${
+              solid ? 'bg-navy text-bone' : 'bg-bone text-navy'
+            }`}
+          >
+            {t.nav.bookNow}
+          </Link>
+          <button
+            className={`p-1 ${solid ? 'text-navy' : 'text-white'}`}
+            onClick={() => setMenuOpen(prev => !prev)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-navy border-t border-white/10 px-4 pt-4 pb-6 flex flex-col gap-4 max-h-[80vh] overflow-y-auto">
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className={`text-base py-1 transition-colors ${
-                normalizedPath === link.href ? 'text-gold' : 'text-white/80'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="md:hidden bg-bone border-t border-navy/10 px-5 pt-5 pb-7 flex flex-col gap-5 max-h-[80vh] overflow-y-auto">
+          <div className="flex flex-col gap-1">
+            {[...navLinks, ...endLinks].map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`font-serif text-2xl py-1 transition-colors ${
+                  normalizedPath === link.href ? 'text-gold' : 'text-navy'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
 
-          <div className="pt-2 border-t border-white/10">
-            <p className="text-white/40 text-xs tracking-widest uppercase mb-2">{t.nav.explore}</p>
-            <div className="flex flex-col gap-3">
+          <div className="pt-4 border-t border-navy/10">
+            <p className="eyebrow mb-3">{t.nav.explore}</p>
+            <div className="flex flex-col gap-2.5">
               {exploreLinks.map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`text-base py-1 transition-colors ${
-                    normalizedPath === link.href ? 'text-gold' : 'text-white/80'
+                  className={`text-[15px] transition-colors ${
+                    normalizedPath === link.href ? 'text-gold' : 'text-navy/75'
                   }`}
                 >
                   {link.label}
@@ -225,41 +237,19 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 pt-2 border-t border-white/10">
-            {endLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className={`text-base py-1 transition-colors ${
-                  normalizedPath === link.href ? 'text-gold' : 'text-white/80'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-4 pt-2 border-t border-white/10">
+          <div className="flex items-center gap-3 pt-4 border-t border-navy/10">
             <button
               onClick={() => { toggleCurrency(); setMenuOpen(false) }}
-              className="text-white/70 text-sm tracking-widest border border-white/20 px-3 py-1 rounded"
+              className="text-[11px] tracking-[0.16em] text-navy/75 border border-navy/25 px-3 py-1.5"
             >
               {currency === 'USD' ? 'MXN' : 'USD'}
             </button>
             <button
               onClick={() => { toggleLang(); setMenuOpen(false) }}
-              className="text-white/70 text-sm tracking-widest border border-white/20 px-3 py-1 rounded"
+              className="text-[11px] tracking-[0.16em] text-navy/75 border border-navy/25 px-3 py-1.5"
             >
               {lang === 'en' ? 'ES' : 'EN'}
             </button>
-            <Link
-              href="/properties"
-              onClick={() => setMenuOpen(false)}
-              className="bg-gold text-navy text-sm font-semibold px-5 py-2 rounded"
-            >
-              {t.nav.bookNow}
-            </Link>
           </div>
         </div>
       )}

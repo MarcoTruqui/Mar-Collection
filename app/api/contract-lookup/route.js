@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import properties from '@/data/properties'
 import { getBookingByToken, villaNameToSlug } from '@/lib/appsScript'
 
+// Each request looks up a different live booking by token — never prerender or cache.
+export const dynamic = 'force-dynamic'
+
 // Display lookup for the /booking-contract page — the guest hasn't signed
 // yet, so (unlike /api/booking-lookup) this expects a "Pending" booking, not
 // a "Completed" one. Submission itself is handled separately by

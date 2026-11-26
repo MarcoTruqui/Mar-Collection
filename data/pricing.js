@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// TC COLLECTION — PRICING CONFIG
+// TRUQUI COLLECTION — PRICING CONFIG
 //
 // SEASONS (same calendar for all properties):
 //   Peak Season  → Dec 20 – Jan 5      (overrides High)

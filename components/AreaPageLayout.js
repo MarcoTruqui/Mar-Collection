@@ -37,16 +37,16 @@ export default function AreaPageLayout({ eyebrow, title, subtitle, heroImage, ch
       )}
 
       {/* Hero */}
-      <div className="bg-navy pt-24 pb-20 px-4 text-center relative overflow-hidden">
+      <div className="bg-linen pt-24 pb-20 px-4 text-center relative overflow-hidden">
         {heroImage && (
           <div className="absolute inset-0 opacity-20">
             <Image src={heroImage} alt="" fill className="object-cover" sizes="100vw" priority />
           </div>
         )}
         <div className="relative z-10">
-          <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">{eyebrow}</p>
-          <h1 className="font-serif text-4xl md:text-5xl text-white mb-4 max-w-3xl mx-auto">{title}</h1>
-          {subtitle && <p className="text-white/60 max-w-2xl mx-auto text-lg font-light">{subtitle}</p>}
+          <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{eyebrow}</p>
+          <h1 className="font-serif text-4xl md:text-5xl text-navy mb-4 max-w-3xl mx-auto">{title}</h1>
+          {subtitle && <p className="text-navy/60 max-w-2xl mx-auto text-lg font-light">{subtitle}</p>}
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export default function AreaPageLayout({ eyebrow, title, subtitle, heroImage, ch
         <section className="bg-gray-50 py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-14">
-              <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">{t.availableNow}</p>
+              <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{t.availableNow}</p>
               <h2 className="font-serif text-3xl md:text-4xl text-navy mb-4">
                 {locationFilter} {t.villasAndProperties}
               </h2>
@@ -77,14 +77,14 @@ export default function AreaPageLayout({ eyebrow, title, subtitle, heroImage, ch
       )}
 
       {/* CTA */}
-      <section className="bg-navy py-16 px-4 text-center">
-        <h2 className="font-serif text-2xl md:text-3xl text-white mb-4">{t.readyTitle}</h2>
-        <p className="text-white/50 mb-8 max-w-lg mx-auto">
+      <section className="bg-linen py-16 px-4 text-center">
+        <h2 className="font-serif text-2xl md:text-3xl text-navy mb-4">{t.readyTitle}</h2>
+        <p className="text-navy/50 mb-8 max-w-lg mx-auto">
           {t.readyBody}
         </p>
         <Link
           href="/properties"
-          className="inline-block bg-gold text-navy font-semibold px-8 py-3 rounded-full hover:bg-gold/90 transition-colors"
+          className="inline-block bg-navy text-bone font-semibold px-8 py-3 rounded-none hover:bg-gold transition-colors"
         >
           {t.viewAll}
         </Link>

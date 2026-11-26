@@ -2,32 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
-
 @layer base {
   :root {
-    --navy: #0a1628;
-    --gold: #c9a84c;
+    --bone: #F6F2EB;
+    --linen: #EFE8DD;
+    --sand: #E5DACA;
+    --ink: #2A2621;
+    --bronze: #8E6C48;
   }
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    font-family: 'Inter', system-ui, sans-serif;
-    color: #1a1a2e;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-weight: 400;
+    background: var(--bone);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--sand);
+    color: var(--ink);
   }
 }
 
-@layer utilities {
-  .font-serif {
-    font-family: 'Playfair Display', Georgia, serif;
+@layer components {
+  /* Small uppercase label above headings ("eyebrow") */
+  .eyebrow {
+    @apply text-[11px] uppercase tracking-label text-gold font-normal;
   }
+  /* Primary / secondary buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-navy text-bone text-[12px] uppercase tracking-[0.18em] font-medium px-7 py-3.5 transition-colors hover:bg-gold disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 border border-navy/70 text-navy text-[12px] uppercase tracking-[0.18em] font-medium px-7 py-3.5 transition-colors hover:bg-navy hover:text-bone;
+  }
+  .hairline {
+    @apply border-navy/15;
+  }
+}
+
+/* Headings in the display face never go heavy — the face is meant to be light */
+.font-serif.font-bold,
+.font-serif.font-semibold {
+  font-weight: 500;
 }
 
 /* React DatePicker overrides */
@@ -36,15 +65,15 @@
 }
 .react-datepicker__input-container input {
   width: 100%;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  border: 1px solid #E4DDD2;
+  border-radius: 2px;
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
-  color: #0a1628;
+  color: #2A2621;
   outline: none;
 }
 .react-datepicker__input-container input:focus {
-  border-color: #c9a84c;
+  border-color: #8E6C48;
 }
 
 /* Scroll animations */

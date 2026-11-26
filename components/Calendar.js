@@ -8,7 +8,24 @@ const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Ago
 const DAYS_EN   = ['Su','Mo','Tu','We','Th','Fr','Sa']
 const DAYS_ES   = ['Do','Lu','Ma','Mi','Ju','Vi','Sá']
 
-function toStr(d) { return d.toISOString().split('T')[0] }
+// Local calendar date as YYYY-MM-DD. (toISOString() converts to UTC first,
+// which shifted every date by a day for visitors east of London and made
+// "today" count as past in Mexico after 6 pm.)
+function toStr(d) {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+// A booking's first night whose previous night is free: nobody is in the
+// house that night, so it works as a check-OUT day for the next guest.
+function isCheckoutOnly(dateStr, bookedRanges) {
+  if (!bookedRanges.some(r => r.checkIn === dateStr)) return false
+  const prev = new Date(dateStr + 'T12:00:00')
+  prev.setDate(prev.getDate() - 1)
+  return !isBookedDate(toStr(prev), bookedRanges)
+}
 
 function addMonths(year, month, n) {
   const d = new Date(year, month + n, 1)
@@ -72,7 +89,11 @@ function MonthGrid({ year, month, lang, bookedRanges, checkIn, checkOut, hovered
           if (!dateStr) return <div key={`e${i}`} />
 
           const isPast   = dateStr < todayStr
-          const booked   = isBookedDate(dateStr, bookedRanges)
+          const checkoutOnly = isCheckoutOnly(dateStr, bookedRanges)
+          // Choosing a check-out date: a "check-out only" day is a normal, selectable day.
+          const selectingOut = interactive && !!checkIn && !checkOut && dateStr > checkIn
+          const booked   = isBookedDate(dateStr, bookedRanges) && !(checkoutOnly && selectingOut)
+          const halfDay  = checkoutOnly && !selectingOut && !isPast
           const isStart  = dateStr === checkIn
           const isEnd    = dateStr === checkOut
           const inRange  = !!(checkIn && rangeEnd && dateStr > checkIn && dateStr < rangeEnd && !rangeContainsBooked(checkIn, rangeEnd, bookedRanges))
@@ -90,18 +111,22 @@ function MonthGrid({ year, month, lang, bookedRanges, checkIn, checkOut, hovered
           if (isPast) {
             opacity = 0.3
             cursor = 'default'
-          } else if (booked) {
-            bg     = '#f3f4f6'
-            fg     = '#d1d5db'
-            cursor = interactive ? 'not-allowed' : 'default'
           } else if (isStart || isEnd) {
-            bg     = '#0a1628'
-            fg     = '#c9a84c'
+            bg     = '#2A2621'
+            fg     = '#F6F2EB'
             weight = 600
+          } else if (halfDay) {
+            // Half free / half booked — readable number, diagonal split background
+            bg     = 'linear-gradient(135deg, transparent 50%, #E4DDD2 50%)'
+            cursor = interactive ? 'pointer' : 'default'
+          } else if (booked) {
+            bg     = '#F1ECE4'
+            fg     = '#CFC6B8'
+            cursor = interactive ? 'not-allowed' : 'default'
           } else if (inRange) {
-            bg = '#dde6f0'
+            bg = '#EDE4D6'
           } else if (isToday) {
-            border = '1.5px solid #c9a84c'
+            border = '1.5px solid #8E6C48'
           } else if (isHov) {
             bg = 'var(--color-background-secondary)'
           }
@@ -129,10 +154,10 @@ function MonthGrid({ year, month, lang, bookedRanges, checkIn, checkOut, hovered
               }}
             >
               {/* Diagonal stripe overlay for booked dates */}
-              {booked && (
+              {booked && !halfDay && !isStart && !isEnd && (
                 <span style={{
                   position: 'absolute', inset: 0, borderRadius: 6, pointerEvents: 'none',
-                  background: 'repeating-linear-gradient(-45deg, transparent, transparent 3px, #e5e7eb 3px, #e5e7eb 4.5px)',
+                  background: 'repeating-linear-gradient(-45deg, transparent, transparent 3px, #E4DDD2 3px, #E4DDD2 4.5px)',
                   opacity: 0.7,
                 }} />
               )}
@@ -141,7 +166,7 @@ function MonthGrid({ year, month, lang, bookedRanges, checkIn, checkOut, hovered
               </span>
               {/* Gold dot for today */}
               {isToday && (
-                <span style={{ display: 'block', width: 3, height: 3, borderRadius: '50%', background: '#c9a84c', margin: '1px auto 0', position: 'relative', zIndex: 1 }} />
+                <span style={{ display: 'block', width: 3, height: 3, borderRadius: '50%', background: '#8E6C48', margin: '1px auto 0', position: 'relative', zIndex: 1 }} />
               )}
             </div>
           )
@@ -227,12 +252,16 @@ export default function Calendar({ bookedRanges = [], checkIn = '', checkOut = '
       {!interactive && (
         <div style={{ display: 'flex', gap: 16, marginBottom: 12, flexWrap: 'wrap' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--color-text-secondary)' }}>
-            <span style={{ width: 14, height: 14, borderRadius: 3, background: '#f3f4f6', border: '0.5px solid #e5e7eb', flexShrink: 0, backgroundImage: 'repeating-linear-gradient(-45deg, transparent, transparent 3px, #e5e7eb 3px, #e5e7eb 4.5px)' }} />
+            <span style={{ width: 14, height: 14, borderRadius: 3, background: '#F1ECE4', border: '0.5px solid #E4DDD2', flexShrink: 0, backgroundImage: 'repeating-linear-gradient(-45deg, transparent, transparent 3px, #E4DDD2 3px, #E4DDD2 4.5px)' }} />
             {lang === 'es' ? 'Ocupado' : 'Booked'}
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--color-text-secondary)' }}>
-            <span style={{ width: 14, height: 14, borderRadius: 3, background: '#fff', border: '0.5px solid #e5e7eb', flexShrink: 0 }} />
+            <span style={{ width: 14, height: 14, borderRadius: 3, background: '#fff', border: '0.5px solid #E4DDD2', flexShrink: 0 }} />
             {lang === 'es' ? 'Disponible' : 'Available'}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--color-text-secondary)' }}>
+            <span style={{ width: 14, height: 14, borderRadius: 3, background: 'linear-gradient(135deg, #fff 50%, #E4DDD2 50%)', border: '0.5px solid #E4DDD2', flexShrink: 0 }} />
+            {lang === 'es' ? 'Solo salida' : 'Check-out only'}
           </span>
         </div>
       )}

@@ -4,7 +4,7 @@ import Link from '@/components/LocaleLink'
 import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronDown, ChevronLeft, ChevronRight, Star, Award, Heart, Map, Search, CalendarDays } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Minus, Plus } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import PropertyCard from '@/components/PropertyCard'
 import Calendar from '@/components/Calendar'
@@ -17,13 +17,81 @@ import properties from '@/data/properties'
 // set this to true. Never show or advertise reviews that guests didn't write.
 const SHOW_GUEST_REVIEWS = false
 
-// One calendar for both dates: first click sets check-in, second sets
-// check-out, and month arrows work without ever closing the popup.
-function AvailabilityBar() {
+const COPY = {
+  en: {
+    place: 'Bahía de Banderas · Riviera Nayarit',
+    headline: 'Houses by the sea,\non the Bay of Banderas',
+    sub: 'Private villas in Punta Mita, Bucerías and La Cruz de Huanacaxtle — booked directly with us.',
+    when: 'When',
+    addDates: 'Add dates',
+    who: 'Guests',
+    search: 'Search villas',
+    pickOut: 'Now choose check-out',
+    pickIn: 'Choose check-in, then check-out',
+    browse: 'or browse all villas',
+    philosophy: 'The house',
+    stats: [
+      ['16', 'private villas & residences'],
+      ['3', 'towns on the bay'],
+      ['300+', 'five-star reviews on Airbnb'],
+      ['12', 'guests in our largest villas'],
+    ],
+    story: 'Our story',
+    portfolio: 'The collection',
+    portfolioTitle: 'A few of the houses',
+    allVillas: 'All villas',
+    placesEyebrow: 'Where we are',
+    placesTitle: 'Three towns, one bay',
+    villas: n => `${n} ${n === 1 ? 'villa' : 'villas'}`,
+    closingTitle: 'Tell us your dates.\nWe will find the house.',
+    closingText: 'Book online in a few minutes, or write to us and we will help you choose.',
+    contact: 'Write to us',
+  },
+  es: {
+    place: 'Bahía de Banderas · Riviera Nayarit',
+    headline: 'Casas junto al mar,\nen la Bahía de Banderas',
+    sub: 'Villas privadas en Punta Mita, Bucerías y La Cruz de Huanacaxtle — reserva directo con nosotros.',
+    when: 'Fechas',
+    addDates: 'Elegir fechas',
+    who: 'Huéspedes',
+    search: 'Buscar villas',
+    pickOut: 'Ahora elige la salida',
+    pickIn: 'Elige llegada y luego salida',
+    browse: 'o ver todas las villas',
+    philosophy: 'La casa',
+    stats: [
+      ['16', 'villas y residencias privadas'],
+      ['3', 'pueblos en la bahía'],
+      ['300+', 'reseñas de cinco estrellas en Airbnb'],
+      ['12', 'huéspedes en nuestras villas más grandes'],
+    ],
+    story: 'Nuestra historia',
+    portfolio: 'La colección',
+    portfolioTitle: 'Algunas de las casas',
+    allVillas: 'Todas las villas',
+    placesEyebrow: 'Dónde estamos',
+    placesTitle: 'Tres pueblos, una bahía',
+    villas: n => `${n} ${n === 1 ? 'villa' : 'villas'}`,
+    closingTitle: 'Cuéntanos tus fechas.\nNosotros encontramos la casa.',
+    closingText: 'Reserva en línea en unos minutos, o escríbenos y te ayudamos a elegir.',
+    contact: 'Escríbenos',
+  },
+}
+
+function fmtShort(dateStr, lang) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr + 'T12:00:00')
+  return d.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric' })
+}
+
+// Date + guests search. First click sets check-in, second sets check-out.
+// Sends the guest to /properties with dates (and guests) applied.
+function SearchPanel({ c }) {
   const router = useRouter()
   const { lang } = useLanguage()
   const [checkIn, setCheckIn]   = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [guests, setGuests]     = useState(2)
   const [calOpen, setCalOpen]   = useState(false)
   const wrapRef = useRef(null)
 
@@ -41,322 +109,277 @@ function AvailabilityBar() {
   }, [calOpen])
 
   function handleSearch() {
-    if (!checkIn || !checkOut) return
     const prefix = lang === 'es' ? '/es' : ''
-    router.push(`${prefix}/properties?checkIn=${checkIn}&checkOut=${checkOut}`)
+    if (!checkIn || !checkOut) { setCalOpen(true); return }
+    router.push(`${prefix}/properties?checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`)
   }
 
+  const dateLabel = checkIn && checkOut
+    ? `${fmtShort(checkIn, lang)} — ${fmtShort(checkOut, lang)}`
+    : checkIn
+      ? `${fmtShort(checkIn, lang)} — …`
+      : c.addDates
+
   return (
-    <div className="mt-10 w-full px-4 max-w-2xl mx-auto">
-      <div className="relative" ref={wrapRef}>
-        <div className="bg-navy/60 rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-          <button
-            type="button"
-            onClick={() => setCalOpen(o => !o)}
-            className="flex-1 flex items-center gap-3 bg-white/10 border border-white/25 rounded-xl px-4 py-2.5 text-left hover:border-gold transition-colors"
-          >
-            <CalendarDays size={18} className="text-white/60 flex-shrink-0" />
-            {checkIn && checkOut ? (
-              <span className="text-white text-sm">{checkIn} → {checkOut}</span>
-            ) : checkIn ? (
-              <span className="text-white text-sm">{checkIn} → <span className="text-white/50">Select check-out</span></span>
-            ) : (
-              <span className="text-white/60 text-sm">Check-in → Check-out</span>
-            )}
-          </button>
-          <button
-            onClick={handleSearch}
-            disabled={!checkIn || !checkOut}
-            className="flex items-center justify-center gap-2 bg-gold text-navy font-semibold px-7 py-2.5 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap w-full sm:w-auto"
-          >
-            <Search size={15} />
-            Check Availability
-          </button>
+    <div className="relative" ref={wrapRef}>
+      <div className="bg-bone border border-navy/10 shadow-xl flex flex-col md:flex-row md:items-stretch">
+        <button
+          type="button"
+          onClick={() => setCalOpen(o => !o)}
+          className="flex-1 text-left px-5 py-4 md:py-5 md:px-7 border-b md:border-b-0 md:border-r border-navy/10 hover:bg-linen/60 transition-colors"
+        >
+          <span className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{c.when}</span>
+          <span className={`block font-serif text-xl ${checkIn ? 'text-navy' : 'text-navy/45'}`}>{dateLabel}</span>
+        </button>
+
+        <div className="flex items-center justify-between md:justify-start gap-6 px-5 py-4 md:py-5 md:px-7 border-b md:border-b-0 md:border-r border-navy/10">
+          <div>
+            <span className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{c.who}</span>
+            <span className="block font-serif text-xl text-navy">{guests}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button type="button" aria-label="Fewer guests" onClick={() => setGuests(g => Math.max(1, g - 1))}
+              className="w-8 h-8 rounded-full border border-navy/20 flex items-center justify-center text-navy/70 hover:border-navy">
+              <Minus size={13} strokeWidth={1.5} />
+            </button>
+            <button type="button" aria-label="More guests" onClick={() => setGuests(g => Math.min(16, g + 1))}
+              className="w-8 h-8 rounded-full border border-navy/20 flex items-center justify-center text-navy/70 hover:border-navy">
+              <Plus size={13} strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
 
-        {calOpen && (
-          <div className="absolute left-0 right-0 top-full mt-2 z-40 bg-white border border-gray-200 rounded-2xl shadow-xl p-4 text-left">
-            <Calendar
-              bookedRanges={[]}
-              checkIn={checkIn}
-              checkOut={checkOut}
-              lang={lang}
-              monthsToShow={1}
-              minNights={2}
-              onChange={(ci, co) => {
-                setCheckIn(ci)
-                setCheckOut(co)
-                if (ci && co) setCalOpen(false)
-              }}
-            />
-            <p className="text-xs text-gray-400 mt-3 text-center">
-              {checkIn && !checkOut ? 'Now select your check-out date' : 'Select check-in, then check-out'}
-            </p>
-          </div>
-        )}
+        <button
+          onClick={handleSearch}
+          className="bg-navy text-bone text-[12px] uppercase tracking-[0.18em] px-8 py-4 md:py-0 hover:bg-gold transition-colors"
+        >
+          {c.search}
+        </button>
       </div>
-    </div>
-  )
-}
 
-function StarRating({ count = 5 }) {
-  return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: count }).map((_, i) => (
-        <Star key={i} size={14} className="fill-gold text-gold" />
-      ))}
+      {calOpen && (
+        <div className="absolute left-0 right-0 md:right-auto md:w-[380px] top-full mt-2 z-40 bg-bone border border-navy/10 shadow-xl p-5 text-left">
+          <Calendar
+            bookedRanges={[]}
+            checkIn={checkIn}
+            checkOut={checkOut}
+            lang={lang}
+            monthsToShow={1}
+            minNights={2}
+            onChange={(ci, co) => {
+              setCheckIn(ci)
+              setCheckOut(co)
+              if (ci && co) setCalOpen(false)
+            }}
+          />
+          <p className="text-xs text-navy/50 mt-3 text-center">
+            {checkIn && !checkOut ? c.pickOut : c.pickIn}
+          </p>
+        </div>
+      )}
     </div>
   )
 }
 
 const FEATURED_SLUGS = ['palmas-8', 'villa-girasol', 'terrazas-g32', 'villa-turquesa', 'villa-perico']
 
-function FeaturedCarousel({ items }) {
-  const [current, setCurrent] = useState(0)
-  const total = items.length // 5
-  const visible = 3
-
-  const prev = () => setCurrent(i => (i - 1 + total) % total)
-  const next = () => setCurrent(i => (i + 1) % total)
-
-  const getVisible = () =>
-    Array.from({ length: visible }, (_, offset) => (current + offset) % total)
-
-  return (
-    <div className="relative">
-      <div className="grid md:grid-cols-3 gap-8">
-        {getVisible().map(idx => (
-          <PropertyCard key={items[idx].slug} property={items[idx]} />
-        ))}
-      </div>
-
-      <div className="flex items-center justify-center gap-6 mt-10">
-        <button
-          onClick={prev}
-          className="w-10 h-10 rounded-full border border-navy/30 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy transition-colors"
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <div className="flex gap-2">
-          {items.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`h-1.5 rounded-full transition-all ${i === current ? 'bg-navy w-4' : 'bg-navy/20 w-1.5'}`}
-            />
-          ))}
-        </div>
-        <button
-          onClick={next}
-          className="w-10 h-10 rounded-full border border-navy/30 flex items-center justify-center text-navy/50 hover:text-navy hover:border-navy transition-colors"
-        >
-          <ChevronRight size={18} />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function TestimonialCarousel({ testimonials }) {
-  const [current, setCurrent] = useState(0)
-
-  const prev = () => setCurrent(i => (i - 1 + testimonials.length) % testimonials.length)
-  const next = () => setCurrent(i => (i + 1) % testimonials.length)
-
-  const getVisible = () => {
-    const indices = []
-    for (let offset = 0; offset < 3; offset++) {
-      indices.push((current + offset) % testimonials.length)
-    }
-    return indices
+function FeaturedRow({ items }) {
+  const scroller = useRef(null)
+  const scrollBy = dir => {
+    const el = scroller.current
+    if (!el) return
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' })
   }
 
   return (
     <div className="relative">
-      {/* Cards */}
-      <div className="grid md:grid-cols-3 gap-8">
-        {getVisible().map((idx) => {
-          const t = testimonials[idx]
-          return (
-            <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/8 transition-colors">
-              <StarRating count={t.rating} />
-              <blockquote className="text-white/80 leading-relaxed mt-4 mb-6 text-sm italic">
-                "{t.text}"
-              </blockquote>
-              <div>
-                <p className="text-white font-semibold text-sm">{t.name}</p>
-                <p className="text-white/40 text-xs">{t.location}</p>
-                <p className="text-gold text-xs mt-1">{t.property}</p>
-              </div>
-            </div>
-          )
-        })}
+      <div
+        ref={scroller}
+        className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth -mx-5 px-5 sm:mx-0 sm:px-0 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map(p => (
+          <div key={p.slug} className="snap-start shrink-0 w-[82%] sm:w-[46%] lg:w-[31.5%]">
+            <PropertyCard property={p} />
+          </div>
+        ))}
       </div>
-
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-6 mt-10">
-        <button onClick={prev} className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/50 transition-colors">
-          <ChevronLeft size={18} />
+      <div className="hidden sm:flex gap-2 justify-end mt-8">
+        <button onClick={() => scrollBy(-1)} aria-label="Previous"
+          className="w-11 h-11 rounded-full border border-navy/25 flex items-center justify-center text-navy/70 hover:border-navy hover:text-navy transition-colors">
+          <ArrowLeft size={16} strokeWidth={1.5} />
         </button>
-        <div className="flex gap-2">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${i === current ? 'bg-gold w-4' : 'bg-white/30'}`}
-            />
-          ))}
-        </div>
-        <button onClick={next} className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/50 transition-colors">
-          <ChevronRight size={18} />
+        <button onClick={() => scrollBy(1)} aria-label="Next"
+          className="w-11 h-11 rounded-full border border-navy/25 flex items-center justify-center text-navy/70 hover:border-navy hover:text-navy transition-colors">
+          <ArrowRight size={16} strokeWidth={1.5} />
         </button>
       </div>
     </div>
   )
 }
 
+function TestimonialList({ testimonials }) {
+  return (
+    <div className="grid md:grid-cols-3 gap-10">
+      {testimonials.slice(0, 3).map((t, i) => (
+        <figure key={i} className="border-t border-navy/15 pt-6">
+          <blockquote className="font-serif text-xl leading-snug text-navy/90">“{t.text}”</blockquote>
+          <figcaption className="mt-5 text-[13px] text-navy/60">
+            {t.name} · <span className="text-gold">{t.property}</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  )
+}
+
+const PLACES = [
+  { name: 'Punta Mita', href: '/punta-mita', cover: 'palmas-8' },
+  { name: 'Bucerías', href: '/bucerias', cover: 'villa-girasol' },
+  { name: 'La Cruz de Huanacaxtle', href: '/la-cruz-de-huanacaxtle', cover: 'zantamar-th7' },
+]
+
 export default function HomePage() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
+  const c = COPY[lang] || COPY.en
   const featured = FEATURED_SLUGS.map(slug => properties.find(p => p.slug === slug)).filter(Boolean)
 
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center">
-        {/* Background */}
-        <div className="absolute inset-0 z-0 bg-navy">
+      <section className="relative h-[60svh] min-h-[420px] md:h-[92vh] md:min-h-[640px]">
+        <div className="absolute inset-0 bg-navy overflow-hidden">
           <HeroVideo />
-          <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/40 to-navy/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45" />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <p className="text-gold text-sm tracking-[0.5em] font-light mb-6 uppercase">
-            Riviera Nayarit, México
-          </p>
-          <h1 className="font-serif text-5xl md:text-7xl text-white font-bold leading-tight mb-6">
-            {t.hero.headline}
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 flex flex-col justify-end pb-16 md:pb-40">
+          <p className="text-[11px] uppercase tracking-label text-white/80 mb-4">{c.place}</p>
+          <h1 className="font-serif font-light text-white text-[42px] leading-[1.02] sm:text-6xl md:text-[84px] md:leading-[0.98] whitespace-pre-line max-w-4xl">
+            {c.headline}
           </h1>
-          <p className="text-white/75 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl mx-auto font-light">
-            {t.hero.subheadline}
-          </p>
-          <Link
-            href="/properties"
-            className="inline-block bg-gold text-navy font-semibold px-10 py-4 rounded-full text-base hover:bg-gold/90 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 tracking-wide"
-          >
-            {t.hero.cta}
-          </Link>
-
-          <div className="hidden sm:block">
-            <AvailabilityBar />
-          </div>
+          <p className="hidden md:block text-white/85 text-lg font-light mt-6 max-w-xl">{c.sub}</p>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/50">
-          <span className="text-xs tracking-widest">{t.hero.scrollDown}</span>
-          <ChevronDown size={18} className="animate-bounce" />
+        {/* Desktop: search sits on the bottom edge of the hero */}
+        <div className="hidden md:block absolute z-20 left-0 right-0 bottom-0 translate-y-1/2">
+          <div className="max-w-5xl mx-auto px-10">
+            <SearchPanel c={c} />
+          </div>
         </div>
       </section>
 
-      {/* ── BRAND INTRO ──────────────────────────────────────── */}
-      <section className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <p className="text-gold text-xs tracking-[0.5em] font-light mb-4 uppercase">Our Philosophy</p>
-            <h2 className="font-serif text-4xl md:text-5xl text-navy mb-6 leading-snug">
+      {/* Phone: search comes straight after the photo, before anything else */}
+      <section className="md:hidden bg-bone px-5 pt-5 pb-10 relative z-20 -mt-10">
+        <SearchPanel c={c} />
+        <div className="text-center mt-4">
+          <Link href="/properties" className="text-[13px] text-navy/60 underline underline-offset-4 decoration-navy/30">
+            {c.browse}
+          </Link>
+        </div>
+        <p className="text-navy/70 text-[15px] leading-relaxed mt-8">{c.sub}</p>
+      </section>
+
+      {/* ── FEATURED VILLAS (right after search, so booking stays close) ── */}
+      <section className="bg-bone pt-6 md:pt-36 pb-20 md:pb-28">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <div className="flex items-end justify-between gap-6 mb-10 md:mb-14">
+            <div>
+              <p className="eyebrow mb-3">{c.portfolio}</p>
+              <h2 className="font-serif text-4xl md:text-6xl text-navy leading-none">{c.portfolioTitle}</h2>
+            </div>
+            <Link href="/properties" className="hidden sm:inline text-[12px] uppercase tracking-[0.18em] text-navy border-b border-navy/40 pb-1 hover:text-gold hover:border-gold transition-colors">
+              {c.allVillas}
+            </Link>
+          </div>
+
+          <FeaturedRow items={featured} />
+
+          <div className="sm:hidden mt-8">
+            <Link href="/properties" className="btn-outline w-full">{c.allVillas}</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── THE HOUSE / PHILOSOPHY ───────────────────────────── */}
+      <section className="bg-linen py-20 md:py-32">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid md:grid-cols-12 gap-12 md:gap-8">
+          <div className="md:col-span-5">
+            <p className="eyebrow mb-4">{c.philosophy}</p>
+            <h2 className="font-serif text-4xl md:text-[54px] leading-[1.05] text-navy">
               {t.home.brandTitle}
             </h2>
-            <p className="text-gray-600 leading-relaxed text-base">
+          </div>
+          <div className="md:col-span-6 md:col-start-7">
+            <p className="text-navy/75 text-[17px] leading-[1.75] font-light">
               {t.home.brandText}
             </p>
-            <Link
-              href="/about"
-              className="inline-block mt-8 border-b border-gold text-navy text-sm tracking-wide font-medium hover:text-gold transition-colors pb-0.5"
-            >
-              Learn Our Story →
+            <Link href="/about" className="inline-block mt-8 text-[12px] uppercase tracking-[0.18em] text-navy border-b border-navy/40 pb-1 hover:text-gold hover:border-gold transition-colors">
+              {c.story}
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-6">
-            {[
-              { icon: Award, value: '16', label: 'Properties' },
-              { icon: Map, value: '3', label: 'Prime Locations' },
-              // Per Marco (2026-11-20): 300+ five-star reviews across our Airbnb listings.
-              { icon: Star, value: '300+', label: '5-Star Airbnb Reviews' },
-              { icon: Heart, value: '12', label: 'Max Guests / Villa' },
-            ].map(({ icon: Icon, value, label }) => (
-              <div key={label} className="bg-gray-50 rounded-2xl p-6 text-center">
-                <Icon size={24} className="text-gold mx-auto mb-3" />
-                <div className="font-serif text-3xl text-navy font-bold mb-1">{value}</div>
-                <div className="text-gray-500 text-xs tracking-wide">{label}</div>
+          <dl className="md:col-span-12 grid grid-cols-2 md:grid-cols-4 border-t border-navy/15 mt-4 md:mt-16">
+            {c.stats.map(([value, label], i) => (
+              <div key={label} className={`pt-8 pb-2 pr-4 ${i % 2 === 1 ? 'pl-4 md:pl-8' : ''} ${i > 0 ? 'md:border-l md:border-navy/15 md:pl-8' : ''}`}>
+                <dt className="font-serif text-5xl md:text-6xl font-light text-navy">{value}</dt>
+                <dd className="text-[13px] text-navy/60 mt-2 leading-snug">{label}</dd>
               </div>
             ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* ── PLACES ───────────────────────────────────────────── */}
+      <section className="bg-bone py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+          <p className="eyebrow mb-3">{c.placesEyebrow}</p>
+          <h2 className="font-serif text-4xl md:text-6xl text-navy leading-none mb-12">{c.placesTitle}</h2>
+          <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+            {PLACES.map(place => {
+              const cover = properties.find(p => p.slug === place.cover)
+              const count = properties.filter(p => p.location === place.name).length
+              return (
+                <Link key={place.name} href={place.href} className="group block">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-sand">
+                    {cover && (
+                      <Image src={cover.images[0]} alt={place.name} fill sizes="(max-width: 768px) 90vw, 33vw"
+                        className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]" />
+                    )}
+                  </div>
+                  <div className="flex items-baseline justify-between pt-5 border-b border-navy/15 pb-4">
+                    <h3 className="font-serif text-[28px] text-navy group-hover:text-gold transition-colors">{place.name}</h3>
+                    <span className="text-[13px] text-navy/55 whitespace-nowrap pl-4">{c.villas(count)}</span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── FEATURED PROPERTIES ──────────────────────────────── */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Our Portfolio</p>
-            <h2 className="font-serif text-4xl md:text-5xl text-navy mb-4">{t.home.featuredTitle}</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">{t.home.featuredSubtitle}</p>
-          </div>
-
-          <FeaturedCarousel items={featured} />
-
-          <div className="text-center mt-12">
-            <Link
-              href="/properties"
-              className="inline-block border-2 border-navy text-navy font-semibold px-10 py-3 rounded-full hover:bg-navy hover:text-white transition-all duration-200 text-sm tracking-wide"
-            >
-              {t.home.viewAll}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ─────────────────────────────────────── */}
+      {/* ── REVIEWS (hidden until real ones are in) ──────────── */}
       {SHOW_GUEST_REVIEWS && (
-      <section className="py-24 bg-navy">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Guest Stories</p>
-            <h2 className="font-serif text-4xl md:text-5xl text-white mb-4">{t.home.testimonialsTitle}</h2>
-            <p className="text-white/60 max-w-xl mx-auto">{t.home.testimonialsSubtitle}</p>
+        <section className="bg-linen py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10">
+            <p className="eyebrow mb-3">Guest Stories</p>
+            <h2 className="font-serif text-4xl md:text-6xl text-navy leading-none mb-12">{t.home.testimonialsTitle}</h2>
+            <TestimonialList testimonials={t.testimonials} />
           </div>
-
-          <TestimonialCarousel testimonials={t.testimonials} />
-        </div>
-      </section>
+        </section>
       )}
 
-      {/* ── CTA BANNER ───────────────────────────────────────── */}
-      <section className="py-24 bg-white">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <p className="text-gold text-xs tracking-[0.5em] font-light mb-4 uppercase">Begin Your Journey</p>
-          <h2 className="font-serif text-4xl md:text-5xl text-navy mb-6">
-            Your Perfect Stay Awaits
+      {/* ── CLOSING ──────────────────────────────────────────── */}
+      <section className="bg-sand py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 grid md:grid-cols-12 gap-10 items-end">
+          <h2 className="md:col-span-7 font-serif text-4xl md:text-6xl leading-[1.05] text-navy whitespace-pre-line">
+            {c.closingTitle}
           </h2>
-          <p className="text-gray-500 text-base mb-10">
-            Browse our collection of handpicked properties or reach out to our concierge team — we'll find the perfect match for your group, dates, and vision.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/properties"
-              className="bg-navy text-white font-semibold px-10 py-4 rounded-full hover:bg-navy/90 transition-colors text-sm tracking-wide"
-            >
-              {t.hero.cta}
-            </Link>
-            <Link
-              href="/contact"
-              className="border-2 border-navy text-navy font-semibold px-10 py-4 rounded-full hover:bg-navy hover:text-white transition-all duration-200 text-sm tracking-wide"
-            >
-              {t.nav.contact}
-            </Link>
+          <div className="md:col-span-5">
+            <p className="text-navy/70 text-[16px] leading-relaxed mb-8">{c.closingText}</p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link href="/properties" className="btn-primary">{t.nav.bookNow}</Link>
+              <Link href="/contact" className="btn-outline">{c.contact}</Link>
+            </div>
           </div>
         </div>
       </section>

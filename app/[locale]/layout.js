@@ -6,6 +6,23 @@ import IntroLoader from '@/components/IntroLoader'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import { buildMetadata } from '@/lib/seo'
 import { BRAND_NAME, BRAND_LOGO } from '@/lib/brand'
+import { Cormorant_Garamond, Jost } from 'next/font/google'
+
+// Display: Cormorant Garamond (light, editorial). Text: Jost (clean, Futura-like,
+// the kind of sans you see on Mediterranean hotel signage).
+const display = Cormorant_Garamond({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+  display: 'swap',
+})
+const sans = Jost({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '500'],
+  variable: '--font-sans',
+  display: 'swap',
+})
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.truqui.com'
 
@@ -85,8 +102,8 @@ export default function RootLayout({ children, params }) {
   const { locale } = params
 
   return (
-    <html lang={locale}>
-      <body className="bg-white">
+    <html lang={locale} className={`${display.variable} ${sans.variable}`}>
+      <body className="bg-bone text-navy">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd[locale] ?? organizationJsonLd.en) }}

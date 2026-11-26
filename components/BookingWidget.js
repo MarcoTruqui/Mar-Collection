@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '@/lib/LanguageContext'
-import { Minus, Plus, Tag, AlertCircle, CalendarDays } from 'lucide-react'
+import { Minus, Plus, AlertCircle } from 'lucide-react'
 import { calculateStayPrice } from '@/lib/pricingEngine'
 import Calendar from '@/components/Calendar'
 
@@ -12,10 +12,31 @@ const SEASON_LABELS = {
   low:  { en: 'Low Season',  es: 'Temporada Baja' },
 }
 
-function fmt(dateStr) {
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
+
+// The booking server answers in English; show Spanish visitors Spanish.
+const ERRORS_ES = {
+  'Unknown property.': 'Propiedad desconocida.',
+  'Invalid dates.': 'Fechas no válidas.',
+  'Check-in date is in the past.': 'La fecha de llegada ya pasó.',
+  'Check-out must be after check-in.': 'La salida debe ser después de la llegada.',
+  'Minimum stay is 2 nights.': 'La estancia mínima es de 2 noches.',
+  'These dates were just booked. Please pick different dates.': 'Estas fechas se acaban de reservar. Por favor elige otras.',
+  'Failed to start booking. Please try again.': 'No se pudo iniciar la reserva. Inténtalo de nuevo.',
+  'Could not start booking. Please try again.': 'No se pudo iniciar la reserva. Inténtalo de nuevo.',
+}
+function localizeError(msg, lang) {
+  if (lang !== 'es' || !msg) return msg
+  if (ERRORS_ES[msg]) return ERRORS_ES[msg]
+  const max = msg.match(/maximum of (\d+) guests/)
+  if (max) return `Esta propiedad permite un máximo de ${max[1]} huéspedes.`
+  return msg
+}
+
+function fmt(dateStr, lang) {
   if (!dateStr) return ''
   const d = new Date(dateStr + 'T12:00:00')
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return d.toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 export default function BookingWidget({ property }) {
@@ -35,6 +56,18 @@ export default function BookingWidget({ property }) {
       .then(data => setBookedRanges(data[property.slug] || []))
       .catch(() => {})
   }, [property.slug])
+
+  // Carry over dates/guests the guest already searched for (homepage or
+  // Properties list), so they don't have to pick them twice.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search)
+    const ci = q.get('checkIn'), co = q.get('checkOut'), g = Number(q.get('guests'))
+    if (ci && co && DATE_RE.test(ci) && DATE_RE.test(co) && co > ci) {
+      setCheckIn(ci)
+      setCheckOut(co)
+    }
+    if (g > 0) setGuests(Math.min(property.maxGuests, g))
+  }, [property.maxGuests])
 
   // Close calendar when clicking outside
   useEffect(() => {
@@ -68,7 +101,7 @@ export default function BookingWidget({ property }) {
   const total  = stay?.total  ?? 0
 
   function validate() {
-    if (!checkIn || !checkOut) { setError(t.booking.selectDatesFirst); return false }
+    if (!checkIn || !checkOut) { setError(t.booking.selectDatesFirst); setCalOpen(true); return false }
     if (nights < 2) { setError(t.booking.minimum2Nights); return false }
     setError('')
     return true
@@ -97,52 +130,49 @@ export default function BookingWidget({ property }) {
       if (data.url) {
         window.location.href = data.url
       } else {
-        setError(data.error || 'Could not start booking. Please try again.')
+        setError(localizeError(data.error || 'Could not start booking. Please try again.', lang))
       }
     } catch {
-      setError('Could not start booking. Please try again.')
+      setError(localizeError('Could not start booking. Please try again.', lang))
     } finally {
       setLoading(false)
     }
   }
 
+  const label = 'block text-[10px] uppercase tracking-label text-navy/50 mb-1'
+
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl shadow-lg p-6 sticky top-24">
-      <h3 className="font-serif text-navy text-xl mb-4">{t.booking.title}</h3>
+    <div className="bg-white/70 border border-navy/15 p-6 md:p-7">
+      <div className="flex items-baseline justify-between mb-5">
+        <h3 className="font-serif text-2xl text-navy">{t.booking.title}</h3>
+      </div>
 
       {/* Date picker — click to open calendar popover */}
-      <div className="relative mb-4" ref={calRef}>
-        <div
-          className="flex gap-2 cursor-pointer"
-          onClick={() => setCalOpen(o => !o)}
-        >
-          <div className={`flex-1 rounded-xl border px-3 py-2.5 text-sm transition-colors ${calOpen || checkIn ? 'border-navy/40 bg-navy/5' : 'border-gray-200 hover:border-gray-300'}`}>
-            <p className="text-xs text-gray-400 mb-0.5">{t.booking.checkIn}</p>
-            <p className={`font-medium ${checkIn ? 'text-navy' : 'text-gray-300'}`}>{checkIn ? fmt(checkIn) : '—'}</p>
+      <div className="relative mb-3" ref={calRef}>
+        <div className="grid grid-cols-2 border border-navy/20 cursor-pointer" onClick={() => setCalOpen(o => !o)}>
+          <div className={`px-4 py-3 border-r border-navy/20 transition-colors ${calOpen ? 'bg-linen' : 'hover:bg-linen/60'}`}>
+            <span className={label}>{t.booking.checkIn}</span>
+            <span className={`font-serif text-lg ${checkIn ? 'text-navy' : 'text-navy/35'}`}>{checkIn ? fmt(checkIn, lang) : '—'}</span>
           </div>
-          <div className={`flex-1 rounded-xl border px-3 py-2.5 text-sm transition-colors ${calOpen || checkOut ? 'border-navy/40 bg-navy/5' : 'border-gray-200 hover:border-gray-300'}`}>
-            <p className="text-xs text-gray-400 mb-0.5">{t.booking.checkOut}</p>
-            <p className={`font-medium ${checkOut ? 'text-navy' : 'text-gray-300'}`}>{checkOut ? fmt(checkOut) : '—'}</p>
-          </div>
-          <div className="flex items-center px-1 text-gray-400">
-            <CalendarDays size={18} />
+          <div className={`px-4 py-3 transition-colors ${calOpen ? 'bg-linen' : 'hover:bg-linen/60'}`}>
+            <span className={label}>{t.booking.checkOut}</span>
+            <span className={`font-serif text-lg ${checkOut ? 'text-navy' : 'text-navy/35'}`}>{checkOut ? fmt(checkOut, lang) : '—'}</span>
           </div>
         </div>
 
-        {/* Clear button */}
         {(checkIn || checkOut) && !calOpen && (
           <button
             onClick={e => { e.stopPropagation(); setCheckIn(''); setCheckOut(''); setError('') }}
-            className="absolute right-8 top-1/2 -translate-y-1/2 text-xs text-gray-300 hover:text-red-400 transition-colors"
+            className="absolute -top-6 right-0 text-[11px] text-navy/45 hover:text-navy underline underline-offset-2"
           >
-            ✕
+            {lang === 'es' ? 'Borrar fechas' : 'Clear dates'}
           </button>
         )}
 
         {/* Popover calendar */}
         {calOpen && (
           <div
-            className="absolute left-0 right-0 top-full mt-2 z-30 bg-white border border-gray-200 rounded-2xl shadow-xl p-4"
+            className="absolute left-0 right-0 top-full mt-2 z-30 bg-bone border border-navy/10 shadow-xl p-4"
             onClick={e => e.stopPropagation()}
             onTouchEnd={e => e.stopPropagation()}
           >
@@ -160,7 +190,7 @@ export default function BookingWidget({ property }) {
               monthsToShow={1}
               minNights={2}
             />
-            <p className="text-xs text-gray-400 mt-3 text-center">
+            <p className="text-xs text-navy/50 mt-3 text-center">
               {lang === 'es' ? 'Selecciona llegada y luego salida' : 'Select check-in, then check-out'}
             </p>
           </div>
@@ -168,36 +198,37 @@ export default function BookingWidget({ property }) {
       </div>
 
       {/* Guests */}
-      <div className="mb-5">
-        <label className="block text-xs text-gray-500 mb-1">{t.booking.guests}</label>
-        <div className="flex items-center gap-3 border border-gray-200 rounded-lg px-3 py-2 w-full">
-          <button onClick={() => setGuests(g => Math.max(1, g - 1))} className="text-navy hover:text-gold transition-colors">
-            <Minus size={16} />
-          </button>
-          <span className="flex-1 text-center text-sm text-navy font-medium">
-            {guests} {guests === 1 ? t.booking.guestCount : t.booking.guestsCount}
+      <div className="flex items-center justify-between border border-navy/20 px-4 py-3 mb-5">
+        <div>
+          <span className={label}>{t.booking.guests}</span>
+          <span className="font-serif text-lg text-navy">
+            {guests} <span className="text-[13px] font-sans text-navy/50">/ max {property.maxGuests}</span>
           </span>
-          <button onClick={() => setGuests(g => Math.min(property.maxGuests, g + 1))} className="text-navy hover:text-gold transition-colors">
-            <Plus size={16} />
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setGuests(g => Math.max(1, g - 1))} aria-label="Fewer guests"
+            className="w-8 h-8 rounded-full border border-navy/20 flex items-center justify-center text-navy/70 hover:border-navy">
+            <Minus size={13} strokeWidth={1.5} />
+          </button>
+          <button onClick={() => setGuests(g => Math.min(property.maxGuests, g + 1))} aria-label="More guests"
+            className="w-8 h-8 rounded-full border border-navy/20 flex items-center justify-center text-navy/70 hover:border-navy">
+            <Plus size={13} strokeWidth={1.5} />
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-1">Max {property.maxGuests} {t.booking.guestsCount}</p>
       </div>
 
       {/* Price breakdown */}
       {stay && nights >= 2 && (
-        <div className="bg-gray-50 rounded-xl p-4 mb-5 text-sm space-y-2">
-          <p className="font-medium text-navy text-xs tracking-wide mb-3">{t.booking.priceBreakdown}</p>
-
+        <div className="text-[14px] space-y-2.5 mb-5">
           {stay.mixedSeasons
             ? stay.seasonSummary.map(s => (
-                <div key={s.id} className="flex justify-between text-gray-600">
+                <div key={s.id} className="flex justify-between text-navy/70">
                   <span>{SEASON_LABELS[s.id]?.[lang]} ({s.nights}n × {formatPrice(s.rate ?? 0)})</span>
                   <span>{formatPrice(s.nights * (s.rate ?? 0))}</span>
                 </div>
               ))
             : (
-                <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-navy/70">
                   <span>{SEASON_LABELS[stay.seasonSummary[0]?.id]?.[lang]} — {formatPrice(stay.averageRate ?? 0)} × {nights} {nights === 1 ? t.booking.nights : t.booking.nightsPlural}</span>
                   <span>{formatPrice(stay.subtotal)}</span>
                 </div>
@@ -205,39 +236,38 @@ export default function BookingWidget({ property }) {
           }
 
           {stay.weeklyDiscount > 0 && (
-            <div className="flex justify-between text-green-600">
-              <span className="flex items-center gap-1"><Tag size={12} /> 7-night discount (10%)</span>
+            <div className="flex justify-between text-olive">
+              <span>{lang === 'es' ? 'Descuento 7 noches (10%)' : '7-night discount (10%)'}</span>
               <span>−{formatPrice(stay.weeklyDiscount)}</span>
             </div>
           )}
 
           {stay.promoDiscount > 0 && stay.activePromo && (
-            <div className="flex justify-between text-green-600">
-              <span className="flex items-center gap-1"><Tag size={12} />{lang === 'es' ? stay.activePromo.labelEs : stay.activePromo.label}</span>
+            <div className="flex justify-between text-olive">
+              <span>{lang === 'es' ? stay.activePromo.labelEs : stay.activePromo.label}</span>
               <span>−{formatPrice(stay.promoDiscount)}</span>
             </div>
           )}
 
           {stay.cleaningFee > 0 && (
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-navy/70">
               <span>{t.booking.cleaningFee}</span>
               <span>{formatPrice(stay.cleaningFee)}</span>
             </div>
           )}
 
           {stay.serviceFee > 0 && (
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-navy/70">
               <span>{t.booking.serviceFee}</span>
               <span>{formatPrice(stay.serviceFee)}</span>
             </div>
           )}
 
-          <div className="flex justify-between font-bold text-navy pt-2 border-t border-gray-200">
-            <span>{t.booking.total}</span>
-            <span>{formatPrice(total)}</span>
+          <div className="flex justify-between items-baseline text-navy pt-3 border-t border-navy/15">
+            <span className="text-[11px] uppercase tracking-label">{t.booking.total}</span>
+            <span className="font-serif text-2xl">{formatPrice(total)}</span>
           </div>
-          <p className="text-xs text-gray-400 pt-1 flex items-center gap-1">
-            <span>✓</span>
+          <p className="text-[12px] text-navy/50">
             {lang === 'es' ? 'Limpieza diaria incluida' : 'Daily cleaning included'}
           </p>
         </div>
@@ -245,12 +275,12 @@ export default function BookingWidget({ property }) {
 
       {/* Error */}
       {error && (
-        <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-3 mb-4 text-sm text-red-600">
-          <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
+        <div className="flex items-start gap-2 bg-clay/10 border border-clay/30 px-4 py-3 mb-4 text-sm text-[#7a3f26]">
+          <AlertCircle size={16} strokeWidth={1.5} className="mt-0.5 flex-shrink-0" />
           <span>
             {error}{' '}
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'}?text=${encodeURIComponent(`Hi! I'd like to book ${property.name}${checkIn && checkOut ? ` from ${checkIn} to ${checkOut}` : ''}.`)}`}
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'}?text=${encodeURIComponent(lang === 'es' ? `¡Hola! Me gustaría reservar ${property.name}${checkIn && checkOut ? ` del ${checkIn} al ${checkOut}` : ''}.` : `Hi! I'd like to book ${property.name}${checkIn && checkOut ? ` from ${checkIn} to ${checkOut}` : ''}.`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="underline font-medium"
@@ -266,10 +296,13 @@ export default function BookingWidget({ property }) {
       <button
         onClick={handleBookNow}
         disabled={loading}
-        className="w-full bg-navy text-white font-semibold py-3 rounded-xl hover:bg-navy/90 transition-colors text-sm disabled:opacity-50"
+        className="w-full bg-navy text-bone text-[12px] uppercase tracking-[0.2em] py-4 hover:bg-gold transition-colors disabled:opacity-50"
       >
         {loading ? t.booking.startingBooking : t.booking.bookNow}
       </button>
+      <p className="text-[12px] text-navy/45 text-center mt-3">
+        {lang === 'es' ? 'Aún no se te cobra nada' : 'You won’t be charged yet'}
+      </p>
     </div>
   )
 }

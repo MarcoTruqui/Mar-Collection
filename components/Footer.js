@@ -22,109 +22,84 @@ export default function Footer() {
   const { t } = useLanguage()
   const year = new Date().getFullYear()
 
+  const heading = 'text-[11px] uppercase tracking-label text-navy/50 mb-5'
+  const link = 'text-navy/80 hover:text-gold transition-colors'
+  const icon = 'w-9 h-9 border border-navy/20 flex items-center justify-center text-navy/70 hover:border-navy hover:text-navy transition-colors'
+
   return (
-    <footer className="bg-navy text-white/80 border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="bg-linen text-navy border-t border-navy/10">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 pt-20 pb-10">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-8 gap-y-12">
           {/* Brand */}
-          <div className="md:col-span-1">
-            <div className="mb-4">
-              <Image src="/images/tc-logo.svg" alt={BRAND_NAME} width={200} height={150} className="brightness-0 invert" />
-            </div>
-            <p className="text-sm leading-relaxed text-white/60 mb-5">
+          <div className="col-span-2 md:col-span-4">
+            <Image src="/images/tc-logo.svg" alt={BRAND_NAME} width={150} height={112} className="mb-6 -ml-2" />
+            <p className="font-serif text-xl leading-snug text-navy/85 max-w-xs mb-6">
               {t.footer.tagline}
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2.5">
               {INSTAGRAM_URL && (
-                <a
-                  href={INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                  aria-label="Instagram"
-                >
-                  <Instagram size={16} />
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={icon} aria-label="Instagram">
+                  <Instagram size={15} strokeWidth={1.5} />
                 </a>
               )}
               {FACEBOOK_URL && (
-                <a
-                  href={FACEBOOK_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                  aria-label="Facebook"
-                >
-                  <Facebook size={16} />
+                <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className={icon} aria-label="Facebook">
+                  <Facebook size={15} strokeWidth={1.5} />
                 </a>
               )}
-              <a
-                href={`https://wa.me/${WHATSAPP}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                aria-label="WhatsApp"
-              >
-                <WhatsAppIcon size={16} />
+              <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener noreferrer" className={icon} aria-label="WhatsApp">
+                <WhatsAppIcon size={15} />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="text-white font-semibold text-sm tracking-widest mb-4">{t.footer.quickLinks}</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/" className="hover:text-gold transition-colors">{t.nav.home}</Link></li>
-              <li><Link href="/properties" className="hover:text-gold transition-colors">{t.nav.properties}</Link></li>
-              <li><Link href="/about" className="hover:text-gold transition-colors">{t.nav.about}</Link></li>
-              <li><Link href="/guides" className="hover:text-gold transition-colors">{t.footer.guides}</Link></li>
-              <li><Link href="/faq" className="hover:text-gold transition-colors">{t.footer.faq}</Link></li>
-              <li><Link href="/contact" className="hover:text-gold transition-colors">{t.nav.contact}</Link></li>
+          <div className="md:col-span-2 md:col-start-6">
+            <h4 className={heading} style={{ fontFamily: 'inherit' }}>{t.footer.quickLinks}</h4>
+            <ul className="space-y-2.5 text-[15px]">
+              <li><Link href="/" className={link}>{t.nav.home}</Link></li>
+              <li><Link href="/properties" className={link}>{t.nav.properties}</Link></li>
+              <li><Link href="/about" className={link}>{t.nav.about}</Link></li>
+              <li><Link href="/guides" className={link}>{t.footer.guides}</Link></li>
+              <li><Link href="/faq" className={link}>{t.footer.faq}</Link></li>
+              <li><Link href="/contact" className={link}>{t.nav.contact}</Link></li>
             </ul>
           </div>
 
           {/* Locations */}
-          <div>
-            <h4 className="text-white font-semibold text-sm tracking-widest mb-4">{t.footer.locations}</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/puerto-vallarta" className="hover:text-gold transition-colors">Puerto Vallarta Area</Link></li>
-              <li><Link href="/punta-mita" className="hover:text-gold transition-colors">{t.footer.puntaMita}</Link></li>
-              <li><Link href="/bucerias" className="hover:text-gold transition-colors">{t.footer.bucerias}</Link></li>
-              <li><Link href="/la-cruz-de-huanacaxtle" className="hover:text-gold transition-colors">{t.footer.laCruz}</Link></li>
+          <div className="md:col-span-2">
+            <h4 className={heading} style={{ fontFamily: 'inherit' }}>{t.footer.locations}</h4>
+            <ul className="space-y-2.5 text-[15px]">
+              <li><Link href="/puerto-vallarta" className={link}>{t.nav.puertoVallartaArea}</Link></li>
+              <li><Link href="/punta-mita" className={link}>{t.footer.puntaMita}</Link></li>
+              <li><Link href="/bucerias" className={link}>{t.footer.bucerias}</Link></li>
+              <li><Link href="/la-cruz-de-huanacaxtle" className={link}>{t.footer.laCruz}</Link></li>
             </ul>
           </div>
 
           {/* Contact */}
-          <div>
-            <h4 className="text-white font-semibold text-sm tracking-widest mb-4">{t.footer.contact}</h4>
-            <ul className="space-y-3 text-sm">
+          <div className="col-span-2 md:col-span-3">
+            <h4 className={heading} style={{ fontFamily: 'inherit' }}>{t.footer.contact}</h4>
+            <ul className="space-y-2.5 text-[15px]">
               <li>
-                <a
-                  href={`mailto:${EMAIL}`}
-                  className="hover:text-gold transition-colors"
-                >
-                  {EMAIL}
-                </a>
+                <a href={`mailto:${EMAIL}`} className={link}>{EMAIL}</a>
               </li>
               <li>
-                <a
-                  href={`https://wa.me/${WHATSAPP}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-gold transition-colors"
-                >
+                <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-2 ${link}`}>
                   <WhatsAppIcon size={14} />
                   WhatsApp
                 </a>
               </li>
-              <li className="text-white/40 text-xs leading-relaxed">
+              <li className="text-navy/50 text-sm pt-2">
                 Riviera Nayarit, México
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10 text-center text-xs text-white/40">
-          {t.footer.copyright.replace('{year}', year)}
+        <div className="mt-16 pt-6 border-t border-navy/10 flex flex-col sm:flex-row gap-2 justify-between text-xs text-navy/45">
+          <span>{t.footer.copyright.replace('{year}', year)}</span>
+          <span className="tracking-[0.16em] uppercase text-[10px]">Punta Mita · Bucerías · La Cruz</span>
         </div>
       </div>
     </footer>

@@ -14,15 +14,15 @@ function WhatsAppIcon({ size = 20 }) {
 }
 
 export default function ContactPage() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
 
   return (
     <div className="pt-20">
       {/* Header */}
-      <div className="bg-navy pt-24 pb-20 px-4 text-center">
-        <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Reach Out</p>
-        <h1 className="font-serif text-5xl text-white mb-4">{t.contact.title}</h1>
-        <p className="text-white/60 max-w-xl mx-auto">{t.contact.subtitle}</p>
+      <div className="bg-linen pt-24 pb-20 px-4 text-center">
+        <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{lang === 'es' ? 'Escríbenos' : 'Reach Out'}</p>
+        <h1 className="font-serif text-5xl text-navy mb-4">{t.contact.title}</h1>
+        <p className="text-navy/60 max-w-xl mx-auto">{t.contact.subtitle}</p>
       </div>
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -37,14 +37,14 @@ export default function ContactPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* WhatsApp */}
-            <div className="bg-gray-50 rounded-2xl p-6">
+            <div className="border-t border-navy/15 pt-6">
               <h3 className="font-serif text-lg text-navy mb-2">{t.contact.whatsapp}</h3>
               <p className="text-gray-500 text-sm mb-4">{t.contact.whatsappText}</p>
               <a
                 href={`https://wa.me/${WHATSAPP}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 bg-[#25D366] text-white font-semibold px-5 py-3 rounded-xl hover:bg-[#20bb5a] transition-colors text-sm"
+                className="btn-outline"
               >
                 <WhatsAppIcon size={16} />
                 WhatsApp
@@ -52,9 +52,9 @@ export default function ContactPage() {
             </div>
 
             {/* Email */}
-            <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="font-serif text-lg text-navy mb-2">Email Us</h3>
-              <p className="text-gray-500 text-sm mb-4">Prefer email? Reach us directly at:</p>
+            <div className="border-t border-navy/15 pt-6">
+              <h3 className="font-serif text-lg text-navy mb-2">{lang === 'es' ? 'Correo' : 'Email Us'}</h3>
+              <p className="text-gray-500 text-sm mb-4">{lang === 'es' ? '¿Prefieres correo? Escríbenos a:' : 'Prefer email? Reach us directly at:'}</p>
               <a
                 href="mailto:tch@truqui.com"
                 className="text-gold text-sm font-medium hover:underline"
@@ -64,9 +64,9 @@ export default function ContactPage() {
             </div>
 
             {/* Location */}
-            <div className="bg-navy rounded-2xl p-6 text-white">
+            <div className="bg-sand rounded-2xl p-6 text-navy">
               <h3 className="font-serif text-lg mb-3">Riviera Nayarit</h3>
-              <p className="text-white/60 text-sm leading-relaxed">
+              <p className="text-navy/60 text-sm leading-relaxed">
                 Punta Mita · Bucerías<br />
                 La Cruz de Huanacaxtle<br />
                 Nayarit, México

@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import properties from '@/data/properties'
 import { getBookingByToken, villaNameToSlug } from '@/lib/appsScript'
 
+// Each request looks up a different live booking by token — never prerender or cache.
+export const dynamic = 'force-dynamic'
+
 // Display-only lookup for the /booking-payment page — shows the guest what
 // they're about to pay for. The routes that actually create the charge
 // (create-checkout-session-from-token, paypal/*-from-token) do their own

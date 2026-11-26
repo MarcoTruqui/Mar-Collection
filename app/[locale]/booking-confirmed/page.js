@@ -8,7 +8,7 @@ import { useLanguage } from '@/lib/LanguageContext'
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '15551234567'
 
 function ConfirmedContent() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const params = useSearchParams()
 
   const property = params.get('property') || ''
@@ -29,7 +29,7 @@ function ConfirmedContent() {
           </svg>
         </div>
 
-        <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Confirmed</p>
+        <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{lang === 'es' ? 'Confirmada' : 'Confirmed'}</p>
         <h1 className="font-serif text-4xl text-navy mb-3">{t.confirmed.title}</h1>
         <p className="text-gray-500 text-base mb-6">{t.confirmed.subtitle}</p>
 
@@ -37,29 +37,29 @@ function ConfirmedContent() {
         {property && (
           <div className="bg-gray-50 rounded-2xl p-5 mb-6 text-left space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-400">Property</span>
+              <span className="text-gray-400">{lang === 'es' ? 'Propiedad' : 'Property'}</span>
               <span className="text-navy font-medium">{property}</span>
             </div>
             {checkIn && (
               <div className="flex justify-between">
-                <span className="text-gray-400">Check-in</span>
+                <span className="text-gray-400">{lang === 'es' ? 'Llegada' : 'Check-in'}</span>
                 <span className="text-navy">{checkIn}</span>
               </div>
             )}
             {checkOut && (
               <div className="flex justify-between">
-                <span className="text-gray-400">Check-out</span>
+                <span className="text-gray-400">{lang === 'es' ? 'Salida' : 'Check-out'}</span>
                 <span className="text-navy">{checkOut}</span>
               </div>
             )}
             {total && (
               <div className="flex justify-between font-semibold pt-2 border-t border-gray-200">
-                <span className="text-gray-600">Total Paid</span>
+                <span className="text-gray-600">{lang === 'es' ? 'Total pagado' : 'Total Paid'}</span>
                 <span className="text-navy">${Number(total).toLocaleString()} MXN</span>
               </div>
             )}
             <div className="flex justify-between text-xs pt-1">
-              <span className="text-gray-400">Payment via</span>
+              <span className="text-gray-400">{lang === 'es' ? 'Pagado con' : 'Payment via'}</span>
               <span className="text-gray-500 capitalize">{method === 'paypal' ? 'PayPal' : 'Card (Stripe)'}</span>
             </div>
           </div>

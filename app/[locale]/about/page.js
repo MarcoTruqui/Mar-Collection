@@ -20,12 +20,12 @@ function TeamCard({ member }) {
 }
 
 export default function AboutPage() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
 
   return (
     <div className="pt-20">
       {/* Header */}
-      <div className="bg-navy pt-24 pb-20 px-4 text-center relative overflow-hidden">
+      <div className="bg-linen pt-24 pb-20 px-4 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <Image
             src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=60"
@@ -35,9 +35,9 @@ export default function AboutPage() {
           />
         </div>
         <div className="relative z-10">
-          <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Our Story</p>
-          <h1 className="font-serif text-5xl md:text-6xl text-white mb-4">{t.about.title}</h1>
-          <p className="text-white/60 max-w-xl mx-auto text-lg font-light">{t.about.subtitle}</p>
+          <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{lang === 'es' ? 'Nuestra historia' : 'Our Story'}</p>
+          <h1 className="font-serif text-5xl md:text-6xl text-navy mb-4">{t.about.title}</h1>
+          <p className="text-navy/60 max-w-xl mx-auto text-lg font-light">{t.about.subtitle}</p>
         </div>
       </div>
 
@@ -70,7 +70,7 @@ export default function AboutPage() {
       <section className="bg-gray-50 py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Our Standards</p>
+            <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{lang === 'es' ? 'Nuestros estándares' : 'Our Standards'}</p>
             <h2 className="font-serif text-4xl text-navy mb-4">{t.about.valuesTitle}</h2>
             <p className="text-gray-500 max-w-xl mx-auto">{t.about.valuesSubtitle}</p>
           </div>
@@ -92,7 +92,7 @@ export default function AboutPage() {
       {/* Team */}
       <section className="py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">The People</p>
+          <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{lang === 'es' ? 'El equipo' : 'The People'}</p>
           <h2 className="font-serif text-4xl text-navy mb-4">{t.about.teamTitle}</h2>
           <p className="text-gray-500 max-w-xl mx-auto">{t.about.teamSubtitle}</p>
         </div>
@@ -105,10 +105,10 @@ export default function AboutPage() {
       </section>
 
       {/* Location strip */}
-      <section className="bg-navy py-16 px-4 text-center">
-        <p className="text-gold text-xs tracking-[0.5em] font-light mb-4 uppercase">Find Us</p>
-        <h2 className="font-serif text-3xl text-white mb-3">Riviera Nayarit, México</h2>
-        <p className="text-white/50 text-sm max-w-md mx-auto">
+      <section className="bg-linen py-16 px-4 text-center">
+        <p className="text-gold text-xs tracking-label font-light mb-4 uppercase">{lang === 'es' ? 'Dónde estamos' : 'Find Us'}</p>
+        <h2 className="font-serif text-3xl text-navy mb-3">Riviera Nayarit, México</h2>
+        <p className="text-navy/50 text-sm max-w-md mx-auto">
           Punta Mita · Bucerías · La Cruz de Huanacaxtle
         </p>
       </section>

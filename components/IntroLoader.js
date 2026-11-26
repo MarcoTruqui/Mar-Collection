@@ -49,7 +49,7 @@ export default function IntroLoader() {
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: '#ffffff',
+        background: '#F6F2EB',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

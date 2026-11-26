@@ -13,7 +13,15 @@ import { getCurrentRate } from '@/lib/currentRate'
 const LOCATIONS = ['Punta Mita', 'Bucerías', 'La Cruz de Huanacaxtle']
 const MIN_PRICE = 90
 const MAX_PRICE = 1000
-const today = new Date().toISOString().split('T')[0]
+
+// Signature villas always lead the list (they're what the ads promote), in
+// this order. Everything else follows by nightly price, highest first.
+// "New" units keep their NEW label but no longer jump to the top.
+const SIGNATURE = ['palmas-8', 'villa-girasol', 'terrazas-g32', 'villa-turquesa']
+const signatureRank = p => {
+  const i = SIGNATURE.indexOf(p.slug)
+  return i === -1 ? SIGNATURE.length : i
+}
 
 function isAvailable(slug, checkIn, checkOut, availability) {
   if (!checkIn || !checkOut) return true
@@ -24,7 +32,7 @@ function isAvailable(slug, checkIn, checkOut, availability) {
 }
 
 function PropertiesContent() {
-  const { t, rates } = useLanguage()
+  const { t, lang, rates } = useLanguage()
   // Same live price the cards show, so filtering/sorting matches what guests see.
   const rateOf = p => getCurrentRate(rates, p.slug, p.nightlyRate)
   const searchParams = useSearchParams()
@@ -55,11 +63,13 @@ function PropertiesContent() {
     const checkIn = searchParams.get('checkIn')
     const checkOut = searchParams.get('checkOut')
     if (loc && LOCATIONS.includes(loc)) setActiveLocation(loc)
+    // Guests from the homepage search → "fits at least N guests"
+    const guestsParam = Number(searchParams.get('guests')) || 0
     if (checkIn && checkOut) {
-      const next = { ...draft, checkIn, checkOut }
+      const next = { ...draft, checkIn, checkOut, minGuests: guestsParam }
       setDraft(next)
       setFilters(next)
-      setShowFilters(true)
+      setMobileHeaderHidden(true) // phones: go straight to the available villas
       fetchAvailability()
     }
   }, [searchParams])
@@ -124,147 +134,123 @@ function PropertiesContent() {
     .filter(p => p.maxGuests >= filters.minGuests)
     .filter(p => !filters.checkIn || !filters.checkOut || !availability ||
       isAvailable(p.slug, filters.checkIn, filters.checkOut, availability))
-    .sort((a, b) => {
-      if (a.isNew && !b.isNew) return -1
-      if (!a.isNew && b.isNew) return 1
-      return rateOf(b) - rateOf(a)
-    })
+    .sort((a, b) => (signatureRank(a) - signatureRank(b)) || (rateOf(b) - rateOf(a)))
 
   const dateFilterActive = filters.checkIn && filters.checkOut && availability
 
+  const L = lang === 'es'
+    ? { eyebrow: 'La colección', dates: 'Fechas', add: 'Elegir fechas', search: 'Buscar', searching: 'Buscando…', filters: 'Filtros', clear: 'Borrar', price: 'Precio por noche', beds: 'Recámaras', guests: 'Huéspedes', any: 'Todas', pickIn: 'Elige llegada y luego salida', available: n => `${n} ${n === 1 ? 'villa disponible' : 'villas disponibles'}`, none: 'No hay villas disponibles en esas fechas', tryOther: 'Prueba otras fechas o ajusta los filtros', clearFilters: 'Borrar filtros', forGuests: n => `· ${n}+ huéspedes` }
+    : { eyebrow: 'The collection', dates: 'Dates', add: 'Add dates', search: 'Search', searching: 'Searching…', filters: 'Filters', clear: 'Clear', price: 'Price per night', beds: 'Bedrooms', guests: 'Guests', any: 'Any', pickIn: 'Choose check-in, then check-out', available: n => `${n} ${n === 1 ? 'villa available' : 'villas available'}`, none: 'No villas available for those dates', tryOther: 'Try different dates or adjust your filters', clearFilters: 'Clear filters', forGuests: n => `· ${n}+ guests` }
+
+  const guestOptions = [0, 2, 4, 6, 8, 10, 12]
+  if (draft.minGuests && !guestOptions.includes(draft.minGuests)) guestOptions.push(draft.minGuests)
+  guestOptions.sort((a, b) => a - b)
+
+  const chip = active => `whitespace-nowrap px-4 py-2 text-[12px] uppercase tracking-[0.14em] border transition-colors ${
+    active ? 'bg-navy text-bone border-navy' : 'bg-transparent text-navy/70 border-navy/20 hover:border-navy hover:text-navy'
+  }`
+
   return (
     <>
-      {/* Header — hidden on mobile after search */}
-      <div className={`bg-navy pt-32 pb-16 text-center px-4 ${mobileHeaderHidden ? 'hidden sm:block' : ''}`}>
-        <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">Our Portfolio</p>
-        <h1 className="font-serif text-5xl text-white mb-4">{t.properties.title}</h1>
-        <p className="text-white/60 max-w-xl mx-auto">{t.properties.subtitle}</p>
+      {/* Header — compact on phones so the date search is the first thing you see */}
+      <div className={`bg-linen pt-24 pb-8 md:pt-36 md:pb-14 px-5 ${mobileHeaderHidden ? 'hidden sm:block' : ''}`}>
+        <div className="max-w-7xl mx-auto sm:px-1 lg:px-5">
+          <p className="eyebrow mb-3 hidden md:block">{L.eyebrow}</p>
+          <h1 className="font-serif text-4xl md:text-7xl text-navy leading-none">{t.properties.title}</h1>
+          <p className="text-navy/60 max-w-xl mt-3 md:mt-5 text-[15px] hidden sm:block">{t.properties.subtitle}</p>
 
-        {/* Custom calendar date picker */}
-        <div className="mt-10 max-w-xl mx-auto px-2">
-          <div className="relative" ref={calRef}>
-            {/* Trigger row */}
-            <div
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 flex gap-3 items-center cursor-pointer"
-              onClick={() => setCalOpen(o => !o)}
-            >
-              <CalendarDays size={18} className="text-white/60 flex-shrink-0" />
-              <div className="flex-1 text-left">
-                {draft.checkIn && draft.checkOut ? (
-                  <p className="text-white text-sm font-medium">{draft.checkIn} → {draft.checkOut}</p>
-                ) : draft.checkIn ? (
-                  <p className="text-white text-sm">Check-in: <strong>{draft.checkIn}</strong> &nbsp;·&nbsp; <span className="text-white/50">Select check-out</span></p>
-                ) : (
-                  <p className="text-white/50 text-sm">Select your check-in & check-out dates</p>
+          {/* Date search */}
+          <div className="mt-6 md:mt-10 max-w-2xl">
+            <div className="relative" ref={calRef}>
+              <div className="bg-bone border border-navy/15 flex items-stretch">
+                <button
+                  type="button"
+                  className="flex-1 text-left px-4 md:px-6 py-3.5 md:py-4"
+                  onClick={() => setCalOpen(o => !o)}
+                >
+                  <span className="block text-[10px] uppercase tracking-label text-navy/50 mb-0.5">{L.dates}</span>
+                  {draft.checkIn && draft.checkOut ? (
+                    <span className="font-serif text-lg md:text-xl text-navy">{draft.checkIn} → {draft.checkOut}</span>
+                  ) : draft.checkIn ? (
+                    <span className="font-serif text-lg md:text-xl text-navy">{draft.checkIn} → <span className="text-navy/40">…</span></span>
+                  ) : (
+                    <span className="font-serif text-lg md:text-xl text-navy/45">{L.add}</span>
+                  )}
+                </button>
+                {(draft.checkIn || draft.checkOut) && (
+                  <button onClick={e => { e.stopPropagation(); setDraft(d => ({ ...d, checkIn: '', checkOut: '' })) }}
+                    className="px-3 text-navy/40 hover:text-navy" aria-label="Clear dates">
+                    <X size={15} strokeWidth={1.5} />
+                  </button>
                 )}
+                <button
+                  onClick={e => { e.stopPropagation(); applyFilters() }}
+                  disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
+                  className="bg-navy text-bone text-[12px] uppercase tracking-[0.18em] px-5 md:px-8 hover:bg-gold transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                  {loadingAvail ? L.searching : L.search}
+                </button>
               </div>
-              {(draft.checkIn || draft.checkOut) && (
-                <button onClick={e => { e.stopPropagation(); setDraft(d => ({ ...d, checkIn: '', checkOut: '' })) }} className="text-white/40 hover:text-white text-xs px-1">✕</button>
-              )}
-              <button
-                onClick={e => { e.stopPropagation(); applyFilters() }}
-                disabled={!draft.checkIn || !draft.checkOut || loadingAvail}
-                className="flex-shrink-0 bg-gold text-navy font-semibold px-5 py-2 rounded-xl text-sm hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-              >
-                {loadingAvail ? 'Searching…' : 'Search'}
-              </button>
-            </div>
 
-            {/* Calendar popover */}
-            {calOpen && (
-              <div
-                className="absolute left-0 right-0 top-full mt-2 z-40 bg-white border border-gray-200 rounded-2xl shadow-xl p-4"
-                onClick={e => e.stopPropagation()}
-                onTouchEnd={e => e.stopPropagation()}
-              >
-                <Calendar
-                  bookedRanges={[]}
-                  checkIn={draft.checkIn}
-                  checkOut={draft.checkOut}
-                  onChange={(ci, co) => {
-                    setDraft(d => ({ ...d, checkIn: ci, checkOut: co }))
-                    if (ci && co) setCalOpen(false)
-                  }}
-                  monthsToShow={1}
-                  minNights={2}
-                />
-                <p className="text-xs text-gray-400 mt-3 text-center">Select check-in, then check-out</p>
-              </div>
-            )}
+              {calOpen && (
+                <div
+                  className="absolute left-0 right-0 md:right-auto md:w-[380px] top-full mt-2 z-40 bg-bone border border-navy/10 shadow-xl p-5"
+                  onClick={e => e.stopPropagation()}
+                  onTouchEnd={e => e.stopPropagation()}
+                >
+                  <Calendar
+                    bookedRanges={[]}
+                    checkIn={draft.checkIn}
+                    checkOut={draft.checkOut}
+                    onChange={(ci, co) => {
+                      setDraft(d => ({ ...d, checkIn: ci, checkOut: co }))
+                      if (ci && co) setCalOpen(false)
+                    }}
+                    lang={lang}
+                    monthsToShow={1}
+                    minNights={2}
+                  />
+                  <p className="text-xs text-navy/50 mt-3 text-center">{L.pickIn}</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Location tabs + filter toggle */}
-      <div className="md:sticky md:top-[100px] z-30 bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-3 overflow-x-auto scrollbar-none">
+      <div className={`md:sticky md:top-[84px] z-30 bg-bone/95 backdrop-blur-sm border-b border-navy/10 ${mobileHeaderHidden ? "mt-[77px] sm:mt-0" : ""}`}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 py-4 flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {['All', ...LOCATIONS].map(loc => (
-            <button
-              key={loc}
-              onClick={() => setActiveLocation(loc)}
-              className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all ${
-                activeLocation === loc
-                  ? 'bg-navy text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
+            <button key={loc} onClick={() => setActiveLocation(loc)} className={chip(activeLocation === loc)}>
               {loc === 'All' ? t.properties.filterAll : loc}
             </button>
           ))}
 
-          <div className="ml-auto flex-shrink-0 flex items-center gap-2">
+          <div className="ml-auto flex-shrink-0 flex items-center gap-2 pl-2">
             {filtersActive && (
-              <button
-                onClick={resetFilters}
-                className="flex items-center gap-1 text-xs text-gray-400 hover:text-navy transition-colors px-2 py-1"
-              >
-                <X size={13} /> Clear all
+              <button onClick={resetFilters} className="flex items-center gap-1 text-[12px] text-navy/50 hover:text-navy transition-colors px-2 py-1">
+                <X size={13} strokeWidth={1.5} /> {L.clear}
               </button>
             )}
-            <button
-              onClick={() => setShowFilters(v => !v)}
-              className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium border transition-all ${
-                showFilters || filtersActive
-                  ? 'bg-navy text-white border-navy'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-navy hover:text-navy'
-              }`}
-            >
-              <SlidersHorizontal size={15} />
-              Filters
-              {filtersActive && <span className="w-2 h-2 rounded-full bg-gold" />}
+            <button onClick={() => setShowFilters(v => !v)} className={`${chip(showFilters || filtersActive)} flex items-center gap-2`}>
+              <SlidersHorizontal size={14} strokeWidth={1.5} />
+              {L.filters}
+              {filtersActive && <span className="w-1.5 h-1.5 rounded-full bg-gold" />}
             </button>
           </div>
         </div>
 
         {/* Expandable filter panel */}
         {showFilters && (
-          <div className="border-t border-gray-100 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
-
-                {/* Dates */}
-                <div className="sm:col-span-2 lg:col-span-1">
-                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium flex items-center gap-1">
-                    <CalendarDays size={13} /> Dates
-                  </label>
-                  <div className="border border-gray-200 rounded-xl p-3 text-xs text-navy bg-white">
-                    {draft.checkIn && draft.checkOut
-                      ? <span className="font-medium">{draft.checkIn} → {draft.checkOut}</span>
-                      : draft.checkIn
-                        ? <span>{draft.checkIn} → <span className="text-gray-400">pick check-out above</span></span>
-                        : <span className="text-gray-400">Use the calendar above to pick dates</span>
-                    }
-                  </div>
-                  {draft.checkIn && draft.checkOut && (
-                    <p className="text-[10px] text-gold mt-1">Will check real availability on Search</p>
-                  )}
-                </div>
-
+          <div className="border-t border-navy/10 bg-linen">
+            <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 py-8">
+              <div className="grid sm:grid-cols-3 gap-10 items-start">
                 {/* Max price */}
                 <div>
-                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">
-                    Price per Night
-                    <span className="ml-2 text-navy font-bold">${draft.maxPrice >= MAX_PRICE ? '1,000+' : draft.maxPrice.toLocaleString()}</span>
+                  <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-3">
+                    {L.price}
+                    <span className="ml-2 font-serif normal-case tracking-normal text-base text-navy">${draft.maxPrice >= MAX_PRICE ? '1,000+' : draft.maxPrice.toLocaleString()}</span>
                   </label>
                   <input
                     type="range"
@@ -273,9 +259,9 @@ function PropertiesContent() {
                     step={50}
                     value={draft.maxPrice}
                     onChange={e => setDraft(d => ({ ...d, maxPrice: Number(e.target.value) }))}
-                    className="w-full accent-gold"
+                    className="w-full accent-navy"
                   />
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <div className="flex justify-between text-xs text-navy/45 mt-1">
                     <span>$90</span>
                     <span>$1,000+</span>
                   </div>
@@ -283,19 +269,12 @@ function PropertiesContent() {
 
                 {/* Bedrooms */}
                 <div>
-                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">Bedrooms</label>
-                  <div className="flex gap-2 flex-wrap">
+                  <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-3">{L.beds}</label>
+                  <div className="flex gap-1.5 flex-wrap">
                     {[0, 1, 2, 3, 4, 5].map(n => (
-                      <button
-                        key={n}
-                        onClick={() => setDraft(d => ({ ...d, minBeds: n }))}
-                        className={`w-10 h-10 rounded-xl text-sm font-medium border transition-all ${
-                          draft.minBeds === n
-                            ? 'bg-navy text-white border-navy'
-                            : 'bg-white text-gray-600 border-gray-200 hover:border-navy'
-                        }`}
-                      >
-                        {n === 0 ? 'Any' : n + '+'}
+                      <button key={n} onClick={() => setDraft(d => ({ ...d, minBeds: n }))}
+                        className={`min-w-10 h-10 px-2 text-sm border transition-colors ${draft.minBeds === n ? 'bg-navy text-bone border-navy' : 'bg-bone text-navy/70 border-navy/15 hover:border-navy'}`}>
+                        {n === 0 ? L.any : n + '+'}
                       </button>
                     ))}
                   </div>
@@ -303,34 +282,22 @@ function PropertiesContent() {
 
                 {/* Guests */}
                 <div>
-                  <label className="block text-xs text-gray-500 mb-2 tracking-wide font-medium">Guests</label>
-                  <div className="flex gap-2 flex-wrap">
-                    {[0, 2, 4, 6, 8, 10].map(n => (
-                      <button
-                        key={n}
-                        onClick={() => setDraft(d => ({ ...d, minGuests: n }))}
-                        className={`w-10 h-10 rounded-xl text-sm font-medium border transition-all ${
-                          draft.minGuests === n
-                            ? 'bg-navy text-white border-navy'
-                            : 'bg-white text-gray-600 border-gray-200 hover:border-navy'
-                        }`}
-                      >
-                        {n === 0 ? 'Any' : n + '+'}
+                  <label className="block text-[10px] uppercase tracking-label text-navy/55 mb-3">{L.guests}</label>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {guestOptions.map(n => (
+                      <button key={n} onClick={() => setDraft(d => ({ ...d, minGuests: n }))}
+                        className={`min-w-10 h-10 px-2 text-sm border transition-colors ${draft.minGuests === n ? 'bg-navy text-bone border-navy' : 'bg-bone text-navy/70 border-navy/15 hover:border-navy'}`}>
+                        {n === 0 ? L.any : n + '+'}
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* Action buttons */}
-              <div className="flex gap-3 mt-6 justify-end">
-                <button
-                  onClick={applyFilters}
-                  disabled={loadingAvail}
-                  className="flex items-center gap-2 bg-navy text-white text-sm font-semibold px-8 py-2.5 rounded-full hover:bg-gold hover:text-navy transition-all disabled:opacity-50"
-                >
-                  <Search size={15} />
-                  {loadingAvail ? 'Checking availability...' : 'Search'}
+              <div className="flex gap-3 mt-8 justify-end">
+                <button onClick={applyFilters} disabled={loadingAvail} className="btn-primary">
+                  <Search size={14} strokeWidth={1.5} />
+                  {loadingAvail ? L.searching : L.search}
                 </button>
               </div>
             </div>
@@ -339,34 +306,29 @@ function PropertiesContent() {
       </div>
 
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 py-10 md:py-16">
         {dateFilterActive && (
-          <div className="flex items-center gap-2 mb-8 bg-gold/10 border border-gold/30 rounded-xl px-4 py-3 text-sm text-navy">
-            <CalendarDays size={16} className="text-gold flex-shrink-0" />
-            <span>
-              Showing <strong>{filtered.length}</strong> available {filtered.length === 1 ? 'property' : 'properties'} for <strong>{filters.checkIn}</strong> → <strong>{filters.checkOut}</strong>
-            </span>
-            <button onClick={resetFilters} className="ml-auto text-gray-400 hover:text-navy">
-              <X size={15} />
+          <div className="flex items-center gap-3 mb-10 border-y border-navy/15 py-4 text-[15px] text-navy">
+            <span className="font-serif text-xl">{L.available(filtered.length)}</span>
+            <span className="text-navy/55 text-sm">{filters.checkIn} → {filters.checkOut} {filters.minGuests > 0 ? L.forGuests(filters.minGuests) : ''}</span>
+            <button onClick={resetFilters} className="ml-auto text-navy/40 hover:text-navy" aria-label="Clear">
+              <X size={16} strokeWidth={1.5} />
             </button>
           </div>
         )}
 
         {filtered.length === 0 ? (
           <div className="text-center py-24">
-            <CalendarDays size={40} className="text-gray-200 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium mb-2">
-              {dateFilterActive ? 'No properties available for those dates' : t.properties.noProperties}
+            <p className="font-serif text-3xl text-navy mb-3">
+              {dateFilterActive ? L.none : t.properties.noProperties}
             </p>
-            <p className="text-gray-400 text-sm mb-6">Try different dates or adjust your filters</p>
-            <button onClick={resetFilters} className="text-navy text-sm font-medium underline">
-              Clear filters
-            </button>
+            <p className="text-navy/55 text-sm mb-6">{L.tryOther}</p>
+            <button onClick={resetFilters} className="btn-outline">{L.clearFilters}</button>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
             {filtered.map(p => (
-              <PropertyCard key={p.slug} property={p} checkIn={filters.checkIn} checkOut={filters.checkOut} />
+              <PropertyCard key={p.slug} property={p} checkIn={filters.checkIn} checkOut={filters.checkOut} guests={filters.minGuests} />
             ))}
           </div>
         )}
@@ -377,7 +339,7 @@ function PropertiesContent() {
 
 export default function PropertiesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-navy" />}>
+    <Suspense fallback={<div className="min-h-screen bg-bone" />}>
       <PropertiesContent />
     </Suspense>
   )

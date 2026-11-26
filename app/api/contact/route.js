@@ -26,54 +26,54 @@ export async function POST(request) {
       replyTo: body.email,
       subject: `New Inquiry from ${body.name}${body.property ? ` — ${body.property}` : ''}`,
       html: `
-        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #0a1628;">
-          <div style="background: #0a1628; padding: 32px; text-align: center;">
-            <h1 style="color: #c9a84c; font-size: 22px; margin: 0; letter-spacing: 2px;">TC COLLECTION</h1>
+        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #2A2621;">
+          <div style="background: #2A2621; padding: 32px; text-align: center;">
+            <h1 style="color: #8E6C48; font-size: 22px; margin: 0; letter-spacing: 2px;">TRUQUI COLLECTION</h1>
             <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 8px 0 0; letter-spacing: 4px;">NEW INQUIRY</p>
           </div>
 
-          <div style="padding: 32px; background: #ffffff; border: 1px solid #e5e7eb;">
+          <div style="padding: 32px; background: #ffffff; border: 1px solid #E4DDD2;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; width: 130px; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Name</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628; font-weight: 600;">${name}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; width: 130px; color: #A89E8F; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Name</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; font-size: 15px; color: #2A2621; font-weight: 600;">${name}</td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Email</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628;">
-                  <a href="mailto:${email}" style="color: #c9a84c;">${email}</a>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; color: #A89E8F; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Email</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; font-size: 15px; color: #2A2621;">
+                  <a href="mailto:${email}" style="color: #8E6C48;">${email}</a>
                 </td>
               </tr>
               ${phone ? `
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Phone</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628;">${phone}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; color: #A89E8F; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Phone</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; font-size: 15px; color: #2A2621;">${phone}</td>
               </tr>` : ''}
               ${property ? `
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Property</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628;">${property}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; color: #A89E8F; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Property</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; font-size: 15px; color: #2A2621;">${property}</td>
               </tr>` : ''}
               ${dates ? `
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Dates</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628;">${dates}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; color: #A89E8F; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Dates</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; font-size: 15px; color: #2A2621;">${dates}</td>
               </tr>` : ''}
               ${guests ? `
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Guests</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; color: #0a1628;">${guests}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; color: #A89E8F; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Guests</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F1ECE4; font-size: 15px; color: #2A2621;">${guests}</td>
               </tr>` : ''}
             </table>
 
-            <div style="margin-top: 24px; padding: 20px; background: #f9fafb; border-radius: 8px;">
-              <p style="color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px;">Message</p>
-              <p style="color: #0a1628; font-size: 15px; line-height: 1.7; margin: 0; white-space: pre-wrap;">${message}</p>
+            <div style="margin-top: 24px; padding: 20px; background: #FAF7F2; border-radius: 8px;">
+              <p style="color: #A89E8F; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px;">Message</p>
+              <p style="color: #2A2621; font-size: 15px; line-height: 1.7; margin: 0; white-space: pre-wrap;">${message}</p>
             </div>
           </div>
 
-          <div style="padding: 20px; text-align: center; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none;">
-            <p style="color: #9ca3af; font-size: 11px; margin: 0;">
+          <div style="padding: 20px; text-align: center; background: #FAF7F2; border: 1px solid #E4DDD2; border-top: none;">
+            <p style="color: #A89E8F; font-size: 11px; margin: 0;">
               Reply directly to this email to respond to ${name}
             </p>
           </div>

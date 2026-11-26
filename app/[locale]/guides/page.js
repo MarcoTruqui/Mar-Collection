@@ -49,10 +49,10 @@ export default function GuidesIndexPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="bg-navy pt-24 pb-16 px-4 text-center">
-        <p className="text-gold text-xs tracking-[0.5em] font-light mb-3 uppercase">{c.eyebrow}</p>
-        <h1 className="font-serif text-4xl md:text-5xl text-white mb-4">{c.title}</h1>
-        <p className="text-white/60 max-w-xl mx-auto">
+      <div className="bg-linen pt-24 pb-16 px-4 text-center">
+        <p className="text-gold text-xs tracking-label font-light mb-3 uppercase">{c.eyebrow}</p>
+        <h1 className="font-serif text-4xl md:text-5xl text-navy mb-4">{c.title}</h1>
+        <p className="text-navy/60 max-w-xl mx-auto">
           {c.subtitle}
         </p>
       </div>

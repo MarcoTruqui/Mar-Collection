@@ -50,14 +50,14 @@ export default function InquiryForm({ property = null }) {
     }
   }
 
-  const inputClass = 'w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-navy focus:outline-none focus:border-gold transition-colors placeholder:text-gray-300 bg-white'
+  const inputClass = 'w-full border-0 border-b border-navy/25 bg-transparent px-0 py-2.5 text-[15px] text-navy focus:outline-none focus:ring-0 focus:border-navy transition-colors placeholder:text-navy/30 rounded-none'
   const maxGuests = property?.maxGuests || 20
 
   if (status === 'sent') {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-2xl p-10 text-center">
-        <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5">
+      <div className="bg-linen border border-navy/10 p-10 text-center">
+        <div className="w-14 h-14 border border-olive/40 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6E6B4F" strokeWidth="2.5">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
@@ -68,43 +68,43 @@ export default function InquiryForm({ property = null }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="grid sm:grid-cols-2 gap-5">
+    <form onSubmit={handleSubmit} className="space-y-7">
+      <div className="grid sm:grid-cols-2 gap-7">
         <div>
-          <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.name} *</label>
+          <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{t.contact.name} *</label>
           <input type="text" name="name" required value={form.name} onChange={handleChange} className={inputClass} placeholder="Ana García" />
         </div>
         <div>
-          <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.email} *</label>
+          <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{t.contact.email} *</label>
           <input type="email" name="email" required value={form.email} onChange={handleChange} className={inputClass} placeholder="ana@email.com" />
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-5">
+      <div className="grid sm:grid-cols-2 gap-7">
         <div>
-          <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.phone}</label>
+          <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{t.contact.phone}</label>
           <input type="tel" name="phone" value={form.phone} onChange={handleChange} className={inputClass} placeholder="+1 (555) 123-4567" />
         </div>
         <div>
-          <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{x.guests}</label>
+          <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{x.guests}</label>
           <input type="number" name="guests" min={1} max={maxGuests} value={form.guests} onChange={handleChange} className={inputClass} placeholder="2" />
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-2 gap-7">
         <div>
-          <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{x.checkIn}</label>
+          <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{x.checkIn}</label>
           <input type="date" name="checkIn" value={form.checkIn} onChange={handleChange} className={inputClass} />
         </div>
         <div>
-          <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{x.checkOut}</label>
+          <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{x.checkOut}</label>
           <input type="date" name="checkOut" min={form.checkIn || undefined} value={form.checkOut} onChange={handleChange} className={inputClass} />
         </div>
       </div>
 
       {!property && (
         <div>
-          <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.propertyInterest}</label>
+          <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{t.contact.propertyInterest}</label>
           <select name="property" value={form.property} onChange={handleChange} className={inputClass}>
             <option value="">{t.contact.selectProperty}</option>
             {properties.map(p => (
@@ -115,7 +115,7 @@ export default function InquiryForm({ property = null }) {
       )}
 
       <div>
-        <label className="block text-xs text-gray-500 mb-1.5 tracking-wide">{t.contact.message} *</label>
+        <label className="block text-[10px] uppercase tracking-label text-navy/50 mb-1">{t.contact.message} *</label>
         <textarea name="message" required rows={5} value={form.message} onChange={handleChange} className={inputClass + ' resize-none'} placeholder={t.contact.messagePlaceholder} />
       </div>
 
@@ -124,7 +124,7 @@ export default function InquiryForm({ property = null }) {
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="w-full bg-navy text-white font-semibold py-4 rounded-xl hover:bg-gold hover:text-navy transition-colors text-sm disabled:opacity-50"
+        className="btn-primary w-full !py-4"
       >
         {status === 'sending' ? t.contact.sending : t.contact.send}
       </button>
