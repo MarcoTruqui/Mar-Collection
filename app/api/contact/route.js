@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
-import { BRAND_NAME } from '@/lib/brand'
+import { BRAND_NAME, contactEmail } from '@/lib/brand'
 
-const TO_EMAIL = 'tch@truqui.com'
+// Inquiries from the English site go to hello@, from the Spanish site to hola@
 
 // Visitor-typed text goes into an HTML email, so escape it first.
 function esc(v) {
@@ -22,7 +22,7 @@ export async function POST(request) {
 
     await resend.emails.send({
       from: `${BRAND_NAME} <contact@truqui.com>`,
-      to: TO_EMAIL,
+      to: contactEmail(body.lang === 'es' ? 'es' : 'en'),
       replyTo: body.email,
       subject: `New Inquiry from ${body.name}${body.property ? ` — ${body.property}` : ''}`,
       html: `

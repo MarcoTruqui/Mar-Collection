@@ -5,7 +5,7 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import IntroLoader from '@/components/IntroLoader'
 import { LanguageProvider } from '@/lib/LanguageContext'
 import { buildMetadata } from '@/lib/seo'
-import { BRAND_NAME, BRAND_LOGO } from '@/lib/brand'
+import { BRAND_NAME, BRAND_LOGO, BRAND_OG_IMAGE, INSTAGRAM_URL, FACEBOOK_URL, CONTACT_EMAILS } from '@/lib/brand'
 import { Cormorant_Garamond, Jost } from 'next/font/google'
 
 // Display: Cormorant Garamond (light, editorial). Text: Jost (clean, Futura-like,
@@ -41,6 +41,9 @@ const copy = {
   },
 }
 
+// Bone browser chrome on phones (address bar colour)
+export const viewport = { themeColor: '#F6F2EB' }
+
 export function generateMetadata({ params }) {
   const c = copy[params.locale] ?? copy.en
   return {
@@ -48,10 +51,17 @@ export function generateMetadata({ params }) {
     metadataBase: new URL(SITE_URL),
     title: { default: c.title, template: `%s | ${BRAND_NAME}` },
     keywords: 'places to stay in Puerto Vallarta, Puerto Vallarta villa rental, Punta Mita luxury rentals, Bahía de Banderas vacation rental, Bucerías villa, Riviera Nayarit, La Cruz de Huanacaxtle, Mexico vacation rental',
+    // "CT" icon mark: browser tab, bookmarks, phone home screen
     icons: {
-      icon: '/images/logo.svg',
-      shortcut: '/images/logo.svg',
+      icon: [
+        { url: '/brand/favicon-32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/brand/favicon-48.png', sizes: '48x48', type: 'image/png' },
+        { url: '/brand/icon-192.png', sizes: '192x192', type: 'image/png' },
+      ],
+      shortcut: '/brand/favicon-32.png',
+      apple: { url: '/brand/apple-touch-icon.png', sizes: '180x180' },
     },
+    manifest: '/site.webmanifest',
     verification: {
       google: '5JY5ELASiwjqmWfNLREwacmWoDX0pFgBjD5NUP4aS-4',
     },
@@ -61,6 +71,7 @@ export function generateMetadata({ params }) {
       url: SITE_URL,
       siteName: BRAND_NAME,
       type: 'website',
+      images: [{ url: BRAND_OG_IMAGE, width: 1200, height: 630, alt: BRAND_NAME }],
     },
   }
 }
@@ -72,6 +83,8 @@ const organizationJsonLd = {
     name: BRAND_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}${BRAND_LOGO}`,
+    sameAs: [INSTAGRAM_URL, FACEBOOK_URL],
+    email: CONTACT_EMAILS.en,
     description: 'Luxury villa rentals on Bahía de Banderas near Puerto Vallarta, Mexico — Punta Mita, Bucerías, and La Cruz de Huanacaxtle.',
     areaServed: [
       { '@type': 'Place', name: 'Puerto Vallarta, Jalisco, Mexico' },
@@ -87,6 +100,8 @@ const organizationJsonLd = {
     name: BRAND_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}${BRAND_LOGO}`,
+    sameAs: [INSTAGRAM_URL, FACEBOOK_URL],
+    email: CONTACT_EMAILS.es,
     description: 'Renta de villas de lujo en la Bahía de Banderas cerca de Puerto Vallarta, México — Punta Mita, Bucerías y La Cruz de Huanacaxtle.',
     areaServed: [
       { '@type': 'Place', name: 'Puerto Vallarta, Jalisco, México' },

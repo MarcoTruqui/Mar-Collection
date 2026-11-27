@@ -1,0 +1,14 @@
+{
+  "name": "Truqui Collection",
+  "short_name": "Truqui",
+  "description": "Private villas on the Bay of Banderas — Punta Mita, Bucerías and La Cruz de Huanacaxtle.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F2EB",
+  "theme_color": "#F6F2EB",
+  "icons": [
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

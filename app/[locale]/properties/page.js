@@ -219,7 +219,7 @@ function PropertiesContent() {
       </div>
 
       {/* Location tabs + filter toggle */}
-      <div className={`md:sticky md:top-[84px] z-30 bg-bone/95 backdrop-blur-sm border-b border-navy/10 ${mobileHeaderHidden ? "mt-[77px] sm:mt-0" : ""}`}>
+      <div className={`lg:sticky lg:top-[84px] z-30 bg-bone/95 backdrop-blur-sm border-b border-navy/10 ${mobileHeaderHidden ? "mt-[77px] sm:mt-0" : ""}`}>
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 py-4 flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {['All', ...LOCATIONS].map(loc => (
             <button key={loc} onClick={() => setActiveLocation(loc)} className={chip(activeLocation === loc)}>

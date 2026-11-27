@@ -40,6 +40,7 @@ export default function InquiryForm({ property = null }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
+          lang,
           dates: form.checkIn && form.checkOut ? `${formatDate(form.checkIn)} → ${formatDate(form.checkOut)}` : '',
         }),
       })

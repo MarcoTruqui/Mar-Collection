@@ -1,50 +1,42 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { BRAND_NAME } from '@/lib/brand'
+import { BRAND_NAME, BRAND_WORDMARK, BRAND_WORDMARK_SIZE } from '@/lib/brand'
 
-// Only shows on first visit of the day. Subsequent page navigations skip it.
+// Opening screen: the Truqui Collection wordmark on bone, shown every time the
+// site is opened. It fades in, holds briefly while the page loads, then lifts
+// away to reveal the page. Never blocks for long: hard cap ~2.6 s.
 export default function IntroLoader() {
-  const [phase, setPhase] = useState('hidden') // hidden | visible | shrinking | done
-  const hasRun = useRef(false)
+  const [phase, setPhase] = useState('in') // in | shown | out | done
 
   useEffect(() => {
-    if (hasRun.current) return
-    hasRun.current = true
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const timers = []
+    const later = (fn, ms) => timers.push(setTimeout(fn, ms))
 
-    // Phase 1: fade in overlay
-    setPhase('visible')
-
-    // Phase 2: wait for page to load (at least 1.8s for effect), then shrink
-    const waitForLoad = () => {
-      setTimeout(() => setPhase('shrinking'), 300)
+    let started = false
+    const leave = () => {
+      if (started) return
+      started = true
+      setPhase('out')
+      later(() => setPhase('done'), reduceMotion ? 200 : 750)
     }
+    // Hold at least 1.3 s so the name registers; leave sooner after load if
+    // the page took longer; never hold longer than 2.6 s.
+    later(leave, reduceMotion ? 400 : 1300)
+    later(leave, 2600)
 
-    if (document.readyState === 'complete') {
-      setTimeout(waitForLoad, 1200)
-    } else {
-      window.addEventListener('load', () => setTimeout(waitForLoad, 800), { once: true })
-      // Fallback in case load fires late
-      setTimeout(waitForLoad, 3000)
-    }
+    return () => timers.forEach(clearTimeout)
   }, [])
-
-  // After shrink animation completes, remove from DOM
-  useEffect(() => {
-    if (phase === 'shrinking') {
-      const t = setTimeout(() => setPhase('done'), 900)
-      return () => clearTimeout(t)
-    }
-  }, [phase])
 
   if (phase === 'done') return null
 
-  const isVisible   = phase === 'visible'
-  const isShrinking = phase === 'shrinking'
+  const out = phase === 'out'
 
   return (
     <div
+      aria-hidden="true"
       style={{
         position: 'fixed',
         inset: 0,
@@ -53,35 +45,28 @@ export default function IntroLoader() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        opacity: isVisible || isShrinking ? 1 : 0,
-        transition: isShrinking
-          ? 'opacity 0.5s ease 0.5s'
-          : 'opacity 0.4s ease',
-        pointerEvents: isShrinking ? 'none' : 'all',
+        opacity: out ? 0 : 1,
+        transition: 'opacity 0.7s ease',
+        pointerEvents: out ? 'none' : 'all',
       }}
     >
+      {/* Fade-in is pure CSS (globals.css → intro-in) so the wordmark shows
+          from the very first paint, before the page's scripts have started. */}
       <div
+        className="intro-in"
         style={{
-          // Shrinks from center of screen into the top-left header position
-          transformOrigin: 'center center',
-          transform: isShrinking
-            ? 'translate(-42vw, -46vh) scale(0.09)'
-            : 'translate(0, 0) scale(1)',
-          transition: isShrinking
-            ? 'transform 0.75s cubic-bezier(0.4, 0, 0.2, 1)'
-            : 'none',
-          opacity: isShrinking ? 0 : 1,
-          // Fade out logo slightly before header logo appears
-          // (avoids double-logo flash)
+          width: 'min(64vw, 420px)',
+          transform: out ? 'translateY(-10px) scale(0.98)' : undefined,
+          transition: 'transform 0.7s ease',
         }}
       >
         <Image
-          src="/images/tc-logo.svg"
+          src={BRAND_WORDMARK}
           alt={BRAND_NAME}
-          width={480}
-          height={360}
+          width={BRAND_WORDMARK_SIZE.width}
+          height={BRAND_WORDMARK_SIZE.height}
           priority
-          style={{ display: 'block' }}
+          style={{ display: 'block', width: '100%', height: 'auto' }}
         />
       </div>
     </div>

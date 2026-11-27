@@ -4,10 +4,10 @@ import Link from '@/components/LocaleLink'
 import Image from 'next/image'
 import { Instagram, Facebook } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
-import { BRAND_NAME, INSTAGRAM_URL, FACEBOOK_URL } from '@/lib/brand'
+import { BRAND_NAME, BRAND_WORDMARK, BRAND_WORDMARK_SIZE, INSTAGRAM_URL, FACEBOOK_URL, contactEmail } from '@/lib/brand'
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '15551234567'
-const EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@menacollection.com'
+// (contact email now comes from lib/brand.js by language — see contactEmail)
 
 // Simple WhatsApp icon (lucide doesn't include it)
 function WhatsAppIcon({ size = 20 }) {
@@ -19,7 +19,8 @@ function WhatsAppIcon({ size = 20 }) {
 }
 
 export default function Footer() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
+  const EMAIL = contactEmail(lang)
   const year = new Date().getFullYear()
 
   const heading = 'text-[11px] uppercase tracking-label text-navy/50 mb-5'
@@ -32,7 +33,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-x-8 gap-y-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-4">
-            <Image src="/images/tc-logo.svg" alt={BRAND_NAME} width={150} height={112} className="mb-6 -ml-2" />
+            <Image src={BRAND_WORDMARK} alt={BRAND_NAME} width={BRAND_WORDMARK_SIZE.width} height={BRAND_WORDMARK_SIZE.height} className="h-10 w-auto mb-7" />
             <p className="font-serif text-xl leading-snug text-navy/85 max-w-xs mb-6">
               {t.footer.tagline}
             </p>

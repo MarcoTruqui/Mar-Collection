@@ -2,6 +2,7 @@
 
 import { useLanguage } from '@/lib/LanguageContext'
 import InquiryForm from '@/components/InquiryForm'
+import { contactEmail } from '@/lib/brand'
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '523221355153'
 
@@ -56,10 +57,10 @@ export default function ContactPage() {
               <h3 className="font-serif text-lg text-navy mb-2">{lang === 'es' ? 'Correo' : 'Email Us'}</h3>
               <p className="text-gray-500 text-sm mb-4">{lang === 'es' ? '¿Prefieres correo? Escríbenos a:' : 'Prefer email? Reach us directly at:'}</p>
               <a
-                href="mailto:tch@truqui.com"
+                href={`mailto:${contactEmail(lang)}`}
                 className="text-gold text-sm font-medium hover:underline"
               >
-                tch@truqui.com
+                {contactEmail(lang)}
               </a>
             </div>
 

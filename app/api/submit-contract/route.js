@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { submitContract, getBookingByToken } from '@/lib/appsScript'
-import { BRAND_NAME } from '@/lib/brand'
+import { BRAND_NAME, contactEmail } from '@/lib/brand'
 
-const TO_EMAIL = 'tch@truqui.com'
+// Signed-contract notices go to hello@ (English bookings) or hola@ (Spanish)
 
 // Forwards the guest's info, ID photo, and signature to Apps Script's
 // submitGuestForm — same sheet write, same Drive uploads, same PDF
@@ -37,7 +37,7 @@ async function notifyNewBooking(form) {
 
   await resend.emails.send({
     from: `${BRAND_NAME} <contact@truqui.com>`,
-    to: TO_EMAIL,
+    to: contactEmail(booking?.language === 'es' ? 'es' : 'en'),
     subject: `New Booking — ${booking.villa} (${form.fullName})`,
     html: `
       <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; color: #2A2621;">

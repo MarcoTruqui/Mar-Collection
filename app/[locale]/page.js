@@ -195,7 +195,7 @@ function FeaturedRow({ items }) {
     <div className="relative">
       <div
         ref={scroller}
-        className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth -mx-5 px-5 sm:mx-0 sm:px-0 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth -mx-5 px-5 scroll-px-5 sm:mx-0 sm:px-0 sm:scroll-px-0 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {items.map(p => (
           <div key={p.slug} className="snap-start shrink-0 w-[82%] sm:w-[46%] lg:w-[31.5%]">
@@ -253,11 +253,11 @@ export default function HomePage() {
         </div>
 
         <div className="relative z-10 h-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 flex flex-col justify-end pb-16 md:pb-40">
-          <p className="text-[11px] uppercase tracking-label text-white/80 mb-4">{c.place}</p>
-          <h1 className="font-serif font-light text-white text-[42px] leading-[1.02] sm:text-6xl md:text-[84px] md:leading-[0.98] whitespace-pre-line max-w-4xl">
+          <p className="text-[11px] uppercase tracking-label text-white/90 mb-4 text-contour">{c.place}</p>
+          <h1 className="font-serif font-light text-white text-contour text-[42px] leading-[1.02] sm:text-6xl md:text-[84px] md:leading-[0.98] whitespace-pre-line max-w-4xl">
             {c.headline}
           </h1>
-          <p className="hidden md:block text-white/85 text-lg font-light mt-6 max-w-xl">{c.sub}</p>
+          <p className="hidden md:block text-white/95 text-lg font-light text-contour mt-6 max-w-xl">{c.sub}</p>
         </div>
 
         {/* Desktop: search sits on the bottom edge of the hero */}
